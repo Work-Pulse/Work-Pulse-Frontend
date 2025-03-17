@@ -1,30 +1,40 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { FaUser, FaUserTie } from 'react-icons/fa';
+import { Link } from "react-router-dom";
+import { FaUser, FaUserTie } from "react-icons/fa";
+import { motion } from "framer-motion";
+import bg from '../assets/images/bg.png';
 
 const UserSelection = () => {
   return (
-    <div>
-      <div className="flex justify-center items-center h-screen bg-[#122D3B]">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-[#C6D2D5] rounded-2xl shadow-xl">
-        <button className="text-white text-xl font-semibold p-6 bg-[#122D3B] rounded-2xl hover:bg-white hover:text-[#122D3B] transition duration-300 flex items-center gap-4">
-          <FaUser size={24} /> Employee Login
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6 "
+      style={{ backgroundImage: `url(${bg})` }}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 rounded-2xl mb-8 w-full h-100 max-w-4xl">
+        <button className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
+          <FaUser size={64} />
+          Employee Login
         </button>
 
         <Link to = '/managerlogin'>
         <button className="text-white text-xl font-semibold p-6 bg-[#122D3B] rounded-2xl hover:bg-white hover:text-[#122D3B] transition duration-300 flex items-center gap-4">
           <FaUserTie size={24} /> Manager Login
+        <button className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
+          <FaUserTie size={64} />
+          Manager Login
         </button>
         </Link>
       </div>
-      <div>
-        <Link to='/'className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg mt-4 shadow-md transition duration-300">
-            Back to Home!
-        </Link>
-      </div>
-    </div>
-    </div>
-  )
-}
+      <Link
+        to="/"
+        className="text-text h-100 text-xl font-semibold p-4 rounded-2xl transition duration-300 flex items-center gap-4 bg-background hover:bg-text hover:text-background"
+      >
+        Back to Home
+      </Link>
+    </motion.div>
+  );
+};
 
-export default UserSelection
+export default UserSelection;
