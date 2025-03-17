@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
+import bg from '../assets/images/bg.png';
 import { motion } from 'framer-motion';
 
 const Home = () => {
@@ -7,10 +8,12 @@ const Home = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="flex flex-col items-center justify-center min-h-screen bg-background p-6"
+      transition={{ duration: 1 }} 
+      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6 "
+      style={{ backgroundImage: `url(${bg})` }}
+
     >
-      <div className="rounded-2xl p-6 max-w-lg w-full text-center">
+      <div className="rounded-2xl p-6 max-w-lg w-full text-center bg-background">
         <img 
           src={logo}
           alt="Work Schedule" 
