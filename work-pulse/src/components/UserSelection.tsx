@@ -18,13 +18,9 @@ const UserSelection = () => {
           Employee Login
         </button>
 
-        <Link to = '/managerlogin'>
-        <button className="text-white text-xl font-semibold p-6 bg-[#122D3B] rounded-2xl hover:bg-white hover:text-[#122D3B] transition duration-300 flex items-center gap-4">
-          <FaUserTie size={24} /> Manager Login
-        <button className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
+        <Link to = '/managerlogin' className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
           <FaUserTie size={64} />
           Manager Login
-        </button>
         </Link>
       </div>
       <Link
