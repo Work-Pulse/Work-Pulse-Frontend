@@ -10,9 +10,12 @@ const UserSelection = () => {
         <button className="text-white text-xl font-semibold p-6 bg-[#122D3B] rounded-2xl hover:bg-white hover:text-[#122D3B] transition duration-300 flex items-center gap-4">
           <FaUser size={24} /> Employee Login
         </button>
+
+        <Link to = '/managerlogin'>
         <button className="text-white text-xl font-semibold p-6 bg-[#122D3B] rounded-2xl hover:bg-white hover:text-[#122D3B] transition duration-300 flex items-center gap-4">
           <FaUserTie size={24} /> Manager Login
         </button>
+        </Link>
       </div>
       <div>
         <Link to='/'className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg mt-4 shadow-md transition duration-300">
