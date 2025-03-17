@@ -1,43 +1,50 @@
 import { Link } from 'react-router-dom';
-import { FaTasks, FaUsers, FaClipboardList, FaSignOutAlt,FaChartLine , FaClipboardCheck } from 'react-icons/fa';
+import { FaTasks, FaClipboardList, FaSignOutAlt, FaChartLine, FaClipboardCheck } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import bg from '../../assets/images/bg.png';
 
 const ManagerDashboard = () => {
   return (
-    <div className="flex justify-center items-center h-screen bg-[#122D3B]">
-      <div className="grid grid-cols-1 h-[95%] w-[97%] gap-8 p-8 bg-[#C6D2D5] rounded-2xl shadow-xl">
-        <h2 className="text-center text-[#122D3B] text-2xl font-semibold">Manager Dashboard</h2>
-        
-        <div className="flex flex-col gap-4">
-          <Link to='/tasks' className="flex items-center gap-4 bg-white p-3 rounded-lg shadow hover:bg-[#122D3B] hover:text-white transition duration-300">
-            <FaTasks size={20} className="text-[#122D3B]" />
-            Task Management
-          </Link>
-
-          <Link to='/employees' className="flex items-center gap-4 bg-white p-3 rounded-lg shadow hover:bg-[#122D3B] hover:text-white transition duration-300">
-            <FaChartLine size={20} className="text-[#122D3B]" />
-            Real-time Task Tracking
-          </Link>
-
-          <Link to='/employees' className="flex items-center gap-4 bg-white p-3 rounded-lg shadow hover:bg-[#122D3B] hover:text-white transition duration-300">
-            <FaClipboardCheck size={20} className="text-[#122D3B]" />
-            Leave Requests Approval
-          </Link>
-
-          <Link to='/reports' className="flex items-center gap-4 bg-white p-3 rounded-lg shadow hover:bg-[#122D3B] hover:text-white transition duration-300">
-            <FaClipboardList size={20} className="text-[#122D3B]" />
-            Reports & Analytics
-          </Link>
-        </div>
-        
-        <Link to='/managerlogin'>
-        <button className="flex items-center justify-center gap-2 text-white text-lg font-semibold p-3 bg-red-600 rounded-lg hover:bg-red-700 transition duration-300 w-72">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}  
+      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6 "
+      style={{ backgroundImage: `url(${bg})` }}>
+      
+      {/* Logout Button at Top Left */}
+      <Link to='/managerlogin' className="absolute top-4 right-6">
+        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red rounded-lg hover:text-[#ef4444] transition duration-300">
           <FaSignOutAlt size={20} /> Logout
         </button>
+      </Link>
+
+      {/* Dashboard Buttons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 rounded-2xl w-full max-w-4xl">
+        
+        <Link to='/tasks' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+          <FaTasks size={64} />
+          Task Management
         </Link>
 
+        <Link to='/tracking' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+          <FaChartLine size={64} />
+          Real-time Task Tracking
+        </Link>
+
+        <Link to='/leave-requests' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+          <FaClipboardCheck size={64} />
+          Leave Requests Approval
+        </Link>
+
+        <Link to='/reports' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+          <FaClipboardList size={64} />
+          Reports & Analytics
+        </Link>
+        
       </div>
-    </div>
+    </motion.div>
   );
-}
+};
 
 export default ManagerDashboard;
