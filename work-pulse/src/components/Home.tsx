@@ -1,25 +1,34 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-        <div className="bg-white shadow-lg rounded-2xl p-6 max-w-lg w-full text-center border border-gray-200">
-            <img 
-                    src={logo}
-                    alt="Work Schedule" 
-                    className="mx-auto w-64 h-auto rounded-lg"
-                />
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="flex flex-col items-center justify-center min-h-screen bg-background p-6"
+    >
+      <div className="rounded-2xl p-6 max-w-lg w-full text-center">
+        <img 
+          src={logo}
+          alt="Work Schedule" 
+          className="mx-auto w-64 h-auto rounded-lg"
+        />
 
-            <h1 className="text-3xl font-extrabold text-[#122D3B] mb-10">Welcome to Work Pulse!</h1>
-            
-                
-            <Link to='/userselection' className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg mt-4 shadow-md transition duration-300 mb-10">
-                Get Started
-            </Link>
-        </div>
-    </div>
-  )
-}
+        <h1 className="text-3xl font-medium text-accent mt-10">Welcome to </h1>
+        <h1 className="text-5xl font-extrabold text-accent mb-10">WORK PULSE</h1>
 
-export default Home
+        <Link 
+          to='/userselection' 
+          className="text-white shadow-lg text-xl font-semibold py-3 px-3 bg-[#122D3B] rounded-2xl hover:bg-secondary hover:text-[#122D3B] transition duration-300 flex justify-center items-center w-full max-w-xs mx-auto"
+        >
+          Get Started
+        </Link>
+      </div>
+    </motion.div>
+  );
+};
+
+export default Home;
