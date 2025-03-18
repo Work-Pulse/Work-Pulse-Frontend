@@ -7,7 +7,7 @@ import TaskManagement from "./components/TaskAndProject/TaskManagement";
 
 import EmployeeLogin from "./components/EmployeeManagement/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard";
-import EmployeeSignin from "./components/EmployeeManagement/EmployeeSignin";
+import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
 
 const App = () => {
@@ -23,7 +23,7 @@ const App = () => {
 
         <Route path="employeelogin" Component={EmployeeLogin}/>
         <Route path="employeedashboard" Component={EmployeeDashboard}/>
-        <Route path="employeesignin" Component={EmployeeSignin}/>
+        <Route path="employeesignin" Component={EmployeeSignIn}/>
         <Route path="employeedetails" Component={EmployeeDetails}/>
         </Route>
       </Routes>

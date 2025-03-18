@@ -7,6 +7,7 @@ import PasswordInput from './PasswordInput';
 
 const EmployeeLogin = () => {
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState(""); // ✅ Added state for password
 
   return (
     <motion.div 
@@ -20,7 +21,7 @@ const EmployeeLogin = () => {
         <h2 className="text-center text-[#122D3B] text-2xl font-bold">Employee Login</h2>
 
         <div className="flex flex-col gap-4">
-          {/* Username Input with focus effect */}
+          {/* Username Input */}
           <div className="relative w-full">
             <FaUser className="absolute left-3 top-3 text-[#122D3B]" size={20} />
             <input
@@ -29,12 +30,15 @@ const EmployeeLogin = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-[#eab308] focus:border-[#eab308] text-[#122D3B]"
-/>
-
+            />
           </div>
 
           {/* Password Input */}
-          <PasswordInput />
+          <PasswordInput 
+            placeholder="Password"
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+          />
         </div>
 
         {/* Login Button */}
@@ -43,13 +47,15 @@ const EmployeeLogin = () => {
             Login
           </button>
         </Link>
-        <p className="text-gray-700 text-sm">
-            If you don't have an account,{" "}
-                <Link
-                    to="/employeesignin"
-                    className="text-[#122D3B] font-semibold hover:underline">
-                        Sign in
-                </Link>
+
+        <p className="text-gray-700 text-xl">
+          If you don't have an account ,  {" "}
+          <Link
+            to="/employeesignin"
+            className="text-[#122D3B] font-semibold hover:underline"
+          >
+            Sign in
+          </Link>
         </p>
 
         {/* Back to Home Button */}
