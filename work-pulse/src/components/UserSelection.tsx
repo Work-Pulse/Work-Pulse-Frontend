@@ -13,10 +13,10 @@ const UserSelection = () => {
       style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 rounded-2xl mb-8 w-full h-100 max-w-4xl">
-        <button className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
+        <Link to = '/employeelogin' className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
           <FaUser size={64} />
           Employee Login
-        </button>
+        </Link>
 
         <Link to = '/managerlogin' className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
           <FaUserTie size={64} />
