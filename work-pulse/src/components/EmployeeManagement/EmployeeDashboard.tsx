@@ -27,7 +27,7 @@ const EmployeeDashboard = () => {
           My Profile
         </Link>
 
-        <Link to='/tracking' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-lg">
+        <Link to='/shift' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-lg">
           <FaUserClock size={80} />
           Shift
         </Link>

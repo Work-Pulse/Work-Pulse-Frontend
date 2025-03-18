@@ -1,14 +1,22 @@
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+
 import Home from "./components/Home";
 import UserSelection from "./components/UserSelection";
+
 import ManagerLogin from "./components/TaskAndProject/ManagerLogin";
 import ManagerDashboard from "./components/TaskAndProject/ManagerDashboard";
 import TaskManagement from "./components/TaskAndProject/TaskManagement";
 
 import EmployeeLogin from "./components/EmployeeManagement/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard";
-import EmployeeSignin from "./components/EmployeeManagement/EmployeeSignin";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
+import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
+
+import EmployeeShift from "./components/SystemMonitor/EmployeeShift"
+
+
+
+
 
 const App = () => {
   return(
@@ -23,8 +31,11 @@ const App = () => {
 
         <Route path="employeelogin" Component={EmployeeLogin}/>
         <Route path="employeedashboard" Component={EmployeeDashboard}/>
-        <Route path="employeesignin" Component={EmployeeSignin}/>
+        <Route path="employeesignin" Component={EmployeeSignIn}/>
         <Route path="employeedetails" Component={EmployeeDetails}/>
+
+        <Route path="shift" Component={EmployeeShift}/>
+
         </Route>
       </Routes>
     </MemoryRouter>
