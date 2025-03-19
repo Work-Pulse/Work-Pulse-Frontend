@@ -27,9 +27,9 @@ const ManagerDashboard = () => {
           Task Management
         </Link>
 
-        <Link to='/tracking' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/monitor' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaChartLine size={64} />
-          Real-time Task Tracking
+          Employee Tracking
         </Link>
 
         <Link to='/leave-requests' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">

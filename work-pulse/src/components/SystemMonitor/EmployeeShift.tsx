@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import bg from '../../assets/images/bg.png';
-import ChatWindow from "./ChatWindow"; // Import the separate chat window component
+import ChatWindow from "./SubComponents/ChatWindow"; // Import the separate chat window component
 dayjs.extend(duration);
 
 const EmployeeShift = () => {
@@ -86,7 +86,6 @@ const EmployeeShift = () => {
           <p>Start Time: {startTime ? dayjs(startTime * 1000).format("YYYY-MM-DD HH:mm:ss") : "Not started"}</p>
           <p>End Time: {endTime || "Not ended"}</p>
           <p>Total Time: {formatTime(elapsedTime)}</p> {/* Display elapsed time */}
-          <p>Remaining Time: {formatTime(28800 - elapsedTime)}</p> {/* Display remaining time if needed */}
 
           <div className="mt-4">
             {!shiftStarted ? (
