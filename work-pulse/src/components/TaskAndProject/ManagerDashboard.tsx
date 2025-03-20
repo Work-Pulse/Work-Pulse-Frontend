@@ -14,7 +14,7 @@ const ManagerDashboard = () => {
       
       {/* Logout Button at Top Left */}
       <Link to='/managerlogin' className="absolute top-4 right-6">
-        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red rounded-lg hover:text-[#ef4444] transition duration-300">
+        <button className="flex items-center gap-2 text-text text-lg font-semibold p-3 bg-red rounded-lg hover:text-[#ef4444] transition duration-300">
           <FaSignOutAlt size={20} /> Logout
         </button>
       </Link>
@@ -22,22 +22,22 @@ const ManagerDashboard = () => {
       {/* Dashboard Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 rounded-2xl w-full max-w-4xl">
         
-        <Link to='/tasks' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/tasks' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaTasks size={64} />
           Task Management
         </Link>
 
-        <Link to='/monitor' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/monitor' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaChartLine size={64} />
           Employee Tracking
         </Link>
 
-        <Link to='/leave-requests' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/leave-requests' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaClipboardCheck size={64} />
           Leave Requests Approval
         </Link>
 
-        <Link to='/reports' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/reports' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaClipboardList size={64} />
           Reports & Analytics
         </Link>

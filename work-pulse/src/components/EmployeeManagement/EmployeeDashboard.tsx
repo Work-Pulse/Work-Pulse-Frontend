@@ -22,17 +22,17 @@ const EmployeeDashboard = () => {
       {/* Dashboard Buttons - Larger & Uniform Size */}
       <div className="flex flex-nowrap justify-center gap-10 p-8 rounded-2xl w-full max-w-6xl overflow-x-auto">
         
-        <Link to='/employeedetails' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-lg">
+        <Link to='/employeedetails' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4  hover:bg-[#122D3B] hover:text-white shadow-lg">
           <FaUser size={80} />
           My Profile
         </Link>
 
-        <Link to='/shift' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-lg">
+        <Link to='/shift' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4  hover:bg-[#122D3B] hover:text-white shadow-lg">
           <FaUserClock size={80} />
           Shift
         </Link>
 
-        <Link to='/leave-requests' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-lg">
+        <Link to='/leave-requests' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4  hover:bg-[#122D3B] hover:text-white shadow-lg">
           <FaClipboardCheck size={80} />
           Leave Requests
         </Link>

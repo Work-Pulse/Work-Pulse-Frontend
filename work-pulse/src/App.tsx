@@ -14,6 +14,7 @@ import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 
 import EmployeeShift from "./components/SystemMonitor/EmployeeShift"
 import EmployeeMonitor from "./components/SystemMonitor/EmployeeMonitor";
+import ShiftReport from "./components/SystemMonitor/SubComponents/ShiftReport";
 
 
 
@@ -25,6 +26,7 @@ const App = () => {
       <Routes>
         <Route path="/">
         <Route index Component={Home}/>
+      
         <Route path="userselection" Component={UserSelection}/>
         <Route path="managerlogin" Component={ManagerLogin}/>
         <Route path="managerdashboard" Component={ManagerDashboard}/>
@@ -37,6 +39,7 @@ const App = () => {
 
         <Route path="shift" Component={EmployeeShift}/>
         <Route path="monitor" Component={EmployeeMonitor}/>
+        <Route path="shift-report" Component={ShiftReport}/>
 
         </Route>
       </Routes>
