@@ -90,7 +90,7 @@ export default function AttendanceMonitor() {
         <div className="w-full">
           <div className="fixed">
             <Link to="/monitor">
-              <button className="absolute top-6 left-6 text-gray-700 hover:bg-gray-300 p-3 rounded-full flex items-center">
+              <button className="absolute top-6 left-6 text-accent hover:bg-background hover:border p-3 rounded-full flex items-center">
                 <ArrowLeft size={24} className="mr-2" /> Back
               </button>
             </Link>
