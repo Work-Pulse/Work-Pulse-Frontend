@@ -36,7 +36,7 @@ const ChatWindow = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg flex flex-col h-full max-w-md mx-auto border">
+    <div className="bg-white rounded-lg shadow-lg flex flex-col h-full max-w-md mx-auto shadow-lg">
       <div className="p-4 text-center font-semibold text-text flex items-center bg-background rounded-lg justify-center">
         <span>Chat</span>
       </div>
