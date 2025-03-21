@@ -45,7 +45,7 @@ export default function ChatWindow() {
       const chatMessages = prev[selectedChat] || [];
       const lastMessage = chatMessages.length > 0 ? chatMessages[chatMessages.length - 1] : null;
       const showDate = !lastMessage || (lastMessage.type === 'message' && lastMessage.date !== dateStamp);
-      
+
       return {
         ...prev,
         [selectedChat]: [
@@ -65,76 +65,87 @@ export default function ChatWindow() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}  
-      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6 bg-fixed"
-      style={{ backgroundImage: `url(${bg})` }}>
-    <div className=" w-full fixed">
-    <div className="flex h-screen w-full">
-      <div className="w-1/4 border-r">
-        <div className="flex items-center gap-3 p-4">
-          <Link to="/monitor">
-          <FaArrowLeft className="cursor-pointer"/>
-          </Link>
-        </div>
-        <div>
-          {employees.map((employee) => (
-            <div
-              key={employee}
-              className={`p-3 cursor-pointer bg-background rounded-lg mb-2 hover:bg-text hover:text-background ${selectedChat === employee ? "bg-primary" : ""}`}
-              onClick={() => setSelectedChat(employee)}
-            >
-              {employee}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="w-3/4 flex flex-col">
-        {selectedChat ? (
-          <>
-            <div className="p-4 bg-white rounded-lg">
-              <h2 className="text-lg font-bold">{selectedChat}</h2>
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
-              {(messages[selectedChat] || []).map((msg, index) => (
-                msg.type === 'date' ? (
-                  <div key={index} className="text-center text-xs text-gray-500 my-3">
-                    {msg.date}
-                  </div>
-                ) : (
-                  <div
-                    key={index}
-                    className={`p-2 my-1 rounded-lg max-w-xs ${msg.sender === "me" ? "bg-blue-500 text-white self-end" : "bg-gray-300 text-black self-start"}`}
-                  >
-                    <p>{msg.text}</p>
-                    <span className="block text-xs text-right mt-1 text-gray-600">{msg.time}</span>
-                  </div>
-                )
-              ))}
-            </div>
-            <div className="p-4 flex items-center bg-white border-t">
-              <input
-                className="flex-1 p-2 border rounded-lg"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type a message..."
-              />
-              <button className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={sendMessage}>
-                Send
+      transition={{ duration: 1 }}
+      className="flex flex-col items-center justify-center bg-cover bg-center bg-fixed"
+      style={{ backgroundImage: `url(${bg})` }}
+    >
+      <div className="h-screen w-full">
+        <div className="flex w-full">
+          <div className="w-1/4">
+            <div className="items-center gap-3 p-4 flex items-center">
+              <button className="hover:text-reject">
+              <Link to="/monitor">
+                <FaArrowLeft className="cursor-pointer" />
+              </Link>
               </button>
             </div>
-          </>
-        ) : (
-          <div className="flex items-center justify-center flex-1 text-gray-500">
-            Select a chat to start messaging
+            <div>
+              {employees.map((employee) => (
+                <div
+                  key={employee}
+                  className={`p-3 cursor-pointer bg-background rounded-lg mb-2 hover:bg-text hover:text-background ml-2 mr-2 shadow-lg ${selectedChat === employee ? "bg-primary" : ""}`}
+                  onClick={() => setSelectedChat(employee)}
+                >
+                  {employee}
+                </div>
+              ))}
+            </div>
           </div>
-        )}
+          <div className="w-3/4 flex flex-col h-screen">
+            {selectedChat ? (
+              <>
+                <div className="p-4 bg-text text-background rounded-lg mt-2 ml-3 mr-3">
+                  <h2 className="text-lg font-bold">{selectedChat}</h2>
+                </div>
+                <div className="flex-1 p-4 overflow-y-auto bg-gray-50 scrollbar-hide">
+                  {(messages[selectedChat] || []).map((msg, index) =>
+                    msg.type === 'date' ? (
+                      <div key={index} className="text-center text-xs text-gray-500 my-3">
+                        {msg.date}
+                      </div>
+                    ) : (
+                      // <div
+                      //   key={index}
+                      //   className={`p-2 my-1 rounded-lg max-w-xs bg-primary w-full justify-end ${msg.sender === "me" ? "shadow-lg text-text self-end" : "bg-background text-text self-start"}`}
+                      // >
+                      //   <p>{msg.text}</p>
+                      //   <span className="block text-sm text-right mt-1 text-text">{msg.time}</span>
+                      // </div>
+                      <div key={index} className="w-full flex justify-end">
+                        <div className=" my-1 rounded-lg bg-accent shadow-lg text-background">
+                          <div className="pl-4 pt-2 pb-2 pr-10">
+                            <p>{msg.text}</p>
+                          </div>   
+                          <span className="block text-sm text-right mt-1 pr-2 pb-1 text-background">{msg.time}</span>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+                <div className="p-4 flex items-center">
+                  <input
+                    className="flex-1 p-2 rounded-lg bg-background shadow-lg"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type a message..."
+                  />
+                  <button className="ml-2 px-4 py-2 bg-text text-background rounded-lg" onClick={sendMessage}>
+                    Send
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center flex-1 text-text">
+                Select a chat to start messaging
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
     </motion.div>
   );
 }
