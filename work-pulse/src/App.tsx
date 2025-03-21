@@ -47,7 +47,7 @@ const App = () => {
         <Route path="manager-chat" Component={ManagerChat}/>
 
         <Route path="reports" Component={Reports}/>
-        <Route path="leaverRquests" Component={LeaveRequests}/>
+        <Route path="leave-requests" Component={LeaveRequests}/>
         <Route path="tracking" Component={TaskTracking}/>
         </Route>
       </Routes>
