@@ -12,8 +12,9 @@ import TaskTracking from "./components/TaskAndProject/TaskTracking";
 
 import EmployeeLogin from "./components/EmployeeManagement/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard";
-import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
 import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
+import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
+
 
 import EmployeeShift from "./components/SystemMonitor/EmployeeShift"
 import EmployeeMonitor from "./components/SystemMonitor/EmployeeMonitor";

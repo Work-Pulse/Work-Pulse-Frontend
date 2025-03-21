@@ -1,17 +1,36 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaCalendarAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
 import PasswordInput from "./PasswordInput";
 
 const EmployeeSignIn = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [email, setEmail] = useState("");
-  //const [password, setPassword] = useState("");
-  //const [confirmPassword, setConfirmPassword] = useState("");
+  // Form state
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    officeMail: "",
+    personalMail: "",
+    officePhone: "",
+    personalPhone: "",
+    joinDate: "",
+    birthday: "",
+    address: "",
+    username: "", // Added username field
+    password: "",
+    confirmPassword: "",
+  });
+
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form Data Submitted:", formData);
+  };
 
   return (
     <motion.div
@@ -21,78 +40,165 @@ const EmployeeSignIn = () => {
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <div className="grid grid-cols-1 gap-6 p-8 bg-[#C6D2D5] rounded-2xl shadow-xl w-96">
-        <h2 className="text-center text-[#122D3B] text-2xl font-bold">Employee Sign Up</h2>
+      <div className="bg-[#C6D2D5] p-8 rounded-2xl shadow-xl w-full max-w-3xl">
+        <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Employee Sign Up</h1>
 
-        <div className="flex flex-col gap-4">
-          {/* First Name */}
-          <div className="relative w-full">
-            <FaUser className="absolute left-3 top-3 text-[#122D3B]" size={18} />
-            <input
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-[#eab308] focus:border-[#eab308] text-[#122D3B]"
-            />
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="flex flex-col gap-4">
+            <label className="font-medium text-[#122D3B]">
+              First Name
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
+
+            <label className="font-medium text-[#122D3B]">
+              Office Email
+              <input
+                type="email"
+                name="officeMail"
+                value={formData.officeMail}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
+
+            <label className="font-medium text-[#122D3B]">
+              Office Phone Number
+              <input
+                type="tel"
+                name="officePhone"
+                value={formData.officePhone}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
+
+            <label className="font-medium text-[#122D3B]">
+              Birthday
+              <input
+                type="date"
+                name="birthday"
+                value={formData.birthday}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
           </div>
 
-          {/* Last Name */}
-          <div className="relative w-full">
-            <FaUser className="absolute left-3 top-3 text-[#122D3B]" size={18} />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-[#eab308] focus:border-[#eab308] text-[#122D3B]"
-            />
+          {/* Right Column */}
+          <div className="flex flex-col gap-4">
+            <label className="font-medium text-[#122D3B]">
+              Last Name
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
+
+            <label className="font-medium text-[#122D3B]">
+              Personal Email
+              <input
+                type="email"
+                name="personalMail"
+                value={formData.personalMail}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
+
+            <label className="font-medium text-[#122D3B]">
+              Personal Phone Number
+              <input
+                type="tel"
+                name="personalPhone"
+                value={formData.personalPhone}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
+
+            <label className="font-medium text-[#122D3B]">
+              Join Date
+              <input
+                type="date"
+                name="joinDate"
+                value={formData.joinDate}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
           </div>
 
-          {/* Birthday */}
-          <div className="relative w-full">
-            <FaCalendarAlt className="absolute left-3 top-3 text-[#122D3B]" size={18} />
-            <input
-              type="date"
-              value={birthday}
-              onChange={(e) => setBirthday(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-[#eab308] focus:border-[#eab308] text-[#122D3B]"
-            />
+          {/* Address Field - Full Width */}
+          <div className="col-span-2">
+            <label className="font-medium text-[#122D3B]">
+              Address
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
           </div>
 
-          {/* Email */}
-          <div className="relative w-full">
-            <FaEnvelope className="absolute left-3 top-3 text-[#122D3B]" size={18} />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-[#eab308] focus:border-[#eab308] text-[#122D3B]"
-            />
+          {/* Username Field - Full Width */}
+          <div className="col-span-2">
+            <label className="font-medium text-[#122D3B]">
+              Username
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full "
+              />
+            </label>
           </div>
 
-          {/* Password */}
-          <PasswordInput 
-           // placeholder="Password"
-           // value={password}
-           // onChange={(e) => setPassword(e.target.value)}
-          />
+          {/* Password Fields - Full Width */}
+          <div className="col-span-2 flex flex-col gap-4">
+            <label className="font-medium text-[#122D3B]">
+              Password
+              <PasswordInput
+                placeholder="Enter Password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              />
+            </label>
 
-          {/* Confirm Password */}
-          <PasswordInput 
-            //placeholder="Confirm Password"
-           // value={confirmPassword}
-           // onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
+            <label className="font-medium text-[#122D3B]">
+              Confirm Password
+              <PasswordInput
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              />
+            </label>
+          </div>
 
-        {/* Sign Up Button */}
-        <button className="text-white text-lg font-semibold p-3 bg-[#122D3B] rounded-lg hover:bg-white hover:text-[#122D3B] transition duration-300 w-full">
-          Sign Up
-        </button>
+          {/* Sign-Up Button */}
+          <div className="col-span-2">
+            <button
+              type="submit"
+              className="text-white text-lg font-semibold p-3 bg-[#122D3B] rounded-lg hover:bg-white hover:text-[#122D3B] transition duration-300 w-full"
+            >
+              Sign Up
+            </button>
+          </div>
+        </form>
 
-        <p className="text-gray-700 text-sm">
+        <p className="text-gray-700 text-xl text-center mt-4">
           Already have an account?{" "}
           <Link to="/employeelogin" className="text-[#122D3B] font-semibold hover:underline">
             Login
@@ -100,7 +206,7 @@ const EmployeeSignIn = () => {
         </p>
 
         {/* Back to Home Button */}
-        <div className="text-center">
+        <div className="text-center mt-4">
           <Link
             to="/"
             className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
