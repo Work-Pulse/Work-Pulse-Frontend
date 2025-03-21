@@ -6,6 +6,9 @@ import UserSelection from "./components/UserSelection";
 import ManagerLogin from "./components/TaskAndProject/ManagerLogin";
 import ManagerDashboard from "./components/TaskAndProject/ManagerDashboard";
 import TaskManagement from "./components/TaskAndProject/TaskManagement";
+import Reports from "./components/TaskAndProject/Reports";
+import LeaveRequests from "./components/TaskAndProject/LeaveRequests";
+import TaskTracking from "./components/TaskAndProject/TaskTracking";
 
 import EmployeeLogin from "./components/EmployeeManagement/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard";
@@ -43,6 +46,9 @@ const App = () => {
         <Route path="shift-report" Component={ShiftReport}/>
         <Route path="manager-chat" Component={ManagerChat}/>
 
+        <Route path="reports" Component={Reports}/>
+        <Route path="leaverRquests" Component={LeaveRequests}/>
+        <Route path="tracking" Component={TaskTracking}/>
         </Route>
       </Routes>
     </MemoryRouter>

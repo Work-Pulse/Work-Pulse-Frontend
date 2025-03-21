@@ -27,7 +27,7 @@ const UserSelection = () => {
         to="/"
         className="text-text h-100 text-xl font-semibold shadow-lg p-4 rounded-2xl transition duration-300 flex items-center gap-4 hover:bg-text hover:text-background"
       >
-        Back to Home
+        Back to Home!
       </Link>
     </motion.div>
   );

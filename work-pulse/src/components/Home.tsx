@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
-import bg from '../assets/images/bg.png';
+import bg from '../assets/images/bg.png'
 import { motion } from 'framer-motion';
 
 const Home = () => {
