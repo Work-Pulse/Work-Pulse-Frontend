@@ -4,6 +4,7 @@ import bg from '../../assets/images/bg.png';
 import { motion } from 'framer-motion';
 import { Link } from "react-router-dom";
 
+
 const employees = [
   { name: "Jhon Doe", designation: "Senior Software Engineer", department: "IT & Research" },
   { name: "Mary Jhone", designation: "Accountant", department: "Finance & Sales" },
@@ -56,9 +57,11 @@ export default function EmployeeMonitoring() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+          <Link to="/manager-chat">
           <button className="bg-accent font-bold px-6 py-4 rounded-lg text-background flex items-center gap-2 shadow-lg hover:bg-background hover:text-text hover:border">
             <Users size={20} /> Employee Chat
           </button>
+          </Link>
         </div>
 
         <div className="bg-white p-4 rounded-lg font-bold grid grid-cols-4 text-text text-lg shadow-lg">
