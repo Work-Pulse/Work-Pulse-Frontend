@@ -34,7 +34,7 @@ export default function EmployeeMonitoring() {
       <div className="w-full">
         <div className="fixed">
           <Link to="/managerdashboard">
-            <button className="absolute top-6 left-6 text-accent hover:bg-background hover:border p-3 rounded-full flex items-center">
+            <button className="absolute top-6 left-6 text-accent hover:text-reject p-3 rounded-full flex items-center">
               <ArrowLeft size={24} className="mr-2" /> Back
             </button>
           </Link>
@@ -58,7 +58,7 @@ export default function EmployeeMonitoring() {
             />
           </div>
           <Link to="/manager-chat">
-          <button className="bg-accent font-bold px-6 py-4 rounded-lg text-background flex items-center gap-2 shadow-lg hover:bg-background hover:text-text hover:border">
+          <button className="bg-accent font-bold px-6 py-4 rounded-lg text-background flex items-center gap-2 shadow-lg hover:bg-background hover:text-text">
             <Users size={20} /> Employee Chat
           </button>
           </Link>
@@ -80,7 +80,7 @@ export default function EmployeeMonitoring() {
             <span className="text-center">{employee.designation}</span>
             <span className="text-center">{employee.department}</span>
             <Link to="/shift-report">
-              <button className="bg-accent px-6 py-3 rounded-lg text-white hover:bg-background hover:text-accent hover:border">
+              <button className="bg-primary px-6 py-3 rounded-lg text-accent hover:bg-accent hover:text-background">
                 View Monthly Report
               </button>
             </Link>
