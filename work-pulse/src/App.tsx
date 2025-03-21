@@ -15,7 +15,6 @@ import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard
 import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
 
-
 import EmployeeShift from "./components/SystemMonitor/EmployeeShift"
 import EmployeeMonitor from "./components/SystemMonitor/EmployeeMonitor";
 import ShiftReport from "./components/SystemMonitor/SubComponents/ShiftReport";
