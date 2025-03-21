@@ -32,9 +32,14 @@ const App = () => {
         <Route index Component={Home}/>
       
         <Route path="userselection" Component={UserSelection}/>
+
         <Route path="managerlogin" Component={ManagerLogin}/>
         <Route path="managerdashboard" Component={ManagerDashboard}/>
+        
         <Route path="tasks" Component={TaskManagement}/>
+        <Route path="reports" Component={Reports}/>
+        <Route path="leave-requests" Component={LeaveRequests}/>
+        <Route path="tracking" Component={TaskTracking}/>
 
         <Route path="employeelogin" Component={EmployeeLogin}/>
         <Route path="employeedashboard" Component={EmployeeDashboard}/>
