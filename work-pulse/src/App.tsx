@@ -11,6 +11,7 @@ import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
 
 import LeaveRequestForm from "./components/LeaveApproval/LeaveRequestForm";
+import LeaveReport from "./components/LeaveApproval/LeaveReport";
 
 const App = () => {
   return(
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="employeesignin" Component={EmployeeSignIn}/>
 
         <Route path="leaverequestform" Component={LeaveRequestForm}/>
+        <Route path="leavereport" Component={LeaveReport}/>
         </Route>
       </Routes>
     </MemoryRouter>

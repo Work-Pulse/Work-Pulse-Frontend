@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FaArrowLeft } from "react-icons/fa";
 import bg from "../../assets/images/bg.png";
 
 const LeaveRequestForm = () => {
@@ -31,6 +32,13 @@ const LeaveRequestForm = () => {
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
+       {/* Back Button */}
+      <Link to="/employeedashboard" className="absolute top-6 left-6">
+        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red-600 rounded-lg hover:bg-red-700 transition duration-300">
+          <FaArrowLeft size={20} /> Back
+        </button>
+      </Link>
+      
       <div className="bg-[#C6D2D5] p-8 rounded-2xl shadow-xl w-full max-w-3xl">
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Leave Request Form</h1>
 
@@ -110,12 +118,21 @@ const LeaveRequestForm = () => {
         </form>
 
         {/* Back to Dashboard */}
-        <div className="text-center mt-4">
+        <div className="flex justify-between gap-4 mt-8">
           <Link
             to="/employeedashboard"
             className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
           >
             Back to Dashboard
+          </Link>
+        
+
+        {/* leave report*/}
+          <Link
+            to="/leavereport"
+            className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
+          >
+            Leave Report
           </Link>
         </div>
       </div>
