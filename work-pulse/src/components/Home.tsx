@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
-import bg from '../assets/images/bg.png';
+import bg from '../assets/images/bg.png'
 import { motion } from 'framer-motion';
 
 const Home = () => {
@@ -13,7 +13,7 @@ const Home = () => {
       style={{ backgroundImage: `url(${bg})` }}
 
     >
-      <div className="rounded-2xl p-6 max-w-lg w-full text-center bg-background">
+      <div className="rounded-2xl p-6 max-w-lg w-full text-center">
         <img 
           src={logo}
           alt="Work Schedule" 
@@ -25,7 +25,7 @@ const Home = () => {
 
         <Link 
           to='/userselection' 
-          className="text-white shadow-lg text-xl font-semibold py-3 px-3 bg-[#122D3B] rounded-2xl hover:bg-secondary hover:text-[#122D3B] transition duration-300 flex justify-center items-center w-full max-w-xs mx-auto"
+          className="text-white shadow-xl text-xl font-semibold py-3 px-3 bg-accent rounded-2xl hover:bg-white hover:text-accent transition duration-300 flex justify-center items-center w-full max-w-xs mx-auto"
         >
           Get Started
         </Link>

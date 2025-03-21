@@ -13,21 +13,21 @@ const UserSelection = () => {
       style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 rounded-2xl mb-8 w-full h-100 max-w-4xl">
-        <button className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
+        <button className="text-text text-xl shadow-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 hover:bg-text hover:text-background">
           <FaUser size={64} />
           Employee Login
         </button>
 
-        <Link to = '/managerlogin' className="text-text text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-background hover:bg-text hover:text-background">
+        <Link to = '/managerlogin' className="text-text text-xl shadow-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4  hover:bg-text hover:text-background">
           <FaUserTie size={64} />
           Manager Login
         </Link>
       </div>
       <Link
         to="/"
-        className="text-text h-100 text-xl font-semibold p-4 rounded-2xl transition duration-300 flex items-center gap-4 bg-background hover:bg-text hover:text-background"
+        className="text-background h-100 text-xl outline-[#6b7280] font-semibold p-4 rounded-2xl transition duration-300 flex items-center gap-4 bg-text hover:bg-background hover:text-text"
       >
-        Back to Home
+        Back to Home!
       </Link>
     </motion.div>
   );
