@@ -32,12 +32,12 @@ const EmployeeDashboard = () => {
           Real-time Task Tracking
         </Link>
 
-        <Link to='/leave-requests' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/leaveapproval' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaClipboardCheck size={64} />
-          Leave Requests Approval
+          Leave Requests
         </Link>
 
-        <Link to='/reports' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/employeereport' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaClipboardList size={64} />
           Reports & Analytics
         </Link>

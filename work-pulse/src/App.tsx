@@ -9,6 +9,7 @@ import EmployeeLogin from "./components/EmployeeManagement/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard";
 import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
+import EmployeeReport from "./components/EmployeeManagement/EmployeeReport";
 
 const App = () => {
   return(
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="employeedashboard" Component={EmployeeDashboard}/>
         <Route path="employeesignin" Component={EmployeeSignIn}/>
         <Route path="employeedetails" Component={EmployeeDetails}/>
+        <Route path="employeereport" Component={EmployeeReport}/>
         </Route>
       </Routes>
     </MemoryRouter>
