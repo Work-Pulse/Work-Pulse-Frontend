@@ -46,7 +46,7 @@ const LeaveRequests = () => {
       
       <div className="text-text text-4xl font-extrabold mb-6">Leave Requests</div>
       
-      <div className="flex gap-3 mb-6 bg-white shadow-xl rounded-lg">
+      <div className="flex gap-3 mb-6 bg-white shadow-2xl rounded-lg">
         <button onClick={() => setActiveTab('approval')} className={`px-5 py-2 font-bold rounded-l-lg transition duration-300 ${activeTab === 'approval' ? 'bg-text text-white' : 'bg-gray-500 hover:bg-blue-400'}`}>Approval</button>
         <button onClick={() => setActiveTab('history')} className={`px-5 py-2 font-bold rounded-r-lg transition duration-300 ${activeTab === 'history' ? 'bg-text text-white ' : 'bg-gray-500 hover:bg-blue-400'}`}>History</button>
       </div>
