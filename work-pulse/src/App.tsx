@@ -10,6 +10,8 @@ import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard
 import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
 
+import LeaveRequestForm from "./components/LeaveApproval/LeaveRequestForm";
+
 const App = () => {
   return(
     <MemoryRouter>
@@ -23,8 +25,10 @@ const App = () => {
 
         <Route path="employeelogin" Component={EmployeeLogin}/>
         <Route path="employeedashboard" Component={EmployeeDashboard}/>
-        <Route path="employeesignin" Component={EmployeeSignIn}/>
         <Route path="employeedetails" Component={EmployeeDetails}/>
+        <Route path="employeesignin" Component={EmployeeSignIn}/>
+
+        <Route path="leaverequestform" Component={LeaveRequestForm}/>
         </Route>
       </Routes>
     </MemoryRouter>
@@ -32,3 +36,4 @@ const App = () => {
 }
 
 export default App;
+

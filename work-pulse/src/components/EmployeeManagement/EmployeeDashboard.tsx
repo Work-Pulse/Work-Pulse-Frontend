@@ -32,7 +32,7 @@ const EmployeeDashboard = () => {
           Real-time Task Tracking
         </Link>
 
-        <Link to='/leave-requests' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+        <Link to='/leaverequestform' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
           <FaClipboardCheck size={64} />
           Leave Requests Approval
         </Link>
