@@ -16,6 +16,7 @@ const EmployeeSignIn = () => {
     joinDate: "",
     birthday: "",
     address: "",
+    username: "", // Added username field
     password: "",
     confirmPassword: "",
   });
@@ -43,7 +44,6 @@ const EmployeeSignIn = () => {
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Employee Sign Up</h1>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-
           {/* Left Column */}
           <div className="flex flex-col gap-4">
             <label className="font-medium text-[#122D3B]">
@@ -93,8 +93,7 @@ const EmployeeSignIn = () => {
 
           {/* Right Column */}
           <div className="flex flex-col gap-4">
-
-          <label className="font-medium text-[#122D3B]">
+            <label className="font-medium text-[#122D3B]">
               Last Name
               <input
                 type="text"
@@ -104,7 +103,6 @@ const EmployeeSignIn = () => {
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
               />
             </label>
-            
 
             <label className="font-medium text-[#122D3B]">
               Personal Email
@@ -149,7 +147,21 @@ const EmployeeSignIn = () => {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                className="mt-1 p-5 border border-gray-300 rounded-lg w-full"
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+              />
+            </label>
+          </div>
+
+          {/* Username Field - Full Width */}
+          <div className="col-span-2">
+            <label className="font-medium text-[#122D3B]">
+              Username
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full "
               />
             </label>
           </div>
