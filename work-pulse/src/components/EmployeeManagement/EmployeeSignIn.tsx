@@ -54,6 +54,7 @@ const EmployeeSignIn = () => {
                 value={formData.firstName}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
 
@@ -65,6 +66,7 @@ const EmployeeSignIn = () => {
                 value={formData.officeMail}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
 
@@ -76,6 +78,7 @@ const EmployeeSignIn = () => {
                 value={formData.officePhone}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
 
@@ -87,6 +90,7 @@ const EmployeeSignIn = () => {
                 value={formData.birthday}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
           </div>
@@ -101,6 +105,7 @@ const EmployeeSignIn = () => {
                 value={formData.lastName}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
 
@@ -112,6 +117,7 @@ const EmployeeSignIn = () => {
                 value={formData.personalMail}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
 
@@ -123,6 +129,7 @@ const EmployeeSignIn = () => {
                 value={formData.personalPhone}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
 
@@ -134,6 +141,7 @@ const EmployeeSignIn = () => {
                 value={formData.joinDate}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
           </div>
@@ -148,13 +156,15 @@ const EmployeeSignIn = () => {
                 value={formData.address}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
               />
             </label>
           </div>
 
-          {/* Username Field - Full Width */}
-          <div className="col-span-2">
-            <label className="font-medium text-[#122D3B]">
+
+          {/* Password Fields - Full Width */}
+          <div className="col-span-2 flex flex-col gap-4">
+          <label className="font-medium text-[#122D3B]">
               Username
               <input
                 type="text"
@@ -162,12 +172,9 @@ const EmployeeSignIn = () => {
                 value={formData.username}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full "
+                required
               />
             </label>
-          </div>
-
-          {/* Password Fields - Full Width */}
-          <div className="col-span-2 flex flex-col gap-4">
             <label className="font-medium text-[#122D3B]">
               Password
               <PasswordInput
@@ -189,12 +196,14 @@ const EmployeeSignIn = () => {
 
           {/* Sign-Up Button */}
           <div className="col-span-2">
+          <Link to="/employeelogin">
             <button
               type="submit"
               className="text-white text-lg font-semibold p-3 bg-[#122D3B] rounded-lg hover:bg-white hover:text-[#122D3B] transition duration-300 w-full"
             >
               Sign Up
             </button>
+            </Link>
           </div>
         </form>
 
