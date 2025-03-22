@@ -84,9 +84,9 @@ const ManagerLogin = () => {
         <div className="text-center">
           <Link
             to='/userselection'
-            className="bg-text hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
+            className="hover:bg-accent hover:text-background text-accent font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
           >
-            Back to Users!
+            Back to Users
           </Link>
         </div>
       </div>
