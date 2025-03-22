@@ -121,6 +121,17 @@ const EmployeeShift = () => {
             )}
           </div>
         </div>
+        <div className="bg-white p-4 shadow rounded-lg mt-4 ml-40 mr-50">
+      <h2 className="text-lg font-semibold">Application Usage</h2>
+      <div className="w-full mt-2">
+        <div className="flex bg-gray-200 font-semibold">
+          <div className="w-1/2 p-2 border border-gray-300">Application</div>
+          <div className="w-1/2 p-2 border border-gray-300">Usage Time</div>
+        </div>
+        
+        <div className="w-full p-2 text-center">No application usage data available.</div>
+      </div>
+    </div>
       </div>
 
       {/* Right Section - Chat Window */}
