@@ -25,7 +25,7 @@ const UserSelection = () => {
       </div>
       <Link
         to="/"
-        className="text-white h-100 text-xl font-semibold shadow-xl bg-accent p-4 rounded-2xl transition duration-300 flex items-center gap-4 hover:bg-white hover:text-text"
+        className="text-accent h-100 text-xl font-semibold shadow-xl p-4 rounded-2xl transition duration-300 flex items-center gap-4 hover:bg-accent hover:text-background"
       >
         Back to Home!
       </Link>
