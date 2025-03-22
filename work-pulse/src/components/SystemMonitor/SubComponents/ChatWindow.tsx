@@ -10,7 +10,7 @@ interface ChatMessage {
 }
 
 const ChatWindow = () => {
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([  
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { id: 1, text: "Hi there, could you send me my latest bill please?", sender: "manager", timestamp: "18:42 p.m." }
   ]);
   const [message, setMessage] = useState<string>("");
@@ -33,6 +33,13 @@ const ChatWindow = () => {
   const handleAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) setAttachment(file);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   return (
@@ -61,6 +68,7 @@ const ChatWindow = () => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="flex-1 p-2 border rounded bg-white"
           placeholder="Type here"
         />
