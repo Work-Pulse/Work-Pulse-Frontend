@@ -124,7 +124,7 @@ const EmployeeShift = () => {
       </div>
 
       {/* Right Section - Chat Window */}
-      <div className="w-1/3 p-5">
+      <div className="w-1/3 p-4">
         <ChatWindow />
       </div>
     </div>
