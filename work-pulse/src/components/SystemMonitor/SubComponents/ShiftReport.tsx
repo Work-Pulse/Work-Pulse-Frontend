@@ -203,7 +203,7 @@ export default function AttendanceMonitor() {
                         </span>
                       ))
                     ) : (
-                      <span className="text-gray-500 text-xs">No Data</span>
+                      <span className="text-accent text-xs">No Data</span>
                     )}
                   </div>
 
@@ -211,19 +211,19 @@ export default function AttendanceMonitor() {
                   <div className="flex flex-wrap justify-center gap-2">
                     {entry.unauthorizedActivities.length > 0 ? (
                       entry.unauthorizedActivities.map((act, i) => (
-                        <span key={i} className="bg-red-100 text-red-700 px-3 py-1 rounded-lg text-xs">
+                        <span key={i} className="bg-red-100 text-accent px-3 py-1 rounded-lg text-xs">
                           {act.name} - {act.duration}
                         </span>
                       ))
                     ) : (
-                      <span className="text-gray-500 text-xs">No Data</span>
+                      <span className="text-accent text-xs">No Data</span>
                     )}
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500 mt-4">No results found</p>
+            <p className="text-center text-accent mt-4">No results found</p>
           )}
         </div>
       </div>
