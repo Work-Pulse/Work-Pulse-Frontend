@@ -36,19 +36,18 @@ const ChatWindow = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg flex flex-col h-full max-w-md mx-auto shadow-lg">
+    <div className="bg-white w-full rounded-lg shadow-lg flex flex-col h-[90%] max-w-md mx-auto shadow-lg fixed">
       <div className="p-4 text-center font-semibold text-text flex items-center bg-background rounded-lg justify-center">
         <span>Chat</span>
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {chatMessages.map((msg) => (
           <div key={msg.id} className={`flex flex-col ${msg.sender === "employee" ? "items-end" : "items-start"}`}>
-            <div className="text-xs font-semibold text-primary">{msg.sender === "employee" ? "Employee" : "Manager"}</div>
-            <div className={`min-w-[120px] max-w-xs pb-10 pt-5 px-4 rounded-lg relative flex flex-col ${msg.sender === "employee" ? "bg-text text-background" : "bg-secondary text-black"}`}>
+            <div className={`min-w-[120px] max-w-xs pb-10 pt-5 px-4 rounded-lg relative flex flex-col ${msg.sender === "employee" ? "bg-text text-background" : "bg-primary text-black"}`}>
               <p className="break-words">{msg.text}</p>
               {msg.attachment && (
                 <div className="mt-2 bg-white p-2 rounded-lg flex items-center space-x-2 shadow">
-                  <span className="text-sm text-primary">📄 {msg.attachment.name}</span>
+                  <span className="text-sm text-accent">📄 {msg.attachment.name}</span>
                   <span className="text-xs text-gray-500">{msg.attachment.size}</span>
                 </div>
               )}
