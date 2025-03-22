@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaUser, FaSignOutAlt, FaUserClock, FaClipboardCheck } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaUserClock, FaClipboardCheck, FaClipboardList } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import bg from '../../assets/images/bg.png';
 
@@ -32,9 +32,14 @@ const EmployeeDashboard = () => {
           Shift
         </Link>
 
-        <Link to='/leave-requests' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4  hover:bg-[#122D3B] hover:text-white shadow-lg">
-          <FaClipboardCheck size={80} />
+        <Link to='/leaveapproval' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+          <FaClipboardCheck size={64} />
           Leave Requests
+        </Link>
+
+        <Link to='/employeereport' className="text-[#122D3B] text-xl font-semibold p-6 rounded-2xl transition duration-300 flex flex-col items-center gap-4 bg-white hover:bg-[#122D3B] hover:text-white shadow-md">
+          <FaClipboardList size={64} />
+          Reports & Analytics
         </Link>
         
       </div>

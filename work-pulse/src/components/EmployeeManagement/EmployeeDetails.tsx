@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaArrowLeft, FaEdit, FaSave } from "react-icons/fa";
+import { FaArrowLeft, FaEdit, FaSave, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
 
@@ -30,7 +30,7 @@ const EmployeeDetails = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
+      className="flex flex-col items-center justify-between min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
       {/* Back Button */}
@@ -41,20 +41,10 @@ const EmployeeDetails = () => {
       </Link>
 
       {/* Employee Details Card (Increased Height & Centered Title) */}
-      <div className="bg-[#C6D2D5] p-10 rounded-2xl shadow-xl w-full max-w-4xl min-h-[500px]">
+      <div className="bg-[#C6D2D5] p-10 rounded-2xl shadow-xl w-full max-w-4xl min-h-[500px] flex flex-col justify-between">
         {/* Centered Title */}
         <div className="flex flex-col items-center mb-6">
           <h2 className="text-[#122D3B] text-3xl font-bold">Employee Details</h2>
-        </div>
-
-        {/* Edit/Save Button */}
-        <div className="flex justify-end mb-6">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="flex items-center gap-2 text-white bg-[#122D3B] px-4 py-2 rounded-lg hover:bg-[#0e1f2c] transition duration-300"
-          >
-            {isEditing ? <><FaSave size={18} /> Save</> : <><FaEdit size={18} /> Edit</>}
-          </button>
         </div>
 
         <div className="grid grid-cols-2 gap-8">
@@ -156,6 +146,25 @@ const EmployeeDetails = () => {
               className="border border-gray-300 p-3 rounded-lg bg-white w-full"
             />
           </div>
+        </div>
+
+        {/* Buttons at the Bottom */}
+        <div className="flex justify-between gap-4 mt-8">
+          {/* Edit/Save Button */}
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="flex items-center justify-center gap-2 text-white bg-[#122D3B] px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition duration-300 w-1/2"
+          >
+            {isEditing ? <><FaSave size={18} /> Save</> : <><FaEdit size={18} /> Edit</>}
+          </button>
+
+          {/* Delete Button */}
+          <button
+            onClick={() => console.log("Delete functionality here")}
+            className="flex items-center justify-center gap-2 text-white bg-[#122D3B] px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition duration-300 w-1/2"
+          >
+            <FaTrash size={18} /> Delete
+          </button>
         </div>
       </div>
     </motion.div>

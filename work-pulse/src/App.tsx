@@ -14,6 +14,7 @@ import EmployeeLogin from "./components/EmployeeManagement/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeManagement/EmployeeDashboard";
 import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
+import EmployeeReport from "./components/EmployeeManagement/EmployeeReport";
 
 import EmployeeShift from "./components/SystemMonitor/EmployeeShift"
 import EmployeeMonitor from "./components/SystemMonitor/EmployeeMonitor";
@@ -54,6 +55,7 @@ const App = () => {
         <Route path="reports" Component={Reports}/>
         <Route path="leave-requests" Component={LeaveRequests}/>
         <Route path="tracking" Component={TaskTracking}/>
+        <Route path="employeereport" Component={EmployeeReport}/>
         </Route>
       </Routes>
     </MemoryRouter>
