@@ -25,6 +25,9 @@ import ManagerChat from "./components/SystemMonitor/SubComponents/ManagerChat";
 
 
 
+import LeaveRequestForm from "./components/LeaveApproval/LeaveRequestForm";
+import LeaveReport from "./components/LeaveApproval/LeaveReport";
+
 const App = () => {
   return(
     <MemoryRouter>
@@ -44,7 +47,6 @@ const App = () => {
 
         <Route path="employeelogin" Component={EmployeeLogin}/>
         <Route path="employeedashboard" Component={EmployeeDashboard}/>
-        <Route path="employeesignin" Component={EmployeeSignIn}/>
         <Route path="employeedetails" Component={EmployeeDetails}/>
 
         <Route path="shift" Component={EmployeeShift}/>
@@ -56,6 +58,10 @@ const App = () => {
         <Route path="leave-requests" Component={LeaveRequests}/>
         <Route path="tracking" Component={TaskTracking}/>
         <Route path="employeereport" Component={EmployeeReport}/>
+        <Route path="employeesignin" Component={EmployeeSignIn}/>
+
+        <Route path="leaverequestform" Component={LeaveRequestForm}/>
+        <Route path="leavereport" Component={LeaveReport}/>
         </Route>
       </Routes>
     </MemoryRouter>
@@ -63,3 +69,4 @@ const App = () => {
 }
 
 export default App;
+
