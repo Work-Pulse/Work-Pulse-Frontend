@@ -61,10 +61,10 @@ const EmployeeLogin = () => {
         {/* Back to Home Button */}
         <div className="text-center">
           <Link
-            to='/'
+            to='/userselection'
             className="shadow-lg hover:bg-text hover:text-background text-text font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
           >
-            Back to Home!
+            Back to Users
           </Link>
         </div>
       </div>

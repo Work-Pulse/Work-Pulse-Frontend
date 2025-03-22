@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 import { Link } from "react-router-dom";
 import bg from '../../../assets/images/bg.png';
 import { motion } from 'framer-motion';
@@ -75,10 +75,10 @@ export default function ChatWindow() {
       <div className="h-screen w-full">
         <div className="flex w-full">
           <div className="w-1/4">
-            <div className="items-center gap-3 p-4 flex items-center">
+            <div className="items-center gap-3 p-4 flex items-center mb-2 mt-2">
               <button className="hover:text-reject">
               <Link to="/monitor">
-                <FaArrowLeft className="cursor-pointer" />
+                <ImCross size={24}  className="cursor-pointer" />
               </Link>
               </button>
             </div>
@@ -86,7 +86,7 @@ export default function ChatWindow() {
               {employees.map((employee) => (
                 <div
                   key={employee}
-                  className={`p-3 cursor-pointer bg-background rounded-lg mb-2 hover:bg-text hover:text-background ml-2 mr-2 shadow-lg ${selectedChat === employee ? "bg-primary" : ""}`}
+                  className={`p-3 cursor-pointer bg-background rounded-lg mb-2 font-semibold hover:bg-text hover:text-background ml-2 mr-2 shadow-lg ${selectedChat === employee ? "bg-primary" : ""}`}
                   onClick={() => setSelectedChat(employee)}
                 >
                   {employee}
@@ -107,13 +107,6 @@ export default function ChatWindow() {
                         {msg.date}
                       </div>
                     ) : (
-                      // <div
-                      //   key={index}
-                      //   className={`p-2 my-1 rounded-lg max-w-xs bg-primary w-full justify-end ${msg.sender === "me" ? "shadow-lg text-text self-end" : "bg-background text-text self-start"}`}
-                      // >
-                      //   <p>{msg.text}</p>
-                      //   <span className="block text-sm text-right mt-1 text-text">{msg.time}</span>
-                      // </div>
                       <div key={index} className="w-full flex justify-end">
                         <div className=" my-1 rounded-lg bg-accent shadow-lg text-background">
                           <div className="pl-4 pt-2 pb-2 pr-10">
