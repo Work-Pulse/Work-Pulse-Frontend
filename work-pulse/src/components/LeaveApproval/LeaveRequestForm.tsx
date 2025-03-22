@@ -132,7 +132,7 @@ const LeaveRequestForm = () => {
             to="/leavereport"
             className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
           >
-            Leave Report
+            Leave History
           </Link>
         </div>
       </div>
