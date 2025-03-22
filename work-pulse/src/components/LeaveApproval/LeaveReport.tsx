@@ -109,9 +109,7 @@ const LeaveReport = () => {
                       <input
                         type="text"
                         value={editingLeave.leaveType}
-                        onChange={(e) =>
-                          setEditingLeave({ ...editingLeave, leaveType: e.target.value })
-                        }
+                        
                       />
                     ) : (
                       request.leaveType
