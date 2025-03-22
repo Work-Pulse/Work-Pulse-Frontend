@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import bg from '../../../assets/images/bg.png';
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 
 const employee = {
   name: "Jhon Doe",
@@ -33,7 +34,7 @@ const data = [
     unauthorizedActivities: [{ name: "Instagram", duration: "01:30:00" }],
   },
   {
-    date: "2025/03/05",
+    date: "2025/03/03",
     startTime: "09:00:00",
     endTime: "17:00:00",
     totalShift: "08:00:00",
@@ -47,7 +48,7 @@ const data = [
     ],
   },
   {
-    date: "2025/03/05",
+    date: "2025/03/02",
     startTime: "09:00:00",
     endTime: "17:00:00",
     totalShift: "08:00:00",
@@ -56,12 +57,40 @@ const data = [
       { name: "Teams", duration: "01:00:00" },
     ],
     unauthorizedActivities: [
-      { name: "Whatsapp", duration: "02:30:00" },
+      { name: "Riot", duration: "02:30:00" },
       { name: "Youtube", duration: "01:00:00" },
     ],
   },
   {
-    date: "2025/03/05",
+    date: "2025/03/01",
+    startTime: "09:00:00",
+    endTime: "17:00:00",
+    totalShift: "08:00:00",
+    applicationUsage: [
+      { name: "VS Code", duration: "02:30:00" },
+      { name: "Teams", duration: "01:00:00" },
+    ],
+    unauthorizedActivities: [
+      { name: "Reddit", duration: "02:30:00" },
+      { name: "Youtube", duration: "01:00:00" },
+    ],
+  },
+  {
+    date: "2025/02/28",
+    startTime: "09:00:00",
+    endTime: "17:00:00",
+    totalShift: "08:00:00",
+    applicationUsage: [
+      { name: "VS Code", duration: "02:30:00" },
+      { name: "Teams", duration: "01:00:00" },
+    ],
+    unauthorizedActivities: [
+      { name: "Netflix", duration: "02:30:00" },
+      { name: "Youtube", duration: "01:00:00" },
+    ],
+  },
+  {
+    date: "2025/02/27",
     startTime: "09:00:00",
     endTime: "17:00:00",
     totalShift: "08:00:00",
@@ -71,64 +100,100 @@ const data = [
     ],
     unauthorizedActivities: [
       { name: "Whatsapp", duration: "02:30:00" },
+      { name: "Netflix", duration: "01:00:00" },
+    ],
+  },
+  {
+    date: "2025/02/26",
+    startTime: "09:00:00",
+    endTime: "17:00:00",
+    totalShift: "08:00:00",
+    applicationUsage: [
+      { name: "VS Code", duration: "02:30:00" },
+      { name: "Teams", duration: "01:00:00" },
+    ],
+    unauthorizedActivities: [
+      { name: "Spotify", duration: "02:30:00" },
       { name: "Youtube", duration: "01:00:00" },
     ],
   },
-  
 ];
 
 export default function AttendanceMonitor() {
+  const [search, setSearch] = useState("");
+  
+  const filteredData = data.filter((entry) => {
+    const lowerSearch = search.toLowerCase();
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6 bg-fixed"
-        style={{ backgroundImage: `url(${bg})` }}
-      >
-        {/* Back Button */}
-        <div className="w-full">
-          <div className="fixed">
-            <Link to="/monitor">
-              <button className="absolute top-6 left-6 text-accent hover:bg-background hover:border p-3 rounded-full flex items-center">
-                <ArrowLeft size={24} className="mr-2" /> Back
-              </button>
-            </Link>
-          </div>
-        </div>
-  
-        {/* Employee Details */}
-        <div className="w-full max-w-6xl bg p-6 rounded-lg text-center">
-          <h2 className="text-3xl font-bold text-gray-900"></h2>
-          <p className="text-2xl text-accent font-bold mt-4">{employee.name}</p>
-          <p className="text-accent font-semibold">{employee.designation}</p>
-          <p className="text-accent">{employee.department}</p>
-        </div>
-  
-        {/* Table Container */}
-        <div className="max-w-6xl rounded-lg">
-          {/* Table Header */}
+      entry.date.includes(search) ||
+      entry.applicationUsage.some((app) => app.name.toLowerCase().includes(lowerSearch)) ||
+      entry.unauthorizedActivities.some((act) => act.name.toLowerCase().includes(lowerSearch))
+    );
+  });
 
-            <div className=" grid grid-cols-6 bg-background p-4 text-text font-bold text-center items-center rounded-lg shadow-lg">
-                <span>Date</span>
-                <span>Start Time</span>
-                <span>End Time</span>
-                <span>Total Shift</span>
-                <span>Application Usage</span>
-                <span>Unauthorized Activities</span>
-            </div>
-  
-          {/* Table Body */}
-          <div className="mt-4">
-            {data.map((entry, index) => (
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="flex flex-col items-center min-h-screen bg-cover bg-center p-6 bg-fixed"
+      style={{ backgroundImage: `url(${bg})` }}
+    >
+    
+      {/* Back Button */}
+      <div className="w-full">
+        <div className="fixed">
+          <Link to="/monitor">
+            <button className="absolute top-6 left-6 text-accent hover:text-reject p-3 rounded-full flex items-center">
+              <ArrowLeft size={24} className="mr-2" /> Back
+            </button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Employee Details */}
+      <div className="w-full max-w-6xl bg p-6 rounded-lg text-center">
+        <h2 className="text-3xl font-bold text-gray-900"></h2>
+        <p className="text-2xl text-accent font-bold mt-4">{employee.name}</p>
+        <p className="text-accent font-semibold">{employee.designation}</p>
+        <p className="text-accent">{employee.department}</p>
+      </div>
+
+      {/* Search Input */}
+      <div className="relative w-[50%] shadow-lg">
+            <Search className="absolute left-3 top-4 text-text" size={20} />
+            <input
+              className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none"
+              placeholder="Search Date, Application Usage..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+      {/* Table Container */}
+      <div className="max-w-6xl rounded-lg mt-4">
+        {/* Table Header */}
+        <div className="grid grid-cols-6 bg-background p-4 text-text font-bold text-center items-center rounded-lg shadow-lg">
+          <span>Date</span>
+          <span>Start Time</span>
+          <span>End Time</span>
+          <span>Total Shift</span>
+          <span>Application Usage</span>
+          <span>Unauthorized Activities</span>
+        </div>
+
+        {/* Table Body */}
+        <div className="mt-4">
+          {filteredData.length > 0 ? (
+            filteredData.map((entry, index) => (
               <div key={index} className="mt-4">
                 {/* One div per row (same width as header) */}
-                <div className=" grid grid-cols-6 bg-background p-4 text-text text-center items-center rounded-lg shadow-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+                <div className="grid grid-cols-6 bg-background p-4 text-text text-center items-center rounded-lg shadow-lg transition-shadow duration-200">
                   <span>{entry.date}</span>
                   <span>{entry.startTime}</span>
                   <span>{entry.endTime}</span>
                   <span>{entry.totalShift}</span>
-  
+
                   {/* Application Usage Column */}
                   <div className="flex flex-wrap justify-center gap-2">
                     {entry.applicationUsage.length > 0 ? (
@@ -141,7 +206,7 @@ export default function AttendanceMonitor() {
                       <span className="text-gray-500 text-xs">No Data</span>
                     )}
                   </div>
-  
+
                   {/* Unauthorized Activities Column */}
                   <div className="flex flex-wrap justify-center gap-2">
                     {entry.unauthorizedActivities.length > 0 ? (
@@ -156,10 +221,13 @@ export default function AttendanceMonitor() {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-4">No results found</p>
+          )}
         </div>
-      </motion.div>
-    );
-  }
-  
+      </div>
+    
+    </motion.div>
+  );
+}

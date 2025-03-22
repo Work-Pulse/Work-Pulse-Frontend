@@ -25,7 +25,7 @@ const Home = () => {
 
         <Link 
           to='/userselection' 
-          className="text-white shadow-xl text-xl font-semibold bg-accent py-3 px-3 rounded-2xl hover:bg-white hover:text-text transition duration-300 flex justify-center items-center w-full max-w-xs mx-auto"
+          className="text-accent shadow-xl text-xl font-semibold py-3 px-3 rounded-2xl hover:bg-text hover:text-background transition duration-300 flex justify-center items-center w-full max-w-xs mx-auto"
         >
           Get Started
         </Link>
