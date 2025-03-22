@@ -22,10 +22,8 @@ import ShiftReport from "./components/SystemMonitor/SubComponents/ShiftReport";
 import ManagerChat from "./components/SystemMonitor/SubComponents/ManagerChat";
 
 
-
-
-
 import LeaveRequestForm from "./components/LeaveApproval/LeaveRequestForm";
+import LeaveHistory from "./components/LeaveApproval/LeaveHistory";
 import LeaveReport from "./components/LeaveApproval/LeaveReport";
 
 const App = () => {
@@ -61,6 +59,7 @@ const App = () => {
         <Route path="employeesignin" Component={EmployeeSignIn}/>
 
         <Route path="leaverequestform" Component={LeaveRequestForm}/>
+        <Route path="leavehistory" Component={LeaveHistory}/>
         <Route path="leavereport" Component={LeaveReport}/>
         </Route>
       </Routes>
