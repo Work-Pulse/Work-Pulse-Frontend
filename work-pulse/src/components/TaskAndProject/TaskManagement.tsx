@@ -172,6 +172,14 @@ const TaskManager = () => {
             ))}
           </ul>
         ) : (<p className="text-gray-500">No tasks available</p>)}
+        {showSubmit && selectedUser && userTasks[selectedUser.id]?.length > 0 && (
+  <button
+    onClick={submitTasks}
+    className="top-3 right-3 mt-4 bg-text text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300"
+  >
+    Submit
+  </button>
+)}
       </div>
     </motion.div>
   );
