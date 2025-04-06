@@ -25,6 +25,7 @@ import ManagerChat from "./components/SystemMonitor/SubComponents/ManagerChat";
 import LeaveRequestForm from "./components/LeaveApproval/LeaveRequestForm";
 import LeaveHistory from "./components/LeaveApproval/LeaveHistory";
 import LeaveReport from "./components/LeaveApproval/LeaveReport";
+import LeaveDashboard from "./components/LeaveApproval/LeaveDashboard";
 
 const App = () => {
   return(
@@ -61,6 +62,7 @@ const App = () => {
         <Route path="leaverequestform" Component={LeaveRequestForm}/>
         <Route path="leavehistory" Component={LeaveHistory}/>
         <Route path="leavereport" Component={LeaveReport}/>
+        <Route path="leavedashboard" Component={LeaveDashboard}/>
         </Route>
       </Routes>
     </MemoryRouter>

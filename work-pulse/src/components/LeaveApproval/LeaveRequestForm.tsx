@@ -19,10 +19,34 @@ const LeaveRequestForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Leave Request Submitted:", formData);
-  };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log("Leave Request Submitted:", formData);
+  // };
+
+  // Handle form submission
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Remove time part
+
+  const startDate = new Date(formData.startDate);
+  const endDate = new Date(formData.endDate);
+
+  if (startDate < today || endDate < today) {
+    alert("Start Date and End Date must be today or a future date.");
+    return;
+  }
+
+  if (endDate < startDate) {
+    alert("End Date cannot be earlier than Start Date.");
+    return;
+  }
+
+  console.log("Leave Request Submitted:", formData);
+};
+
 
   return (
     <motion.div
@@ -33,8 +57,8 @@ const LeaveRequestForm = () => {
       style={{ backgroundImage: `url(${bg})` }}
     >
        {/* Back Button */}
-      <Link to="/employeedashboard" className="absolute top-6 left-6">
-        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red-600 rounded-lg hover:bg-red-700 transition duration-300">
+      <Link to="/leavedashboard" className="absolute top-6 left-6">
+        <button className="flex items-center gap-2 text-text text-xl font-extrabold p-3 bg-red-500 rounded-lg hover:text-reject transition duration-300">
           <FaArrowLeft size={20} /> Back
         </button>
       </Link>
@@ -65,14 +89,24 @@ const LeaveRequestForm = () => {
 
             <label className="font-medium text-[#122D3B]">
               Start Date
-              <input
+              {/* <input
                 type="date"
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
-              />
+              /> */}
+              <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    min={new Date().toISOString().split("T")[0]} // today in YYYY-MM-DD
+                    className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                    required
+                    />
+
             </label>
           </div>
 
@@ -80,14 +114,24 @@ const LeaveRequestForm = () => {
           <div className="flex flex-col gap-4">
             <label className="font-medium text-[#122D3B]">
               End Date
-              <input
+              {/* <input
                 type="date"
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
-              />
+              /> */}
+              <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                  min={new Date().toISOString().split("T")[0]}
+                  className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                  required
+                />
+
             </label>
           </div>
 
@@ -116,25 +160,6 @@ const LeaveRequestForm = () => {
             </button>
           </div>
         </form>
-
-        {/* Back to Dashboard */}
-        <div className="flex justify-between gap-4 mt-8">
-          <Link
-            to="/employeedashboard"
-            className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
-          >
-            Back to Dashboard
-          </Link>
-        
-
-        {/* leave report*/}
-          <Link
-            to="/leavehistory"
-            className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
-          >
-            Leave History
-          </Link>
-        </div>
       </div>
     </motion.div>
   );

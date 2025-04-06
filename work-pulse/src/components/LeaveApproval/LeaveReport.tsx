@@ -99,12 +99,14 @@ const LeaveReport = () => {
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
+    {/* Back Button */}
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
-        <Link to="/leavehistory" className="absolute top-6 left-6">
-        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red-600 rounded-lg hover:bg-red-700 transition duration-300">
+        <Link to="/leavedashboard" className="absolute top-6 left-6">
+        <button className="flex items-center gap-2 text-text text-xl font-extrabold p-3 bg-red-500 rounded-lg hover:text-reject transition duration-300">
           <FaArrowLeft size={20} /> Back
         </button>
       </Link>
+
       <div className="bg-[#C6D2D5] p-8 rounded-2xl shadow-xl w-full max-w-4xl">
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Leave Report</h1>
 
