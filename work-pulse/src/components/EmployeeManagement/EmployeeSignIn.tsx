@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
 import PasswordInput from "./PasswordInput";
+import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
 
 const EmployeeSignIn = () => {
   // Form state
@@ -21,16 +24,37 @@ const EmployeeSignIn = () => {
     confirmPassword: "",
   });
 
+  
+const navigate = useNavigate();
+
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (formData.password !== formData.confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  axios
+    .post("http://localhost:3030/employee/employees", formData)
+    .then((res) => {
+      console.log("Success:", res.data);
+      navigate("/employeelogin");
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      alert("Failed to register. Please try again.");
+    });
+};
+
+
+
+
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-  };
 
   return (
     <motion.div
@@ -196,14 +220,13 @@ const EmployeeSignIn = () => {
 
           {/* Sign-Up Button */}
           <div className="col-span-2">
-          <Link to="/employeelogin">
-            <button
-              type="submit"
-              className="text-white text-lg font-semibold p-3 bg-[#122D3B] rounded-lg hover:bg-white hover:text-[#122D3B] transition duration-300 w-full"
-            >
-              Sign Up
-            </button>
-            </Link>
+          <button
+            type="submit"
+            className="text-white text-lg font-semibold p-3 bg-[#122D3B] rounded-lg hover:bg-white hover:text-[#122D3B] transition duration-300 w-full"
+          >
+            Sign Up
+          </button>
+
           </div>
         </form>
 
