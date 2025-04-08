@@ -1,28 +1,20 @@
-import { app, BrowserWindow } from 'electron'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import { fileURLToPath } from 'url'
+import path from 'path'
+import { windowManager } from 'node-window-manager'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
 process.env.APP_ROOT = path.join(__dirname, '..')
-
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
-
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
 let win: BrowserWindow | null
+let usageInterval: NodeJS.Timeout | null = null
+let currentApp = ''
+let usageData: Record<string, number> = {}
 
 function createWindow() {
   win = new BrowserWindow({
@@ -32,22 +24,17 @@ function createWindow() {
     },
   })
 
-  // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
+    win?.webContents.send('main-process-message', new Date().toLocaleString())
   })
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
   } else {
-    // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -56,11 +43,62 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow()
+
+  // Debug: Show active window every 5 seconds regardless of shift
+  setInterval(() => {
+    const active = windowManager.getActiveWindow()
+    const title = active?.getTitle()
+    console.log("💡 Debug (always): Active window:", title)
+  }, 5000)
+})
+
+// ============ Application Usage IPC Events ==============
+
+ipcMain.on('start-tracking', () => {
+  console.log("✅ IPC Received: start-tracking")
+
+  usageData = {}
+  currentApp = ''
+
+  usageInterval = setInterval(() => {
+    try {
+      const active = windowManager.getActiveWindow()
+      const title = active?.getTitle()
+
+      console.log("⏱ Active window:", title)
+
+      if (title) {
+        currentApp = title
+        usageData[title] = (usageData[title] || 0) + 1
+
+        // Send usage data to renderer
+        win?.webContents.send('app-usage-update', { ...usageData })
+      }
+    } catch (err) {
+      console.error("❌ Error getting active window:", err)
+    }
+  }, 1000)
+})
+
+ipcMain.on('pause-tracking', () => {
+  console.log("⏸️ IPC Received: pause-tracking")
+  if (usageInterval) clearInterval(usageInterval)
+})
+
+ipcMain.on('resume-tracking', () => {
+  console.log("▶️ IPC Received: resume-tracking")
+  ipcMain.emit('start-tracking')
+})
+
+ipcMain.on('stop-tracking', () => {
+  console.log("⛔ IPC Received: stop-tracking")
+  if (usageInterval) clearInterval(usageInterval)
+  usageInterval = null
+})
