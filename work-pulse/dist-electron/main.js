@@ -47,10 +47,12 @@ app.whenReady().then(() => {
     console.log("💡 Debug (always): Active window:", title);
   }, 5e3);
 });
-ipcMain.on("start-tracking", () => {
-  console.log("✅ IPC Received: start-tracking");
-  usageData = {};
-  currentApp = "";
+function startTracking(reset = true) {
+  if (usageInterval) clearInterval(usageInterval);
+  if (reset) {
+    usageData = {};
+    currentApp = "";
+  }
   usageInterval = setInterval(() => {
     try {
       const active = windowManager.getActiveWindow();
@@ -65,17 +67,21 @@ ipcMain.on("start-tracking", () => {
       console.error("❌ Error getting active window:", err);
     }
   }, 1e3);
+}
+ipcMain.on("start-tracking", () => {
+  console.log("IPC Received: start-tracking");
+  startTracking(true);
 });
 ipcMain.on("pause-tracking", () => {
-  console.log("⏸️ IPC Received: pause-tracking");
+  console.log("IPC Received: pause-tracking");
   if (usageInterval) clearInterval(usageInterval);
 });
 ipcMain.on("resume-tracking", () => {
-  console.log("▶️ IPC Received: resume-tracking");
-  ipcMain.emit("start-tracking");
+  console.log("IPC Received: resume-tracking");
+  startTracking(false);
 });
 ipcMain.on("stop-tracking", () => {
-  console.log("⛔ IPC Received: stop-tracking");
+  console.log("IPC Received: stop-tracking");
   if (usageInterval) clearInterval(usageInterval);
   usageInterval = null;
 });

@@ -51,7 +51,7 @@ app.on('activate', () => {
 app.whenReady().then(() => {
   createWindow()
 
-  // Debug: Show active window every 5 seconds regardless of shift
+  // Debug active window log
   setInterval(() => {
     const active = windowManager.getActiveWindow()
     const title = active?.getTitle()
@@ -59,13 +59,14 @@ app.whenReady().then(() => {
   }, 5000)
 })
 
-// ============ Application Usage IPC Events ==============
+// ========= Reusable Tracking Function =========
+function startTracking(reset = true) {
+  if (usageInterval) clearInterval(usageInterval)
 
-ipcMain.on('start-tracking', () => {
-  console.log("✅ IPC Received: start-tracking")
-
-  usageData = {}
-  currentApp = ''
+  if (reset) {
+    usageData = {}
+    currentApp = ''
+  }
 
   usageInterval = setInterval(() => {
     try {
@@ -78,27 +79,33 @@ ipcMain.on('start-tracking', () => {
         currentApp = title
         usageData[title] = (usageData[title] || 0) + 1
 
-        // Send usage data to renderer
         win?.webContents.send('app-usage-update', { ...usageData })
       }
     } catch (err) {
       console.error("❌ Error getting active window:", err)
     }
   }, 1000)
+}
+
+// ============ IPC Events ==============
+
+ipcMain.on('start-tracking', () => {
+  console.log("IPC Received: start-tracking")
+  startTracking(true)  // Reset data
 })
 
 ipcMain.on('pause-tracking', () => {
-  console.log("⏸️ IPC Received: pause-tracking")
+  console.log("IPC Received: pause-tracking")
   if (usageInterval) clearInterval(usageInterval)
 })
 
 ipcMain.on('resume-tracking', () => {
-  console.log("▶️ IPC Received: resume-tracking")
-  ipcMain.emit('start-tracking')
+  console.log("IPC Received: resume-tracking")
+  startTracking(false)  // Continue without reset
 })
 
 ipcMain.on('stop-tracking', () => {
-  console.log("⛔ IPC Received: stop-tracking")
+  console.log("IPC Received: stop-tracking")
   if (usageInterval) clearInterval(usageInterval)
   usageInterval = null
 })

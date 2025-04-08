@@ -124,11 +124,11 @@ const EmployeeShift = () => {
 
             <div className="mt-4">
               {!shiftStarted ? (
-                <button onClick={startShift} className="bg-[#ADEDFF] text-white px-4 py-2 rounded mr-2">
+                <button onClick={startShift} className="bg-text text-white px-4 py-2 rounded mr-2">
                   Start Shift
                 </button>
               ) : shiftPaused ? (
-                <button onClick={resumeShift} className="bg-[#122D3B] text-white px-4 py-2 rounded mr-2">
+                <button onClick={resumeShift} className="bg-text text-white px-4 py-2 rounded mr-2">
                   Resume Shift
                 </button>
               ) : (
