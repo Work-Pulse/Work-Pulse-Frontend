@@ -113,7 +113,6 @@ const EmployeeShift = () => {
       </div>
 
       <div className="flex h-screen">
-        {/* Left Section - Shift & App Tracking */}
         <div className="w-2/3 p-6">
           {/* Shift Timer */}
           <div className="bg-white p-4 shadow rounded-lg mt-20 ml-40 mr-50">
@@ -167,7 +166,7 @@ const EmployeeShift = () => {
           </div>
         </div>
 
-        {/* Right Section - Chat */}
+        {/* Chat */}
         <div className="w-1/3 p-4">
           <ChatWindow />
         </div>
