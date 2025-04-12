@@ -69,12 +69,6 @@ const EmployeeSignIn = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.password.length < 8) {
-      setPasswordError("Password must be at least 8 characters.");
-      toast.error("Password must be at least 8 characters.");
-      return;
-    }
-
     if (formData.password !== formData.confirmPassword) {
       setPasswordError("Passwords do not match.");
       toast.error("Passwords do not match.");
@@ -119,21 +113,25 @@ const EmployeeSignIn = () => {
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Employee Sign Up</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Row 1 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
             <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
           </div>
 
+          {/* Row 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="Designation" name="designation" value={formData.designation} onChange={handleChange} />
             <Input label="Department" name="department" value={formData.department} onChange={handleChange} />
           </div>
 
+          {/* Row 3 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="Office Email" type="email" name="officeMail" value={formData.officeMail} onChange={handleChange} />
             <Input label="Personal Email" type="email" name="personalMail" value={formData.personalMail} onChange={handleChange} />
           </div>
 
+          {/* Row 4 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Input label="Office Phone" name="officePhone" value={formData.officePhone} onChange={handleChange} />
@@ -145,13 +143,16 @@ const EmployeeSignIn = () => {
             </div>
           </div>
 
+          {/* Row 5 */}
           <Input label="Address" name="address" value={formData.address} onChange={handleChange} full />
 
+          {/* Row 6 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="Birthday" type="date" name="birthday" value={formData.birthday} onChange={handleChange} />
             <Input label="Join Date" type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} />
           </div>
 
+          {/* Row 7 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="font-medium text-[#122D3B] mb-1 block">Password</label>
