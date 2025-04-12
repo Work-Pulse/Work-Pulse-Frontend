@@ -6,6 +6,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { registerUser } from "../../services/firebaseAuth";
 
 // Helper: Password strength levels
 const getPasswordStrength = (password: string): { level: string; color: string } => {
@@ -50,7 +51,6 @@ const EmployeeSignIn = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    // Validate phone fields
     if ((name === "officePhone" || name === "personalPhone") && !/^\d*$/.test(value)) {
       setPhoneErrors((prev) => ({
         ...prev,
@@ -84,17 +84,18 @@ const EmployeeSignIn = () => {
     setIsLoading(true);
 
     try {
-      await toast.promise(
-        axios.post("http://localhost:3030/employee/employees", formData),
-        {
-          pending: "Registering...",
-          success: "Employee registered successfully! 🎉",
-          error: "Registration failed. Please try again ❌",
-        }
-      );
+      await registerUser(formData.officeMail, formData.password);
+
+      const saveData = { ...formData } as Partial<typeof formData>;
+      delete saveData.confirmPassword;
+
+      await axios.post("http://localhost:3030/employee/employees", saveData);
+
+      toast.success("Employee registered successfully!");
       navigate("/employeelogin");
-    } catch (err) {
-      console.error("Error:", err);
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      toast.error("Registration failed.");
     } finally {
       setIsLoading(false);
     }
@@ -113,10 +114,9 @@ const EmployeeSignIn = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Row 1 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
             <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
-            <Input label="Username" name="username" value={formData.username} onChange={handleChange} />
           </div>
 
           {/* Row 2 */}
@@ -135,15 +135,11 @@ const EmployeeSignIn = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Input label="Office Phone" name="officePhone" value={formData.officePhone} onChange={handleChange} />
-              {phoneErrors.officePhone && (
-                <p className="text-red-600 text-sm mt-1">{phoneErrors.officePhone}</p>
-              )}
+              {phoneErrors.officePhone && <p className="text-red-600 text-sm mt-1">{phoneErrors.officePhone}</p>}
             </div>
             <div>
               <Input label="Personal Phone" name="personalPhone" value={formData.personalPhone} onChange={handleChange} />
-              {phoneErrors.personalPhone && (
-                <p className="text-red-600 text-sm mt-1">{phoneErrors.personalPhone}</p>
-              )}
+              {phoneErrors.personalPhone && <p className="text-red-600 text-sm mt-1">{phoneErrors.personalPhone}</p>}
             </div>
           </div>
 
@@ -181,23 +177,18 @@ const EmployeeSignIn = () => {
               <PasswordInput
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, confirmPassword: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               />
               {passwordError && <p className="text-red-600 text-sm mt-1">{passwordError}</p>}
             </div>
           </div>
 
-          {/* Submit */}
           <div>
             <button
               type="submit"
               disabled={isLoading}
               className={`text-white text-lg font-semibold p-3 rounded-lg transition duration-300 w-full ${
-                isLoading
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-[#122D3B] hover:bg-white hover:text-[#122D3B]"
+                isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-[#122D3B] hover:bg-white hover:text-[#122D3B]"
               }`}
             >
               {isLoading ? "Registering..." : "Sign Up"}
@@ -220,7 +211,7 @@ const EmployeeSignIn = () => {
 
 export default EmployeeSignIn;
 
-// Reusable Input Components
+// Reusable Components
 const PasswordInput = ({
   placeholder,
   value,

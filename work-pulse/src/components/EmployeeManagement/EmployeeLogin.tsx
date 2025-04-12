@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
+import { FaEnvelope } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import bg from '../../assets/images/bg.png';
 import PasswordInput from './PasswordInput';
-import axios from 'axios';
+import { loginUser } from '../../services/firebaseAuth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const EmployeeLogin = () => {
-  const [username, setUsername] = useState("");
+  const [officeMail, setOfficeMail] = useState("");
   const [password, setPassword] = useState(""); 
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,20 +19,15 @@ const EmployeeLogin = () => {
     setIsLoading(true);
   
     try {
-      await axios.post("http://localhost:3030/employee/login", {
-        username,
-        password
-      });
-  
+      await loginUser(officeMail, password);
       toast.success("Login successful!");
       navigate("/employeedashboard");
     } catch (err: any) {
-      toast.error(err?.response?.data?.error || "Login failed");
+      toast.error(err?.message || "Login failed");
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <motion.div 
@@ -46,27 +41,24 @@ const EmployeeLogin = () => {
         <h2 className="text-center text-[#122D3B] text-2xl font-bold">Employee Login</h2>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          {/* Username Input */}
           <div className="relative w-full">
-            <FaUser className="absolute left-3 top-3 text-[#122D3B]" size={20} />
+            <FaEnvelope className="absolute left-3 top-3 text-[#122D3B]" size={20} />
             <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              placeholder="Office Email"
+              value={officeMail}
+              onChange={(e) => setOfficeMail(e.target.value)}
               required
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-[#eab308] focus:border-[#eab308] text-[#122D3B]"
             />
           </div>
 
-          {/* Password Input */}
           <PasswordInput 
             placeholder="Password"
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
           />
 
-          {/* Login Button */}
           <button
             type="submit"
             disabled={isLoading}
