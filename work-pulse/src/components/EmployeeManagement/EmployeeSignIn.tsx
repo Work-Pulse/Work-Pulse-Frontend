@@ -51,10 +51,10 @@ const EmployeeSignIn = () => {
     const { name, value } = e.target;
 
     // Validate phone fields
-    if ((name === "officePhone" || name === "personalPhone") && !/^\d*$/.test(value)) {
+    if ((name === "officePhone" || name === "personalPhone") && !/^\+?\d*$/.test(value)) {
       setPhoneErrors((prev) => ({
         ...prev,
-        [name]: "Phone number must contain digits only.",
+        [name]: "Phone number must contain digits only and may start with +.",
       }));
     } else {
       setPhoneErrors((prev) => ({
@@ -62,6 +62,7 @@ const EmployeeSignIn = () => {
         [name]: "",
       }));
     }
+    
 
     setFormData({ ...formData, [name]: value });
   };
@@ -88,8 +89,8 @@ const EmployeeSignIn = () => {
         axios.post("http://localhost:3030/employee/employees", formData),
         {
           pending: "Registering...",
-          success: "Employee registered successfully! 🎉",
-          error: "Registration failed. Please try again ❌",
+          success: "Employee registered successfully! ",
+          error: "Registration failed. Please try again ",
         }
       );
       navigate("/employeelogin");
@@ -113,10 +114,9 @@ const EmployeeSignIn = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Row 1 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
             <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
-            <Input label="Username" name="username" value={formData.username} onChange={handleChange} />
           </div>
 
           {/* Row 2 */}
