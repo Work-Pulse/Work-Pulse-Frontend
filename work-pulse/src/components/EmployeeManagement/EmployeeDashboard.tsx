@@ -19,8 +19,18 @@ const EmployeeDashboard = () => {
         </button>
       </Link>
 
+      <div className='text-3xl font-semibold mb-2'>
+        Welcome $Employee Name
+      </div>
+      <div className='text-xl'>
+        $Designation - $Department
+      </div>
+
+
       {/* Dashboard Buttons - Unified Design */}
       <div className="flex flex-nowrap justify-center gap-10 p-8 rounded-2xl w-full max-w-6xl overflow-x-auto">
+
+
         
         <Link to='/employeedetails' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
           <FaUser size={80} />

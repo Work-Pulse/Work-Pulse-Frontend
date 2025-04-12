@@ -73,7 +73,7 @@ function startTracking(reset = true) {
       const active = windowManager.getActiveWindow()
       const title = active?.getTitle()
 
-      console.log("⏱ Active window:", title)
+      console.log("Active window:", title)
 
       if (title) {
         currentApp = title
@@ -82,16 +82,16 @@ function startTracking(reset = true) {
         win?.webContents.send('app-usage-update', { ...usageData })
       }
     } catch (err) {
-      console.error("❌ Error getting active window:", err)
+      console.error("Error getting active window:", err)
     }
   }, 1000)
 }
 
-// ============ IPC Events ==============
+
 
 ipcMain.on('start-tracking', () => {
   console.log("IPC Received: start-tracking")
-  startTracking(true)  // Reset data
+  startTracking(true)  
 })
 
 ipcMain.on('pause-tracking', () => {
@@ -101,7 +101,7 @@ ipcMain.on('pause-tracking', () => {
 
 ipcMain.on('resume-tracking', () => {
   console.log("IPC Received: resume-tracking")
-  startTracking(false)  // Continue without reset
+  startTracking(false) 
 })
 
 ipcMain.on('stop-tracking', () => {

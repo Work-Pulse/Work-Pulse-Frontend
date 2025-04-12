@@ -57,14 +57,14 @@ function startTracking(reset = true) {
     try {
       const active = windowManager.getActiveWindow();
       const title = active == null ? void 0 : active.getTitle();
-      console.log("⏱ Active window:", title);
+      console.log("Active window:", title);
       if (title) {
         currentApp = title;
         usageData[title] = (usageData[title] || 0) + 1;
         win == null ? void 0 : win.webContents.send("app-usage-update", { ...usageData });
       }
     } catch (err) {
-      console.error("❌ Error getting active window:", err);
+      console.error("Error getting active window:", err);
     }
   }, 1e3);
 }
