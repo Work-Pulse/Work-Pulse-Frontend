@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaArrowLeft } from "react-icons/fa";
 import bg from "../../assets/images/bg.png";
+import axios from "axios";
 
 const LeaveRequestForm = () => {
+  const navigate = useNavigate();
+
   // Form state
   const [formData, setFormData] = useState({
     leaveType: "",
@@ -18,11 +21,6 @@ const LeaveRequestForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   console.log("Leave Request Submitted:", formData);
-  // };
 
   // Handle form submission
 const handleSubmit = (e: React.FormEvent) => {
@@ -33,6 +31,7 @@ const handleSubmit = (e: React.FormEvent) => {
 
   const startDate = new Date(formData.startDate);
   const endDate = new Date(formData.endDate);
+  
 
   if (startDate < today || endDate < today) {
     alert("Start Date and End Date must be today or a future date.");
@@ -44,8 +43,18 @@ const handleSubmit = (e: React.FormEvent) => {
     return;
   }
 
-  console.log("Leave Request Submitted:", formData);
-};
+  axios.post("http://localhost:3030/leave/leaves", formData)
+  .then((res) => {
+    console.log("Success:", res.data);
+    alert("Leave Request Submitted Successfully!");
+    navigate("/leavedashboard")
+  })
+  .catch((err) => {
+    console.error("Error:", err);
+    alert("Submit failed");
+  });
+
+}
 
 
   return (
