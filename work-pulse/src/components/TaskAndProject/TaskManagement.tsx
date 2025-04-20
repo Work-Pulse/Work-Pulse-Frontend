@@ -307,45 +307,35 @@ const TaskManager = () => {
       <div className="text-text text-4xl font-extrabold mb-6">Task Manager</div>
 
       <div className="grid grid-cols-2 gap-6 w-full max-w-5xl p-6 bg-gray-100 rounded-lg shadow-xl">
-      <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-gray-300">
+        <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-gray-300">
           <h3 className="text-xl font-bold text-[#122D3B] mb-3">User Information</h3>
-          <input
-            type="text"
-            placeholder="User ID"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full p-2 border rounded mb-3 shadow-sm"
-          />
-          <input
-            type="text"
-            placeholder="Username"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            className="w-full p-2 border rounded mb-3 shadow-sm"
-          />
-          <button
-            onClick={addUser}
-            className="w-full p-3 bg-[#122D3B] text-white rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
-          >
-            Add User
-          </button>
+          <input type="text" placeholder="User ID" value={userId} onChange={(e) => setUserId(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
+          <input type="text" placeholder="Username" value={userName} onChange={(e) => setUserName(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
+          <button onClick={addUser} className="w-full p-3 bg-[#122D3B] text-white rounded-lg hover:bg-blue-700 transition duration-300 shadow-md">Add User</button>
           {users.length > 0 && (
-            <select
-              className="w-full mt-4 p-2 border rounded shadow-sm max-h-40 overflow-auto"
-              onChange={(e) =>
-                selectUser(e.target.value, users.find((user) => user.id === e.target.value)?.name || "")
-              }
-            >
-              <option>Select User</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
+  <div className="mt-4">
+    <label className="text-sm font-semibold text-gray-700 mb-1 block">Select User</label>
+    <select
+      value={selectedUser?.id || ""}
+      onChange={(e) => {
+        const user = users.find((u) => u.id === e.target.value);
+        if (user) setSelectedUser(user);
+      }}
+      className="w-full p-2 border rounded shadow-sm"
+    >
+      <option value="">Select a user</option>
+      {users.map((user) => (
+        <option key={user.id} value={user.id}>
+          {user.name}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
 
+
+        </div>
+        
         <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-gray-300">
           <h3 className="text-xl font-bold text-[#122D3B] mb-3">Add New Task</h3>
           <input type="text" placeholder="Task Name" value={taskName} onChange={(e) => setTaskName(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
