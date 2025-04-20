@@ -6,8 +6,8 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
     return electron.ipcRenderer.on(channel, (event, ...args2) => listener(event, ...args2));
   },
   off(...args) {
-    const [channel, ...omit] = args;
-    return electron.ipcRenderer.off(channel, ...omit);
+    const [channel, listener] = args;
+    return electron.ipcRenderer.off(channel, listener);
   },
   send(...args) {
     const [channel, ...omit] = args;
@@ -17,6 +17,4 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
     const [channel, ...omit] = args;
     return electron.ipcRenderer.invoke(channel, ...omit);
   }
-  // You can expose other APTs you need here.
-  // ...
 });

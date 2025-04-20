@@ -1,14 +1,31 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
-import PasswordInput from "./PasswordInput";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
+// Helper: Password strength levels
+const getPasswordStrength = (password: string): { level: string; color: string } => {
+  if (!password) return { level: "", color: "" };
+  const hasLetters = /[a-zA-Z]/.test(password);
+  const hasNumbers = /\d/.test(password);
+  const hasSymbols = /[^a-zA-Z0-9]/.test(password);
+
+  if (password.length < 6) return { level: "Weak", color: "text-[#FE0303]" };
+  if (hasLetters && hasNumbers && hasSymbols && password.length >= 10)
+    return { level: "Strong", color: "text-[#069C1A]" };
+  return { level: "Medium", color: "text-[#ABAB3A]" };
+};
 
 const EmployeeSignIn = () => {
-  // Form state
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    designation: "",
+    department: "",
     officeMail: "",
     personalMail: "",
     officePhone: "",
@@ -16,20 +33,72 @@ const EmployeeSignIn = () => {
     joinDate: "",
     birthday: "",
     address: "",
-    username: "", // Added username field
+    username: "",
     password: "",
     confirmPassword: "",
   });
 
-  // Handle input changes
+  const [passwordStrength, setPasswordStrength] = useState({ level: "", color: "" });
+  const [passwordError, setPasswordError] = useState("");
+  const [phoneErrors, setPhoneErrors] = useState({
+    officePhone: "",
+    personalPhone: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Validate phone fields
+    if ((name === "officePhone" || name === "personalPhone") && !/^\+?\d*$/.test(value)) {
+      setPhoneErrors((prev) => ({
+        ...prev,
+        [name]: "Phone number must contain digits only and may start with +.",
+      }));
+    } else {
+      setPhoneErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+    
+
+    setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
+
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    if (phoneErrors.officePhone || phoneErrors.personalPhone) {
+      toast.error("Please correct phone number errors.");
+      return;
+    }
+
+    setPasswordError("");
+    setIsLoading(true);
+
+    try {
+      await toast.promise(
+        axios.post("http://localhost:3030/employee/employees", formData),
+        {
+          pending: "Registering...",
+          success: "Employee registered successfully! ",
+          error: "Registration failed. Please try again ",
+        }
+      );
+      navigate("/employeelogin");
+    } catch (err) {
+      console.error("Error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,182 +109,175 @@ const EmployeeSignIn = () => {
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <div className="bg-[#C6D2D5] p-8 rounded-2xl shadow-xl w-full max-w-3xl">
+      <div className="p-8 rounded-2xl shadow-xl w-full max-w-5xl mx-auto">
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Employee Sign Up</h1>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-          {/* Left Column */}
-          <div className="flex flex-col gap-4">
-            <label className="font-medium text-[#122D3B]">
-              First Name
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
-
-            <label className="font-medium text-[#122D3B]">
-              Office Email
-              <input
-                type="email"
-                name="officeMail"
-                value={formData.officeMail}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
-
-            <label className="font-medium text-[#122D3B]">
-              Office Phone Number
-              <input
-                type="tel"
-                name="officePhone"
-                value={formData.officePhone}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
-
-            <label className="font-medium text-[#122D3B]">
-              Birthday
-              <input
-                type="date"
-                name="birthday"
-                value={formData.birthday}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Row 1 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
+            <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
           </div>
 
-          {/* Right Column */}
-          <div className="flex flex-col gap-4">
-            <label className="font-medium text-[#122D3B]">
-              Last Name
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
-
-            <label className="font-medium text-[#122D3B]">
-              Personal Email
-              <input
-                type="email"
-                name="personalMail"
-                value={formData.personalMail}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
-
-            <label className="font-medium text-[#122D3B]">
-              Personal Phone Number
-              <input
-                type="tel"
-                name="personalPhone"
-                value={formData.personalPhone}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
-
-            <label className="font-medium text-[#122D3B]">
-              Join Date
-              <input
-                type="date"
-                name="joinDate"
-                value={formData.joinDate}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
+          {/* Row 2 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input label="Designation" name="designation" value={formData.designation} onChange={handleChange} />
+            <Input label="Department" name="department" value={formData.department} onChange={handleChange} />
           </div>
 
-          {/* Address Field - Full Width */}
-          <div className="col-span-2">
-            <label className="font-medium text-[#122D3B]">
-              Address
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
+          {/* Row 3 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input label="Office Email" type="email" name="officeMail" value={formData.officeMail} onChange={handleChange} />
+            <Input label="Personal Email" type="email" name="personalMail" value={formData.personalMail} onChange={handleChange} />
           </div>
 
+          {/* Row 4 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Input label="Office Phone" name="officePhone" value={formData.officePhone} onChange={handleChange} />
+              {phoneErrors.officePhone && (
+                <p className="text-red-600 text-sm mt-1">{phoneErrors.officePhone}</p>
+              )}
+            </div>
+            <div>
+              <Input label="Personal Phone" name="personalPhone" value={formData.personalPhone} onChange={handleChange} />
+              {phoneErrors.personalPhone && (
+                <p className="text-red-600 text-sm mt-1">{phoneErrors.personalPhone}</p>
+              )}
+            </div>
+          </div>
 
-          {/* Password Fields - Full Width */}
-          <div className="col-span-2 flex flex-col gap-4">
-          <label className="font-medium text-[#122D3B]">
-              Username
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full "
-                required
-              />
-            </label>
-            <label className="font-medium text-[#122D3B]">
-              Password
+          {/* Row 5 */}
+          <Input label="Address" name="address" value={formData.address} onChange={handleChange} full />
+
+          {/* Row 6 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input label="Birthday" type="date" name="birthday" value={formData.birthday} onChange={handleChange} />
+            <Input label="Join Date" type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} />
+          </div>
+
+          {/* Row 7 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="font-medium text-[#122D3B] mb-1 block">Password</label>
               <PasswordInput
                 placeholder="Enter Password"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData({ ...formData, password: value });
+                  setPasswordStrength(getPasswordStrength(value));
+                }}
               />
-            </label>
+              {passwordStrength.level && (
+                <p className={`mt-1 text-base font-semibold ${passwordStrength.color}`}>
+                  Strength: {passwordStrength.level}
+                </p>
+              )}
+            </div>
 
-            <label className="font-medium text-[#122D3B]">
-              Confirm Password
+            <div>
+              <label className="font-medium text-[#122D3B] mb-1 block">Confirm Password</label>
               <PasswordInput
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, confirmPassword: e.target.value })
+                }
               />
-            </label>
+              {passwordError && <p className="text-red-600 text-sm mt-1">{passwordError}</p>}
+            </div>
           </div>
 
-          {/* Sign-Up Button */}
-          <div className="col-span-2">
-          <Link to="/employeelogin">
+          {/* Submit */}
+          <div>
             <button
               type="submit"
-              className="text-white text-lg font-semibold p-3 bg-[#122D3B] rounded-lg hover:bg-white hover:text-[#122D3B] transition duration-300 w-full"
+              disabled={isLoading}
+              className={`text-white text-lg font-semibold p-3 rounded-lg transition duration-300 w-full ${
+                isLoading
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-[#122D3B] hover:bg-white hover:text-[#122D3B]"
+              }`}
             >
-              Sign Up
+              {isLoading ? "Registering..." : "Sign Up"}
             </button>
-            </Link>
           </div>
         </form>
 
-        <p className="text-gray-700 text-xl text-center mt-4">
+        <p className="text-gray-700 text-xl text-center mt-6">
           Already have an account?{" "}
           <Link to="/employeelogin" className="text-[#122D3B] font-semibold hover:underline">
             Login
           </Link>
         </p>
       </div>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </motion.div>
   );
 };
 
 export default EmployeeSignIn;
+
+// Reusable Input Components
+const PasswordInput = ({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <div className="relative">
+      <input
+        type={showPassword ? "text" : "password"}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required
+        className="py-1 px-2 pr-10 border border-gray-300 rounded-lg w-full"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword((prev) => !prev)}
+        className="absolute top-1.5 right-2 text-gray-600"
+      >
+        {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+      </button>
+    </div>
+  );
+};
+
+const Input = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  full = false,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  full?: boolean;
+}) => (
+  <label className={`font-medium text-[#122D3B] ${full ? "block" : ""}`}>
+    <div className="mb-1">{label}</div>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={`Enter ${label}`}
+      required
+      className="py-1 px-2 border border-gray-300 rounded-lg w-full placeholder:font-normal"
+    />
+  </label>
+);
