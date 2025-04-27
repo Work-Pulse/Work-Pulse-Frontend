@@ -8,54 +8,51 @@ import axios from "axios";
 const LeaveRequestForm = () => {
   const navigate = useNavigate();
 
-  // Form state
+  // Updated Form state
   const [formData, setFormData] = useState({
+    employeeName: "",
     leaveType: "",
     startDate: "",
     endDate: "",
-    reason: "",
+    leaveTime: "",
   });
 
   // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   // Handle form submission
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Remove time part
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  const startDate = new Date(formData.startDate);
-  const endDate = new Date(formData.endDate);
-  
+    const startDate = new Date(formData.startDate);
+    const endDate = new Date(formData.endDate);
 
-  if (startDate < today || endDate < today) {
-    alert("Start Date and End Date must be today or a future date.");
-    return;
-  }
+    if (startDate < today || endDate < today) {
+      alert("Start Date and End Date must be today or a future date.");
+      return;
+    }
 
-  if (endDate < startDate) {
-    alert("End Date cannot be earlier than Start Date.");
-    return;
-  }
+    if (endDate < startDate) {
+      alert("End Date cannot be earlier than Start Date.");
+      return;
+    }
 
-  axios.post("http://localhost:3030/leave/leaves", formData)
-  .then((res) => {
-    console.log("Success:", res.data);
-    alert("Leave Request Submitted Successfully!");
-    navigate("/leavedashboard")
-  })
-  .catch((err) => {
-    console.error("Error:", err);
-    alert("Submit failed");
-  });
-
-}
-
+    axios.post("http://localhost:3030/leave/leaves", formData)
+      .then((res) => {
+        console.log("Success:", res.data);
+        alert("Leave Request Submitted Successfully!");
+        navigate("/leavedashboard");
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        alert("Submit failed");
+      });
+  };
 
   return (
     <motion.div
@@ -65,20 +62,34 @@ const handleSubmit = (e: React.FormEvent) => {
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
-       {/* Back Button */}
+      {/* Back Button */}
       <Link to="/leavedashboard" className="absolute top-6 left-6">
         <button className="flex items-center gap-2 text-text text-xl font-extrabold p-3 bg-red-500 rounded-lg hover:text-reject transition duration-300">
           <FaArrowLeft size={20} /> Back
         </button>
       </Link>
-      
+
       <div className="bg-[#C6D2D5] p-8 rounded-2xl shadow-xl w-full max-w-3xl">
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Leave Request Form</h1>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-
           {/* Left Column */}
           <div className="flex flex-col gap-4">
+            {/* Employee Name */}
+            <label className="font-medium text-[#122D3B]">
+              Employee Name
+              <input
+                type="text"
+                name="employeeName"
+                value={formData.employeeName}
+                onChange={handleChange}
+                placeholder="Enter your name"
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
+              />
+            </label>
+
+            {/* Leave Type */}
             <label className="font-medium text-[#122D3B]">
               Leave Type
               <select
@@ -96,64 +107,46 @@ const handleSubmit = (e: React.FormEvent) => {
               </select>
             </label>
 
+            {/* Start Date */}
             <label className="font-medium text-[#122D3B]">
               Start Date
-              {/* <input
+              <input
                 type="date"
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
-              /> */}
-              <input
-                    type="date"
-                    name="startDate"
-                    value={formData.startDate}
-                    onChange={handleChange}
-                    min={new Date().toISOString().split("T")[0]} // today in YYYY-MM-DD
-                    className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                    required
-                    />
-
+              />
             </label>
           </div>
 
           {/* Right Column */}
           <div className="flex flex-col gap-4">
+            {/* End Date */}
             <label className="font-medium text-[#122D3B]">
               End Date
-              {/* <input
+              <input
                 type="date"
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
-              /> */}
-              <input
-                  type="date"
-                  name="endDate"
-                  value={formData.endDate}
-                  onChange={handleChange}
-                  min={new Date().toISOString().split("T")[0]}
-                  className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                  required
-                />
-
+              />
             </label>
-          </div>
 
-          {/* Reason - Full Width */}
-          <div className="col-span-2">
+            {/* Leave Time */}
             <label className="font-medium text-[#122D3B]">
-              Reason
-              <textarea
-                name="reason"
-                value={formData.reason}
+              Leave Time
+              <input
+                type="time"
+                name="leaveTime"
+                value={formData.leaveTime}
                 onChange={handleChange}
-                rows={4}
-                className="mt-1 p-3 border border-gray-300 rounded-lg w-full resize-none"
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
               />
             </label>
