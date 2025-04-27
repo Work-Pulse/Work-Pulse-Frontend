@@ -103,10 +103,27 @@ const LeaveRequestForm = () => {
                 <option value="Annual">Annual Leave</option>
                 <option value="Sick">Sick Leave</option>
                 <option value="Casual">Casual Leave</option>
-                <option value="Maternity">Maternity Leave</option>
+                <option value="Half Day">Half Day</option>
               </select>
             </label>
 
+           {/* End Date */}
+           <label className="font-medium text-[#122D3B]">
+              End Date
+              <input
+                type="date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
+                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                required
+              />
+            </label>
+          </div>
+
+          {/* Right Column */}
+          <div className="flex flex-col gap-4"> 
             {/* Start Date */}
             <label className="font-medium text-[#122D3B]">
               Start Date
@@ -120,26 +137,10 @@ const LeaveRequestForm = () => {
                 required
               />
             </label>
-          </div>
-
-          {/* Right Column */}
-          <div className="flex flex-col gap-4">
-            {/* End Date */}
-            <label className="font-medium text-[#122D3B]">
-              End Date
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                min={new Date().toISOString().split("T")[0]}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
-            </label>
 
             {/* Leave Time */}
-            <label className="font-medium text-[#122D3B]">
+            
+            {/* <label className="font-medium text-[#122D3B]">
               Leave Time
               <input
                 type="time"
@@ -147,9 +148,23 @@ const LeaveRequestForm = () => {
                 value={formData.leaveTime}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
               />
-            </label>
+            </label> */}
+
+            {formData.leaveType === "Half Day" && (
+              <div className="col-span-2">
+                <label className="font-medium text-[#122D3B]">
+                  Leave Time
+                  <input
+                    type="time"
+                    name="leaveTime"
+                    value={formData.leaveTime}
+                    onChange={handleChange}
+                    className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                  />
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}
