@@ -1,9 +1,33 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaUserClock, FaClipboardCheck, FaClipboardList } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import bg from '../../assets/images/bg.png';
+import axios from "axios";
 
 const EmployeeDashboard = () => {
+
+  const id = localStorage.getItem("employeeId");
+  
+  const [employee, setEmployee] = useState({
+    firstName:"",
+    designation:"",
+    department:"",
+    });
+
+    useEffect(() => {
+      const fetchEmployeeDetails = async () => {
+        try {
+          const res = await axios.get(`http://localhost:3030/employee/employees/${id}`);
+          
+          setEmployee(res.data.employee); // 👈 IMPORTANT: access `employee` inside response
+        } catch (error) {
+          console.error("Error fetching employee details:", error);
+        }
+      };
+      fetchEmployeeDetails();
+    }, [id]);
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -20,10 +44,10 @@ const EmployeeDashboard = () => {
       </Link>
 
       <div className='text-3xl font-semibold mb-2'>
-        Welcome $Employee Name
+        Welcome {employee.firstName}
       </div>
       <div className='text-xl'>
-        $Designation - $Department
+      {employee.designation} - {employee.department} Department
       </div>
 
 

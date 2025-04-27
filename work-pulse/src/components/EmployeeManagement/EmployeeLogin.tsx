@@ -19,12 +19,18 @@ const EmployeeLogin = () => {
     setIsLoading(true);
   
     try {
-      await axios.post("http://localhost:3030/employee/employee/login", {
+      const res = await axios.post("http://localhost:3030/employee/employee/login", {
         officeMail,
         password
       });
   
+      const employeeData = res.data.employee; // get the employee info
       toast.success("Login successful!");
+  
+      console.log(employeeData);
+      // You can store employee id (or the whole data) in localStorage or context
+      localStorage.setItem("employeeId", employeeData.id); 
+  
       navigate("/employeedashboard");
     } catch (err: any) {
       toast.error(err?.response?.data?.error || "Login failed");
@@ -32,6 +38,7 @@ const EmployeeLogin = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <motion.div 
