@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom';
-import { FaClipboardList, FaSignOutAlt, FaUser, FaUserClock } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaUser, FaSignOutAlt, FaUserClock, FaClipboardList } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useState, useEffect } from 'react';
 import bg from '../../assets/images/bg.png';
 import axios from 'axios';
-import { Link } from 'lucide-react';
+
 import { FaClipboardCheck } from 'react-icons/fa6';
 
 const EmployeeDashboard = () => {
@@ -88,22 +88,22 @@ const EmployeeDashboard = () => {
       <div className="flex flex-nowrap justify-center gap-10 p-8 rounded-2xl w-full max-w-6xl overflow-x-auto">
         
         <Link to='/employeedetails' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
-          <FaUser size={20} />
+          <FaUser size={80} />
           My Profile
         </Link>
 
         <Link to='/shift' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
-          <FaUserClock size={20} />
+          <FaUserClock size={80} />
           Shift
         </Link>
 
         <Link to='/leaverequestform' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
-          <FaClipboardCheck size={20} />
+          <FaClipboardCheck size={80} />
           Leave Requests
         </Link>
 
         <Link to='/employeereport' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
-          <FaClipboardList size={20} />
+          <FaClipboardList size={80} />
           Reports & Analytics
         </Link>
       </div>
