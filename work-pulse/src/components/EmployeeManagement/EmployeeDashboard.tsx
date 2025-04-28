@@ -12,7 +12,7 @@ const EmployeeDashboard = () => {
   const navigate = useNavigate();
   const [officeMail, setOfficeMail] = useState<string | null>(null);
   const [employeeData, setEmployeeData] = useState({
-    id: 0,  // Initialize id as a number
+    id: 0, 
     firstName: '',
     lastName: '',
     designation: '',
@@ -35,14 +35,14 @@ const EmployeeDashboard = () => {
               `http://localhost:3030/employee/employee/data/${firebaseUser.email}`,
               {
                 headers: {
-                  Authorization: `Bearer ${token}`,  // Add the Firebase token here
+                  Authorization: `Bearer ${token}`,  
                 },
               }
             );
             // Assuming the API response has an 'id' field
             setEmployeeData({
               ...response.data,
-              id: response.data.id || 0,  // Ensure the 'id' is added correctly
+              id: response.data.id || 0,  
             });
           } catch (error) {
             console.error('Error fetching employee data:', error);
@@ -109,7 +109,7 @@ const EmployeeDashboard = () => {
       </div>
 
       {officeMail && (
-        <div className="text-base mb-2">
+        <div className="text-text mb-2 opacity-50">
           <p>Logged in as: {officeMail}</p>
         </div>
       )}
