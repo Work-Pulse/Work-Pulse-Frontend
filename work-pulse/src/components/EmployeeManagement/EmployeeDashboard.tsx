@@ -20,7 +20,7 @@ const EmployeeDashboard = () => {
       </Link>
 
       <div className='text-3xl font-semibold mb-2'>
-        Welcome $Employee Name
+        Welcome $firstName $lastName
       </div>
       <div className='text-xl'>
         $Designation - $Department
