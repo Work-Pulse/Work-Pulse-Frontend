@@ -68,35 +68,46 @@ const EmployeeSignIn = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (formData.password.length < 8) {
       setPasswordError("Password must be at least 8 characters.");
       toast.error("Password must be at least 8 characters.");
       return;
     }
-
+  
     if (formData.password !== formData.confirmPassword) {
       setPasswordError("Passwords do not match.");
       toast.error("Passwords do not match.");
       return;
     }
-
+  
     if (phoneErrors.officePhone || phoneErrors.personalPhone) {
       toast.error("Please correct phone number errors.");
       return;
     }
-
+  
     setPasswordError("");
     setIsLoading(true);
-
+  
     try {
-      await registerUser(formData.officeMail, formData.password);
-
+      // Register user with Firebase Auth
+      const firebaseUserCredential = await registerUser(formData.officeMail, formData.password);
+      const firebaseUser = firebaseUserCredential.user;  // Access the 'user' from UserCredential
+  
+      // Get Firebase ID Token
+      const token = await firebaseUser.getIdToken();  // Use 'getIdToken' on the 'user' object
+  
+      // Prepare data for API request
       const saveData = { ...formData } as Partial<typeof formData>;
       delete saveData.confirmPassword;
-
-      await axios.post("http://localhost:3030/employee/employees", saveData);
-
+  
+      // Send the data to the backend (add token to headers)
+      await axios.post("http://localhost:3030/employee/employees", saveData, {
+        headers: {
+          Authorization: `Bearer ${token}`,  // Add the Firebase token here
+        },
+      });
+  
       toast.success("Employee registered successfully!");
       navigate("/employeelogin");
     } catch (err: any) {
