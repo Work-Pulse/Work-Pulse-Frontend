@@ -77,7 +77,7 @@ const EmployeeDashboard = () => {
       </button>
 
       {employeeData.firstName && (
-        <div className="flex flex-col items-center justify-center bg-cover bg-center p-6">
+        <div className="flex flex-col items-center justify-center bg-cover bg-center p-6 text-[#122D3B]">
           <p className='text-xl font-bold'>Welcome!</p>
           <p className='text-3xl font-bold'>{employeeData.firstName} {employeeData.lastName}</p>
           <p className='text-base font-semibold'>{employeeData.designation} - Department of {employeeData.department}</p>
@@ -109,11 +109,11 @@ const EmployeeDashboard = () => {
       </div>
 
       {officeMail && (
-        <div className="text-xl mb-2">
+        <div className="text-base mb-2">
           <p>Logged in as: {officeMail}</p>
         </div>
       )}
-      
+
     </motion.div>
   );
 };
