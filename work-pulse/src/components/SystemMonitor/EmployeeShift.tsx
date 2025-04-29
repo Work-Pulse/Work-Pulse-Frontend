@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
 import bg from "../../assets/images/bg.png"
 import { motion } from "framer-motion"
 import { ArrowLeft } from "lucide-react"
 import ChatWindow from "./SubComponents/ChatWindow"
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import axios from "axios"
 
 dayjs.extend(duration)
 
@@ -94,6 +96,53 @@ const EmployeeShift = () => {
     alert(`Shift ended. Total time: ${formatTime(elapsedTime)}`)
   }
 
+  const navigate = useNavigate();
+  const [officeMail, setOfficeMail] = useState<string | null>(null);
+  const [employeeData, setEmployeeData] = useState({
+    id: 0, 
+    firstName: '',
+    lastName: '',
+    designation: '',
+    department: '',
+  });
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setOfficeMail(firebaseUser.email);
+        // Get Firebase ID Token
+        const token = await firebaseUser.getIdToken();
+
+        // Fetch employee data after setting officeMail
+        if (firebaseUser.email) {
+          try {
+            const response = await axios.get(
+              `http://localhost:3030/employee/employee/data/${firebaseUser.email}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,  
+                },
+              }
+            );
+            // Assuming the API response has an 'id' field
+            setEmployeeData({
+              ...response.data,
+              id: response.data.id || 0,  
+            });
+          } catch (error) {
+            console.error('Error fetching employee data:', error);
+          }
+        }
+      } else {
+        navigate('/employeelogin'); // Redirect to login if not authenticated
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, navigate]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -112,14 +161,20 @@ const EmployeeShift = () => {
         </div>
       </div>
 
-      <div className="flex h-screen">
+      <div className="flex">
         <div className="w-2/3 p-6">
           {/* Shift Timer */}
           <div className="bg-white p-4 shadow rounded-lg mt-20 ml-40 mr-50">
-            <h2 className="text-lg font-semibold">Shift Timer</h2>
-            <p>Start Time: {startTime ? dayjs.unix(startTime).format("YYYY-MM-DD HH:mm:ss") : "Not started"}</p>
-            <p>End Time: {endTime || "Not ended"}</p>
-            <p>Total Time: {formatTime(elapsedTime)}</p>
+            <div className="flex flex-col items-center justify-center bg-cover bg-center text-[#122D3B] font-bold">
+              <h2 className="text-2xl font-bold">{employeeData.firstName} {employeeData.lastName}</h2>
+              <h2 className="text-lg">{officeMail}</h2>
+            </div>
+
+            <div className="mt-5">
+              <p className="text-lg">Start Time: {startTime ? dayjs.unix(startTime).format("YYYY-MM-DD HH:mm:ss") : "Not started"}</p>
+              <p className="text-lg">End Time: {endTime || "Not ended"}</p>
+              <p className="text-lg font-semibold text-reject">Total Time: {formatTime(elapsedTime)}</p>
+            </div>
 
             <div className="mt-4">
               {!shiftStarted ? (
@@ -145,7 +200,7 @@ const EmployeeShift = () => {
 
           {/* Application Usage Section */}
           <div className="bg-white p-4 shadow rounded-lg mt-4 ml-40 mr-50">
-            <h2 className="text-lg font-semibold">Application Usage</h2>
+            <h2 className="flex flex-col items-center justify-center bg-cover bg-center p-2 text-[#122D3B] font-bold">Application Usage</h2>
             <div className="w-full mt-2">
               <div className="flex bg-gray-200 font-semibold">
                 <div className="w-1/2 p-2 border border-gray-300">Application</div>
@@ -167,7 +222,7 @@ const EmployeeShift = () => {
         </div>
 
         {/* Chat */}
-        <div className="w-1/3 p-4">
+        <div className="w-1/3 p-4 h-screen">
           <ChatWindow />
         </div>
       </div>
