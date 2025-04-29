@@ -1,32 +1,77 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // 👈 useParams to get ID from URL
 import { FaArrowLeft, FaEdit, FaSave, FaPlus, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
+
 
 const EmployeeDetails = () => {
-  const [employee, setEmployee] = useState({
-    firstName: "Emp1",
-    lastName: "Emppp",
-    joinDate: "2023-05-10",
-    birthday: "1995-08-15",
-    officeMail: "emp1@workpulse.com",
-    personalMail: "emp1emppp@gmail.com",
-    officePhone: "+1234567890",
-    personalPhone: "+0987654321",
-    address: "12/C, Gothatuwa Rd, Thalawakale",
+const id = localStorage.getItem("employeeId");
+
+const [employee, setEmployee] = useState({
+    firstName: "",
+    lastName: "",
+    joinDate: "",
+    birthday: "",
+    officeMail: "",
+    personalMail: "",
+    officePhone: "",
+    personalPhone: "",
+    address: "",
   });
 
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState<string[]>([]);
   const [noteText, setNoteText] = useState("");
-
   const [tasks, setTasks] = useState([
     { text: "Complete project report", completed: false },
     { text: "Attend team meeting", completed: false },
     { text: "Follow up with client", completed: false },
     { text: "Submit weekly timesheet", completed: false },
   ]);
+
+  // Fetch employee details
+  useEffect(() => {
+    const fetchEmployeeDetails = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3030/employee/employees/${id}`);
+        
+        setEmployee(res.data.employee); 
+      } catch (error) {
+        console.error("Error fetching employee details:", error);
+      }
+    };
+    fetchEmployeeDetails();
+  }, [id]);
+
+  //handle save function
+  const handleSave = async () => {
+    try {
+      await axios.put(`http://localhost:3030/employee/employees/${id}`, employee);
+      setIsEditing(false); // turn off editing mode after successful save
+      alert("Employee details updated successfully!");
+    } catch (error) {
+      console.error("Error updating employee details:", error);
+      alert("Failed to update employee details.");
+    }
+  };
+  
+  //handle delete part
+const handleDelete = async () => {
+  try {
+    await axios.delete(`http://localhost:3030/employee/employees/${id}`);
+    localStorage.removeItem("employeeId"); // optional: clear ID
+    alert("Employee deleted successfully!");
+    navigate("/employeelogin"); // redirect to login page
+  } catch (error) {
+    console.error("Error deleting employee:", error);
+    alert("Failed to delete employee.");
+  }
+};
+
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +82,7 @@ const EmployeeDetails = () => {
   const handleAddNote = () => {
     if (noteText.trim() !== "") {
       setNotes([...notes, noteText]);
-      setNoteText(""); // Clear input field
+      setNoteText("");
     }
   };
 
@@ -64,7 +109,7 @@ const EmployeeDetails = () => {
     >
       {/* Back Button */}
       <Link to="/employeedashboard" className="absolute top-6 left-6">
-        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red-600 rounded-lg hover:bg-red-700 transition duration-300">
+        <button className="flex items-center gap-2 text-black text-lg font-semibold p-3 bg-black-600 rounded-lg hover:bg-black-700 transition duration-300">
           <FaArrowLeft size={20} /> Back
         </button>
       </Link>
@@ -77,61 +122,80 @@ const EmployeeDetails = () => {
 
             <div className="grid grid-cols-2 gap-6">
               <div className="flex flex-col gap-4">
-                <label className="font-medium text-[#122D3B]">First Name:</label>
+                <label className="font-bold text-[#122D3B]">First Name:</label>
                 <input type="text" name="firstName" value={employee.firstName} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
 
-                <label className="font-medium text-[#122D3B]">Last Name:</label>
-                <input type="text" name="lastName" value={employee.lastName} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                <label className="font-bold text-[#122D3B]">Office Email:</label>
+                <input type="email" name="officeMail" value={employee.officeMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
 
-                <label className="font-medium text-[#122D3B]">Birthday:</label>
-                <input type="date" name="birthday" value={employee.birthday} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
-
-                <label className="font-medium text-[#122D3B]">Personal Email:</label>
-                <input type="text" name="personalMail" value={employee.personalMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                <label className="font-bold text-[#122D3B]">Office Phone:</label>
+                <input type="tel" name="officePhone" value={employee.officePhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
                 
+                {/* <label className="font-bold text-[#122D3B]">Birthday:</label>
+                <input type="date" name="birthday" value={employee.birthday} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" /> */}
+               
               </div>
 
               <div className="flex flex-col gap-4">
-                <label className="font-medium text-[#122D3B]">Office Email:</label>
-                <input type="email" name="officeMail" value={employee.officeMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                <label className="font-bold text-[#122D3B]">Last Name:</label>
+                <input type="text" name="lastName" value={employee.lastName} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
 
-                <label className="font-medium text-[#122D3B]">Office Phone:</label>
-                <input type="tel" name="officePhone" value={employee.officePhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                <label className="font-bold text-[#122D3B]">Personal Email:</label>
+                <input type="email" name="personalMail" value={employee.personalMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
                 
-                <label className="font-medium text-[#122D3B]">Personal Phone:</label>
+               
+                <label className="font-bold text-[#122D3B]">Personal Phone:</label>
                 <input type="tel" name="personalPhone" value={employee.personalPhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
-                
-                <label className="font-medium text-[#122D3B]">Join Date:</label>
+
+                {/* <label className="font-bold text-[#122D3B]">Join Date:</label>
                 <input type="date" name="joinDate" value={employee.joinDate} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
-             
+               */}
               </div>
-              {/* Address Field */}
-                <div className="col-span-2">
-                  <label className="font-medium text-[#122D3B]">Address:</label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={employee.address}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className="p-3 rounded-lg w-full"
-                  />
+
+              <div className="col-span-2">
+                <label className="font-bold text-[#122D3B]">Address:</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={employee.address}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className="p-3 rounded-lg w-full"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-center mt-6 gap-20">
+                  <button
+                    onClick={isEditing ? handleSave : () => setIsEditing(true)}
+                    className="flex items-center gap-2 bg-[#122D3B] text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
+                  >
+                    {isEditing ? <><FaSave size={18} /> Save</> : <><FaEdit size={18} /> Edit</>}
+                  </button>
+
+                  <button
+                    onClick={handleDelete}
+                    className="flex items-center gap-2 bg-[#122D3B]  text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
+                  >
+                    <FaTrash size={18} /> Delete
+                  </button>
                 </div>
 
-            </div>
-
-            <div className="flex justify-center mt-6">
-              <button onClick={() => setIsEditing(!isEditing)} className="flex items-center gap-2 bg-[#122D3B] text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition">
-                {isEditing ? <><FaSave size={18} /> Save</> : <><FaEdit size={18} /> Edit</>}
-              </button>
-            </div>
           </div>
 
           {/* Add Note Section */}
           <div className="bg-[#C6D2D5] p-6 rounded-2xl shadow-lg w-full mt-6">
             <h3 className="text-[#122D3B] text-2xl font-semibold mb-4">Add Note</h3>
-            <textarea value={noteText} onChange={(e) => setNoteText(e.target.value)} placeholder="Write a note..." className="w-full p-3 rounded-lg border border-gray-300"></textarea>
-            <button onClick={handleAddNote} className="flex items-center gap-2 bg-[#122D3B] text-white px-6 py-2 rounded-lg mt-4 hover:bg-[#0e1f2c] transition">
+            <textarea
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              placeholder="Write a note..."
+              className="w-full p-3 rounded-lg border border-gray-300"
+            ></textarea>
+            <button
+              onClick={handleAddNote}
+              className="flex items-center gap-2 bg-[#122D3B] text-white px-6 py-2 rounded-lg mt-4 hover:bg-[#0e1f2c] transition"
+            >
               <FaPlus /> Add Note
             </button>
 
@@ -161,7 +225,9 @@ const EmployeeDetails = () => {
                   onChange={() => handleToggleTask(index)}
                   className="w-5 h-5"
                 />
-                <span className={task.completed ? "line-through text-gray-500" : ""}>{task.text}</span>
+                <span className={task.completed ? "line-through text-gray-500" : ""}>
+                  {task.text}
+                </span>
               </li>
             ))}
           </ul>

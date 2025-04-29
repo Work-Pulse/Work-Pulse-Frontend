@@ -1,8 +1,5 @@
-import { useEffect } from "react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { observeUser } from "./services/firebaseAuth";
 
-// Route Components
 import Home from "./components/Home";
 import UserSelection from "./components/UserSelection";
 
@@ -19,57 +16,56 @@ import EmployeeSignIn from "./components/EmployeeManagement/EmployeeSignIn";
 import EmployeeDetails from "./components/EmployeeManagement/EmployeeDetails";
 import EmployeeReport from "./components/EmployeeManagement/EmployeeReport";
 
-import EmployeeShift from "./components/SystemMonitor/EmployeeShift";
+import EmployeeShift from "./components/SystemMonitor/EmployeeShift"
 import EmployeeMonitor from "./components/SystemMonitor/EmployeeMonitor";
 import ShiftReport from "./components/SystemMonitor/SubComponents/ShiftReport";
 import ManagerChat from "./components/SystemMonitor/SubComponents/ManagerChat";
+
 
 import LeaveRequestForm from "./components/LeaveApproval/LeaveRequestForm";
 import LeaveHistory from "./components/LeaveApproval/LeaveHistory";
 import LeaveReport from "./components/LeaveApproval/LeaveReport";
 
 const App = () => {
-  useEffect(() => {
-    const unsubscribe = observeUser((user) => {
-      if (user) {
-        console.log("✅ Firebase Authenticated:", user.email);
-      } else {
-        console.log("🚫 Firebase Logged Out");
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  return (
+  return(
     <MemoryRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/userselection" element={<UserSelection />} />
+        <Route path="/">
+        <Route index Component={Home}/>
+      
+        <Route path="userselection" Component={UserSelection}/>
 
-        <Route path="/managerlogin" element={<ManagerLogin />} />
-        <Route path="/managerdashboard" element={<ManagerDashboard />} />
-        <Route path="/tasks" element={<TaskManagement />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/leave-requests" element={<LeaveRequests />} />
-        <Route path="/tracking" element={<TaskTracking />} />
+        <Route path="managerlogin" Component={ManagerLogin}/>
+        <Route path="managerdashboard" Component={ManagerDashboard}/>
+        
+        <Route path="tasks" Component={TaskManagement}/>
+        <Route path="reports" Component={Reports}/>
+        <Route path="leave-requests" Component={LeaveRequests}/>
+        <Route path="tracking" Component={TaskTracking}/>
 
-        <Route path="/employeelogin" element={<EmployeeLogin />} />
-        <Route path="/employeedashboard" element={<EmployeeDashboard />} />
-        <Route path="/employeedetails" element={<EmployeeDetails />} />
-        <Route path="/employeereport" element={<EmployeeReport />} />
-        <Route path="/employeesignin" element={<EmployeeSignIn />} />
+        <Route path="employeelogin" Component={EmployeeLogin}/>
+        <Route path="employeedashboard" Component={EmployeeDashboard}/>
+        <Route path="employeedetails" Component={EmployeeDetails}/>
 
-        <Route path="/shift" element={<EmployeeShift />} />
-        <Route path="/monitor" element={<EmployeeMonitor />} />
-        <Route path="/shift-report" element={<ShiftReport />} />
-        <Route path="/manager-chat" element={<ManagerChat />} />
+        <Route path="shift" Component={EmployeeShift}/>
+        <Route path="monitor" Component={EmployeeMonitor}/>
+        <Route path="shift-report" Component={ShiftReport}/>
+        <Route path="manager-chat" Component={ManagerChat}/>
 
-        <Route path="/leaverequestform" element={<LeaveRequestForm />} />
-        <Route path="/leavehistory" element={<LeaveHistory />} />
-        <Route path="/leavereport" element={<LeaveReport />} />
+        <Route path="reports" Component={Reports}/>
+        <Route path="leave-requests" Component={LeaveRequests}/>
+        <Route path="tracking" Component={TaskTracking}/>
+        <Route path="employeereport" Component={EmployeeReport}/>
+        <Route path="employeesignin" Component={EmployeeSignIn}/>
+
+        <Route path="leaverequestform" Component={LeaveRequestForm}/>
+        <Route path="leavehistory" Component={LeaveHistory}/>
+        <Route path="leavereport" Component={LeaveReport}/>
+        </Route>
       </Routes>
     </MemoryRouter>
-  );
-};
+  )
+}
 
 export default App;
+
