@@ -11,6 +11,7 @@ const EmployeeDashboard = () => {
   
   const [employee, setEmployee] = useState({
     firstName:"",
+    lastName:"",
     designation:"",
     department:"",
     });
@@ -20,7 +21,7 @@ const EmployeeDashboard = () => {
         try {
           const res = await axios.get(`http://localhost:3030/employee/employees/${id}`);
           
-          setEmployee(res.data.employee); // 👈 IMPORTANT: access `employee` inside response
+          setEmployee(res.data.employee); // 
         } catch (error) {
           console.error("Error fetching employee details:", error);
         }
@@ -44,7 +45,7 @@ const EmployeeDashboard = () => {
       </Link>
 
       <div className='text-3xl font-semibold mb-2'>
-        Welcome {employee.firstName}
+        Welcome {employee.firstName} {employee.lastName}
       </div>
       <div className='text-xl'>
       {employee.designation} - {employee.department} Department

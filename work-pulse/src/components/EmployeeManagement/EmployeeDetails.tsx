@@ -36,13 +36,26 @@ const [employee, setEmployee] = useState({
       try {
         const res = await axios.get(`http://localhost:3030/employee/employees/${id}`);
         
-        setEmployee(res.data.employee); // 👈 IMPORTANT: access `employee` inside response
+        setEmployee(res.data.employee); 
       } catch (error) {
         console.error("Error fetching employee details:", error);
       }
     };
     fetchEmployeeDetails();
   }, [id]);
+
+  //handle save function
+  const handleSave = async () => {
+    try {
+      await axios.put(`http://localhost:3030/employee/employees/${id}`, employee);
+      setIsEditing(false); // turn off editing mode after successful save
+      alert("Employee details updated successfully!");
+    } catch (error) {
+      console.error("Error updating employee details:", error);
+      alert("Failed to update employee details.");
+    }
+  };
+  
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,8 +115,8 @@ const [employee, setEmployee] = useState({
                 <label className="font-bold text-[#122D3B]">Office Phone:</label>
                 <input type="tel" name="officePhone" value={employee.officePhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
                 
-                <label className="font-bold text-[#122D3B]">Birthday:</label>
-                <input type="date" name="birthday" value={employee.birthday} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                {/* <label className="font-bold text-[#122D3B]">Birthday:</label>
+                <input type="date" name="birthday" value={employee.birthday} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" /> */}
                
               </div>
 
@@ -137,10 +150,11 @@ const [employee, setEmployee] = useState({
             </div>
 
             <div className="flex justify-center mt-6">
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="flex items-center gap-2 bg-[#122D3B] text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
-              >
+            <button
+                    onClick={isEditing ? handleSave : () => setIsEditing(true)}
+                    className="flex items-center gap-2 bg-[#122D3B] text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
+                  >
+
                 {isEditing ? (
                   <>
                     <FaSave size={18} /> Save

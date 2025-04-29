@@ -51,10 +51,17 @@ const EmployeeSignIn = () => {
     const { name, value } = e.target;
 
     // Validate phone fields
-    if ((name === "officePhone" || name === "personalPhone") && !/^\+?\d*$/.test(value)) {
+  if ((name === "officePhone" || name === "personalPhone")) {
+    if (!/^\+?\d*$/.test(value)) {
       setPhoneErrors((prev) => ({
         ...prev,
         [name]: "Phone number must contain digits only and may start with +.",
+      }));
+    } else if (value.replace(/\D/g, "").length > 10) {
+      // Remove non-digit characters and check length
+      setPhoneErrors((prev) => ({
+        ...prev,
+        [name]: "Phone number must not exceed 10 digits.",
       }));
     } else {
       setPhoneErrors((prev) => ({
@@ -62,8 +69,9 @@ const EmployeeSignIn = () => {
         [name]: "",
       }));
     }
-    
+  }
 
+    
     setFormData({ ...formData, [name]: value });
   };
 
