@@ -4,6 +4,8 @@ import { FaArrowLeft, FaEdit, FaSave, FaPlus, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
+
 
 const EmployeeDetails = () => {
 const id = localStorage.getItem("employeeId");
@@ -20,6 +22,7 @@ const [employee, setEmployee] = useState({
     address: "",
   });
 
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState<string[]>([]);
   const [noteText, setNoteText] = useState("");
@@ -56,6 +59,19 @@ const [employee, setEmployee] = useState({
     }
   };
   
+  //handle delete part
+const handleDelete = async () => {
+  try {
+    await axios.delete(`http://localhost:3030/employee/employees/${id}`);
+    localStorage.removeItem("employeeId"); // optional: clear ID
+    alert("Employee deleted successfully!");
+    navigate("/employeelogin"); // redirect to login page
+  } catch (error) {
+    console.error("Error deleting employee:", error);
+    alert("Failed to delete employee.");
+  }
+};
+
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,23 +165,22 @@ const [employee, setEmployee] = useState({
               </div>
             </div>
 
-            <div className="flex justify-center mt-6">
-            <button
+            <div className="flex justify-center mt-6 gap-20">
+                  <button
                     onClick={isEditing ? handleSave : () => setIsEditing(true)}
                     className="flex items-center gap-2 bg-[#122D3B] text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
                   >
+                    {isEditing ? <><FaSave size={18} /> Save</> : <><FaEdit size={18} /> Edit</>}
+                  </button>
 
-                {isEditing ? (
-                  <>
-                    <FaSave size={18} /> Save
-                  </>
-                ) : (
-                  <>
-                    <FaEdit size={18} /> Edit
-                  </>
-                )}
-              </button>
-            </div>
+                  <button
+                    onClick={handleDelete}
+                    className="flex items-center gap-2 bg-[#122D3B]  text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
+                  >
+                    <FaTrash size={18} /> Delete
+                  </button>
+                </div>
+
           </div>
 
           {/* Add Note Section */}
