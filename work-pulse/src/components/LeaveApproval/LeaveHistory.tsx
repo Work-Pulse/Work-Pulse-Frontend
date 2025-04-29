@@ -53,8 +53,9 @@ const LeaveHistory = () => {
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <Link to="/leaverequestform" className="absolute top-6 left-6">
-        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red-600 rounded-lg hover:bg-red-700 transition duration-300">
+      {/* Back Button */}
+      <Link to="/leavedashboard" className="absolute top-6 left-6">
+        <button className="flex items-center gap-2 text-text text-xl font-extrabold p-3 bg-red-500 rounded-lg hover:text-reject transition duration-300">
           <FaArrowLeft size={20} /> Back
         </button>
       </Link>
@@ -175,20 +176,7 @@ const LeaveHistory = () => {
           </table>
         </div>
 
-        <div className="flex justify-center gap-4 mt-8">
-        <Link
-            to="/employeedashboard"
-            className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
-          >
-            Back to Dashboard
-          </Link>
-          </div>
-          <Link
-            to="/leavereport"
-            className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
-          >
-            Leave Report
-          </Link>
+        
           
       </div>
     </motion.div>
