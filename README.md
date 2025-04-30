@@ -1,2 +1,1 @@
-# Work-Pulse-Frontend
-This is the Frontend requirement for Work-Pulse real-time employee tracking application. 
+WORK PULSE is a task assigning and tracking desktop application designed to streamline project and employee management for organizations. This innovative software allows businesses to effectively manage, complete, and track tasks within a given project by monitoring the progress of each employee. By focusing on ease of use, real-time tracking, and robust task management, WORK PULSE empowers managers and employees to stay organized, meet deadlines, and improve overall productivity. The system provides features that ensure smooth operations from task assignment to leave tracking, making it an essential tool for managing dynamic work environments.
