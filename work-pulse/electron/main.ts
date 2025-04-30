@@ -25,6 +25,7 @@ function createWindow() {
   })
 
   win.webContents.on('did-finish-load', () => {
+    win?.setTitle("Work Pulse");
     win?.webContents.send('main-process-message', new Date().toLocaleString())
   })
 
