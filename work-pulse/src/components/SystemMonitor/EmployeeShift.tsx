@@ -4,7 +4,6 @@ import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
 import bg from "../../assets/images/bg.png"
 import { motion } from "framer-motion"
-import { ArrowLeft } from "lucide-react"
 import ChatWindow from "./SubComponents/ChatWindow"
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import axios from "axios"
@@ -99,7 +98,7 @@ const EmployeeShift = () => {
   const navigate = useNavigate();
   const [officeMail, setOfficeMail] = useState<string | null>(null);
   const [employeeData, setEmployeeData] = useState({
-    id: 0, 
+    employeeId: 0, 
     firstName: '',
     lastName: '',
     designation: '',
@@ -154,17 +153,17 @@ const EmployeeShift = () => {
   
     try {
       if (!user) {
-        alert("❌ User is not authenticated");
+        alert("User is not authenticated");
         return;
       }
   
-      const token = await user.getIdToken(); // ✅ Get Firebase ID token
+      const token = await user.getIdToken(); 
   
       await axios.post(
         "http://localhost:3030/shift/shift-usage/save",
         {
           officeMail,
-          employeeId: employeeData.id,
+          employeeId: employeeData.employeeId,
           firstName: employeeData.firstName,
           lastName: employeeData.lastName,
           designation: employeeData.designation,
@@ -176,15 +175,15 @@ const EmployeeShift = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Include Firebase Auth token here
+            Authorization: `Bearer ${token}`, // Include Firebase Auth token here
           },
         }
       );
   
-      alert(`Shift ended. Total time: ${totalTime}\n✅ Shift data saved successfully!`);
+      alert(`Shift ended. Total time: ${totalTime}\n Shift data saved successfully!`);
     } catch (err) {
-      console.error("❌ Failed to save shift data:", err);
-      alert("❌ Failed to save shift data.");
+      console.error("Failed to save shift data:", err);
+      alert("Failed to save shift data.");
     }
   };
 
@@ -196,22 +195,12 @@ const EmployeeShift = () => {
       className="flex flex-col justify-center min-h-screen bg-cover bg-center p-6 bg-fixed"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <div className="w-full">
-        <div className="fixed">
-          <Link to="/employeedashboard">
-            <button className="absolute top-6 left-6 text-accent hover:text-reject p-3 rounded-full flex items-center font-extrabold">
-              <ArrowLeft size={24} className="mr-2" /> Back
-            </button>
-          </Link>
-        </div>
-      </div>
-
       <div className="flex">
         <div className="w-2/3 p-6">
           {/* Shift Timer */}
           <div className="bg-white p-4 shadow rounded-lg mt-20 ml-40 mr-50">
             <div className="flex flex-col items-center justify-center bg-cover bg-center text-[#122D3B] font-bold">
-              <h2 className="text-2xl font-bold">{employeeData.firstName} {employeeData.lastName}</h2>
+              <h2 className="text-2xl font-bold">{employeeData.firstName} {employeeData.lastName} {employeeData.lastName}</h2>
               <h2 className="text-lg">{officeMail}</h2>
             </div>
 
@@ -237,6 +226,7 @@ const EmployeeShift = () => {
                   <button onClick={pauseShift} className="bg-[#E0E0E0] text-black px-4 py-2 rounded mr-2">
                     Pause Shift
                   </button>
+                  <Link to="/employeedashboard">
                   <button
                     onClick={() => {
                     endShift();   // Stop the timer + update UI
@@ -246,7 +236,7 @@ const EmployeeShift = () => {
                   >
                     End Shift
                   </button>
-
+                  </Link>
                 </>
               )}
             </div>
