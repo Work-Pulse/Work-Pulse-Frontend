@@ -143,6 +143,51 @@ const EmployeeShift = () => {
     return () => unsubscribe();
   }, [auth, navigate]);
 
+  const submit = async () => {
+    setEndTime(dayjs().format("YYYY-MM-DD HH:mm:ss"));
+    setShiftStarted(false);
+    setShiftPaused(true);
+    (window as any).ipcRenderer.send("stop-tracking");
+  
+    const totalTime = formatTime(elapsedTime);
+    const user = getAuth().currentUser;
+  
+    try {
+      if (!user) {
+        alert("❌ User is not authenticated");
+        return;
+      }
+  
+      const token = await user.getIdToken(); // ✅ Get Firebase ID token
+  
+      await axios.post(
+        "http://localhost:3030/shift/shift-usage/save",
+        {
+          officeMail,
+          employeeId: employeeData.id,
+          firstName: employeeData.firstName,
+          lastName: employeeData.lastName,
+          designation: employeeData.designation,
+          department: employeeData.department,
+          startTime: dayjs.unix(startTime).format("YYYY-MM-DD HH:mm:ss"),
+          endTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+          totalTime,
+          usageMap,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ Include Firebase Auth token here
+          },
+        }
+      );
+  
+      alert(`Shift ended. Total time: ${totalTime}\n✅ Shift data saved successfully!`);
+    } catch (err) {
+      console.error("❌ Failed to save shift data:", err);
+      alert("❌ Failed to save shift data.");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -181,6 +226,8 @@ const EmployeeShift = () => {
                 <button onClick={startShift} className="bg-text text-white px-4 py-2 rounded mr-2">
                   Start Shift
                 </button>
+                
+                
               ) : shiftPaused ? (
                 <button onClick={resumeShift} className="bg-text text-white px-4 py-2 rounded mr-2">
                   Resume Shift
@@ -190,9 +237,16 @@ const EmployeeShift = () => {
                   <button onClick={pauseShift} className="bg-[#E0E0E0] text-black px-4 py-2 rounded mr-2">
                     Pause Shift
                   </button>
-                  <button onClick={endShift} className="bg-[#FF0000] text-white px-4 py-2 rounded">
+                  <button
+                    onClick={() => {
+                    endShift();   // Stop the timer + update UI
+                    submit();     // Send data to backend
+                    }}
+                    className="bg-[#FF0000] text-white px-4 py-2 rounded mr-2"
+                  >
                     End Shift
                   </button>
+
                 </>
               )}
             </div>
