@@ -19,7 +19,7 @@ import {
   // Logout
   export const logoutUser = () => signOut(auth);
   
-  // Observe session state
+  // Observe session state state
   export const observeUser = (cb: (user: User | null) => void) =>
     onAuthStateChanged(auth, cb);
   
