@@ -19,6 +19,7 @@ const LeaveHistory = () => {
     startDate: "",
     endDate:"",
     leaveTime: "",
+    status:""
   });
 
 
@@ -60,6 +61,7 @@ const LeaveHistory = () => {
         startDate: latestLeave.startDate || "",
         endDate: latestLeave.endDate || "",
         leaveTime: latestLeave.leaveTime || "",
+        status:latestLeave.status || "",
       });
     }
   }, [leaveData]);
@@ -128,6 +130,7 @@ const LeaveHistory = () => {
                 <th className="p-3 text-left">Start Date</th>
                 <th className="p-3 text-left">End Date</th>
                 <th className="p-3 text-left">Time</th>
+                <th className="p-3 text-left">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -138,6 +141,7 @@ const LeaveHistory = () => {
                       <td className="p-3">{new Date(leave.startDate).toLocaleDateString()}</td>
                       <td className="p-3">{new Date(leave.endDate).toLocaleDateString()}</td>
                       <td className="p-3">{leave.leaveTime}</td>
+                      <td className="p-3">{leave.status}</td>
                     </tr>
                   ))
                 ) : (
