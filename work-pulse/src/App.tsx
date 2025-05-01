@@ -61,7 +61,7 @@ const App = () => {
 
         <Route path="/shift" element={<EmployeeShift />} />
         <Route path="/monitor" element={<EmployeeMonitor />} />
-        <Route path="/shift-report" element={<ShiftReport />} />
+        <Route path="/shift-report/:employeeId" element={<ShiftReport />} />
         <Route path="/manager-chat" element={<ManagerChat />} />
 
         <Route path="/leaverequestform" element={<LeaveRequestForm />} />

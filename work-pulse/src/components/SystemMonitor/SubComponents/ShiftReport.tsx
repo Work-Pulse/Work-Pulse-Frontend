@@ -1,135 +1,74 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import bg from '../../../assets/images/bg.png';
+import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import bg from "../../../assets/images/bg.png";
 import { ArrowLeft, Search } from "lucide-react";
+import axios from "axios";
 
-const employee = {
-  name: "Jhon Doe",
-  designation: "Senior Software Engineer",
-  department: "Department of IT & Research",
+
+interface ApplicationUsage {
+  appName: string;
+  usageInSeconds: number;
+}
+
+const formatTime = (seconds: number) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const sec = seconds % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
 };
 
-const data = [
-  {
-    date: "2025/03/05",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [
-      { name: "VS Code", duration: "02:30:00" },
-      { name: "Teams", duration: "01:00:00" },
-    ],
-    unauthorizedActivities: [
-      { name: "Whatsapp", duration: "02:30:00" },
-      { name: "Youtube", duration: "01:00:00" },
-    ],
-  },
-  {
-    date: "2025/03/04",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [{ name: "Slack", duration: "01:30:00" }],
-    unauthorizedActivities: [{ name: "Instagram", duration: "01:30:00" }],
-  },
-  {
-    date: "2025/03/03",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [
-      { name: "VS Code", duration: "02:30:00" },
-      { name: "Teams", duration: "01:00:00" },
-    ],
-    unauthorizedActivities: [
-      { name: "Whatsapp", duration: "02:30:00" },
-      { name: "Youtube", duration: "01:00:00" },
-    ],
-  },
-  {
-    date: "2025/03/02",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [
-      { name: "VS Code", duration: "02:30:00" },
-      { name: "Teams", duration: "01:00:00" },
-    ],
-    unauthorizedActivities: [
-      { name: "Riot", duration: "02:30:00" },
-      { name: "Youtube", duration: "01:00:00" },
-    ],
-  },
-  {
-    date: "2025/03/01",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [
-      { name: "VS Code", duration: "02:30:00" },
-      { name: "Teams", duration: "01:00:00" },
-    ],
-    unauthorizedActivities: [
-      { name: "Reddit", duration: "02:30:00" },
-      { name: "Youtube", duration: "01:00:00" },
-    ],
-  },
-  {
-    date: "2025/02/28",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [
-      { name: "VS Code", duration: "02:30:00" },
-      { name: "Teams", duration: "01:00:00" },
-    ],
-    unauthorizedActivities: [
-      { name: "Netflix", duration: "02:30:00" },
-      { name: "Youtube", duration: "01:00:00" },
-    ],
-  },
-  {
-    date: "2025/02/27",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [
-      { name: "VS Code", duration: "02:30:00" },
-      { name: "Teams", duration: "01:00:00" },
-    ],
-    unauthorizedActivities: [
-      { name: "Whatsapp", duration: "02:30:00" },
-      { name: "Netflix", duration: "01:00:00" },
-    ],
-  },
-  {
-    date: "2025/02/26",
-    startTime: "09:00:00",
-    endTime: "17:00:00",
-    totalShift: "08:00:00",
-    applicationUsage: [
-      { name: "VS Code", duration: "02:30:00" },
-      { name: "Teams", duration: "01:00:00" },
-    ],
-    unauthorizedActivities: [
-      { name: "Spotify", duration: "02:30:00" },
-      { name: "Youtube", duration: "01:00:00" },
-    ],
-  },
-];
-
-export default function AttendanceMonitor() {
-  const [search, setSearch] = useState("");
-  
-  const filteredData = data.filter((entry) => {
-    const lowerSearch = search.toLowerCase();
-    return (
-      entry.date.includes(search) ||
-      entry.applicationUsage.some((app) => app.name.toLowerCase().includes(lowerSearch)) ||
-      entry.unauthorizedActivities.some((act) => act.name.toLowerCase().includes(lowerSearch))
-    );
+export default function ShiftReport() {
+  const { employeeId } = useParams();
+  const [employeeInfo, setEmployeeInfo] = useState({
+    firstName: "",
+    lastName: "",
+    department: "",
+    designation: "",
   });
+  const [shiftData, setShiftData] = useState<any[]>([]);
+  const [filteredShiftData, setFilteredShiftData] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const fetchEmployeeData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3030/shift/employee-info/${employeeId}`);
+        setEmployeeInfo(res.data);
+      } catch (error) {
+        console.error("Error fetching employee data:", error);
+      }
+    };
+
+    const fetchShiftData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3030/shift/shift-usage/employee/${employeeId}`);
+        setShiftData(res.data);
+        setFilteredShiftData(res.data); // Initially set filtered data to all shift data
+      } catch (error) {
+        console.error("Error fetching shift data:", error);
+      }
+    };
+
+    fetchEmployeeData();
+    fetchShiftData();
+  }, [employeeId]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.toLowerCase();
+    setSearchTerm(value);
+
+    const filteredData = shiftData.filter((shift) => {
+      const matchesDate =
+        shift.startTime.toLowerCase().includes(value) || shift.endTime.toLowerCase().includes(value);
+      const matchesApp = shift.applicationUsage.some((app: ApplicationUsage) =>
+        app.appName.toLowerCase().includes(value)
+      );
+      return matchesDate || matchesApp;
+    });
+
+    setFilteredShiftData(filteredData); // Update the filtered data
+  };
 
   return (
     <motion.div
@@ -139,7 +78,6 @@ export default function AttendanceMonitor() {
       className="flex flex-col items-center min-h-screen bg-cover bg-center p-6 bg-fixed"
       style={{ backgroundImage: `url(${bg})` }}
     >
-    
       {/* Back Button */}
       <div className="w-full">
         <div className="fixed">
@@ -151,83 +89,48 @@ export default function AttendanceMonitor() {
         </div>
       </div>
 
-      {/* Employee Details */}
-      <div className="w-full max-w-6xl bg p-6 rounded-lg text-center">
-        <h2 className="text-3xl font-bold text-gray-900"></h2>
-        <p className="text-2xl text-accent font-bold mt-4">{employee.name}</p>
-        <p className="text-accent font-semibold">{employee.designation}</p>
-        <p className="text-accent">{employee.department}</p>
+      {/* Employee Info */}
+      <div className="w-full max-w-6xl p-2 rounded-lg text-center mt-3">
+        <p className="text-3xl font-bold text-text">{employeeInfo.firstName} {employeeInfo.lastName}</p>
+        <p className="text-lg font-bold text-text">{employeeInfo.designation} - Department of {employeeInfo.department}</p>
+        <p className="text-lg"></p>
       </div>
 
       {/* Search Input */}
-      <div className="relative w-[50%] shadow-lg">
-            <Search className="absolute left-3 top-4 text-text" size={20} />
-            <input
-              className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none"
-              placeholder="Search Date, Application Usage..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-
-      {/* Table Container */}
-      <div className="max-w-6xl rounded-lg mt-4">
-        {/* Table Header */}
-        <div className="grid grid-cols-6 bg-background p-4 text-text font-bold text-center items-center rounded-lg shadow-lg">
-          <span>Date</span>
-          <span>Start Time</span>
-          <span>End Time</span>
-          <span>Total Shift</span>
-          <span>Application Usage</span>
-          <span>Unauthorized Activities</span>
-        </div>
-
-        {/* Table Body */}
-        <div className="mt-4">
-          {filteredData.length > 0 ? (
-            filteredData.map((entry, index) => (
-              <div key={index} className="mt-4">
-                {/* One div per row (same width as header) */}
-                <div className="grid grid-cols-6 bg-background p-4 text-text text-center items-center rounded-lg shadow-lg transition-shadow duration-200">
-                  <span>{entry.date}</span>
-                  <span>{entry.startTime}</span>
-                  <span>{entry.endTime}</span>
-                  <span>{entry.totalShift}</span>
-
-                  {/* Application Usage Column */}
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {entry.applicationUsage.length > 0 ? (
-                      entry.applicationUsage.map((app, i) => (
-                        <span key={i} className="text-text px-3 py-1 rounded-lg">
-                          {app.name} - {app.duration}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-accent text-xs">No Data</span>
-                    )}
-                  </div>
-
-                  {/* Unauthorized Activities Column */}
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {entry.unauthorizedActivities.length > 0 ? (
-                      entry.unauthorizedActivities.map((act, i) => (
-                        <span key={i} className="bg-red-100 text-accent px-3 py-1 rounded-lg text-xs">
-                          {act.name} - {act.duration}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-accent text-xs">No Data</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-accent mt-4">No results found</p>
-          )}
-        </div>
+      <div className="relative w-[40%] shadow-lg mt-3">
+      <Search className="absolute left-2 top-4 text-text" size={25} />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Search by date or application name"
+          className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none"
+        />
       </div>
-    
+
+      {/* Table Header */}
+      <div className="max-w-6xl w-full mt-6">
+        <div className="grid bg-background grid-cols-5 p-4 text-text text-xl font-bold text-center items-center rounded-lg shadow-lg">
+          <span >Start Time</span>
+          <span >End Time</span>
+          <span>Total Shift</span>
+          <span className="col-span-2">Application Usage</span>
+        </div>
+        {filteredShiftData.map((shift, index) => (
+          <div key={index} className="grid grid-cols-5 p-4 bg-background text-center items-center rounded-lg shadow-md mt-4">
+            <span className="font-medium">{shift.startTime}</span>
+            <span className="font-medium">{shift.endTime}</span>
+            <span className="font-medium">{shift.totalTime}</span>
+            <div className="col-span-2">
+              {shift.applicationUsage.map((app: ApplicationUsage, appIndex: number) => (
+                <div key={appIndex}>
+                  {app.appName} ({formatTime(app.usageInSeconds)})
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </motion.div>
   );
 }
