@@ -17,6 +17,7 @@ const EmployeeDashboard = () => {
     lastName: '',
     designation: '',
     department: '',
+    
   });
 
   const auth = getAuth();
@@ -97,7 +98,7 @@ const EmployeeDashboard = () => {
           Shift
         </Link>
 
-        <Link to='/leaverequestform' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
+        <Link to='/leavedashboard' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
           <FaClipboardCheck size={80} />
           Leave Requests
         </Link>
@@ -113,6 +114,7 @@ const EmployeeDashboard = () => {
           <p>Logged in as: {officeMail}</p>
         </div>
       )}
+      
 
     </motion.div>
   );

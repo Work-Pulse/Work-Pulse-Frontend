@@ -1,27 +1,115 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaArrowLeft } from "react-icons/fa";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import bg from "../../assets/images/bg.png";
+import axios from "axios";
 
 const LeaveRequestForm = () => {
-  // Form state
+  const navigate = useNavigate();
+  const [officeMail, setOfficeMail] = useState<string | null>(null);
+  const [employeeData, setEmployeeData] = useState({
+    firstName: '',
+    lastName: '',
+    designation: '',
+    department: '',
+  });
+
+  const auth = getAuth();
+
+  // Updated Form state
   const [formData, setFormData] = useState({
+    firstName: "",
+    officeMail: "",
     leaveType: "",
     startDate: "",
     endDate: "",
-    reason: "",
+    leaveTime: "",
   });
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setOfficeMail(firebaseUser.email);
+        // Get Firebase ID Token
+        const token = await firebaseUser.getIdToken();
+
+        // Fetch employee data after setting officeMail
+        if (firebaseUser.email) {
+          try {
+            const response = await axios.get(
+              `http://localhost:3030/employee/employee/data/${firebaseUser.email}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            // Assuming the API response has an 'id' field
+            setEmployeeData({
+              ...response.data,
+              id: response.data.id || 0,
+            });
+          } catch (error) {
+            console.error('Error fetching employee data:', error);
+          }
+        }
+      } else {
+        navigate('/employeelogin'); // Redirect to login if not authenticated
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, navigate]);
+
   // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    if (officeMail) {
+      setFormData((prev) => ({ ...prev, officeMail }));
+    }
+  }, [officeMail]);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Leave Request Submitted:", formData);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const startDate = new Date(formData.startDate);
+    const endDate = new Date(formData.endDate);
+
+    if (startDate < today || endDate < today) {
+      alert("Start Date and End Date must be today or a future date.");
+      return;
+    }
+
+    if (endDate < startDate) {
+      alert("End Date cannot be earlier than Start Date.");
+      return;
+    }
+
+    // Include the firstName in the form data
+    const requestData = {
+      ...formData,
+      firstName: employeeData.firstName, // Add firstName here
+    };
+
+    axios.post("http://localhost:3030/leave/leaves", requestData)
+      .then((res) => {
+        console.log("Success:", res.data);
+        alert("Leave Request Submitted Successfully!");
+        navigate("/leavedashboard");
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        alert("Submit failed");
+      });
   };
 
   return (
@@ -32,20 +120,29 @@ const LeaveRequestForm = () => {
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
-       {/* Back Button */}
-      <Link to="/employeedashboard" className="absolute top-6 left-6">
-        <button className="flex items-center gap-2 text-white text-lg font-semibold p-3 bg-red-600 rounded-lg hover:bg-red-700 transition duration-300">
+      {/* Back Button */}
+      <Link to="/leavedashboard" className="absolute top-6 left-6">
+        <button className="flex items-center gap-2 text-text text-xl font-extrabold p-3 bg-red-500 rounded-lg hover:text-reject transition duration-300">
           <FaArrowLeft size={20} /> Back
         </button>
       </Link>
-      
+
       <div className="bg-[#C6D2D5] p-8 rounded-2xl shadow-xl w-full max-w-3xl">
-        <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Leave Request Form</h1>
+        <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-2">Leave Request Form</h1>
 
+        {/* Employee Name */}
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-
           {/* Left Column */}
           <div className="flex flex-col gap-4">
+            <label className="font-medium mb-5 text-[#122D3B]">
+              Name : {employeeData.firstName} {employeeData.lastName}
+            </label>
+
+            <label className="font-medium mb-5 text-[#122D3B]">
+              My Office Mail : {officeMail}
+            </label>
+
+            {/* Leave Type */}
             <label className="font-medium text-[#122D3B]">
               Leave Type
               <select
@@ -59,17 +156,19 @@ const LeaveRequestForm = () => {
                 <option value="Annual">Annual Leave</option>
                 <option value="Sick">Sick Leave</option>
                 <option value="Casual">Casual Leave</option>
-                <option value="Maternity">Maternity Leave</option>
+                <option value="Half Day">Half Day</option>
               </select>
             </label>
 
+            {/* End Date */}
             <label className="font-medium text-[#122D3B]">
-              Start Date
+              End Date
               <input
                 type="date"
-                name="startDate"
-                value={formData.startDate}
+                name="endDate"
+                value={formData.endDate}
                 onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
               />
@@ -78,32 +177,35 @@ const LeaveRequestForm = () => {
 
           {/* Right Column */}
           <div className="flex flex-col gap-4">
+            {/* Start Date */}
             <label className="font-medium text-[#122D3B]">
-              End Date
+              Start Date
               <input
                 type="date"
-                name="endDate"
-                value={formData.endDate}
+                name="startDate"
+                value={formData.startDate}
                 onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
               />
             </label>
-          </div>
 
-          {/* Reason - Full Width */}
-          <div className="col-span-2">
-            <label className="font-medium text-[#122D3B]">
-              Reason
-              <textarea
-                name="reason"
-                value={formData.reason}
-                onChange={handleChange}
-                rows={4}
-                className="mt-1 p-3 border border-gray-300 rounded-lg w-full resize-none"
-                required
-              />
-            </label>
+            {/* Leave Time */}
+            {formData.leaveType === "Half Day" && (
+              <div className="col-span-2">
+                <label className="font-medium text-[#122D3B]">
+                  Leave Time
+                  <input
+                    type="time"
+                    name="leaveTime"
+                    value={formData.leaveTime}
+                    onChange={handleChange}
+                    className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
+                  />
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -116,25 +218,6 @@ const LeaveRequestForm = () => {
             </button>
           </div>
         </form>
-
-        {/* Back to Dashboard */}
-        <div className="flex justify-between gap-4 mt-8">
-          <Link
-            to="/employeedashboard"
-            className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
-          >
-            Back to Dashboard
-          </Link>
-        
-
-        {/* leave report*/}
-          <Link
-            to="/leavehistory"
-            className="bg-[#122D3B] hover:bg-opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300"
-          >
-            Leave History
-          </Link>
-        </div>
       </div>
     </motion.div>
   );
