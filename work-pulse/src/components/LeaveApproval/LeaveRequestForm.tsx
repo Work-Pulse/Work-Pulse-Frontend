@@ -1,26 +1,78 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaArrowLeft } from "react-icons/fa";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import bg from "../../assets/images/bg.png";
 import axios from "axios";
 
 const LeaveRequestForm = () => {
   const navigate = useNavigate();
+  const [officeMail, setOfficeMail] = useState<string | null>(null);
+  const [employeeData, setEmployeeData] = useState({
+    firstName: '',
+    lastName: '',
+    designation: '',
+    department: '',
+  });
+
+  const auth = getAuth();
 
   // Updated Form state
   const [formData, setFormData] = useState({
-    employeeName: "",
+    firstName: "",
+    officeMail: "",
     leaveType: "",
     startDate: "",
     endDate: "",
     leaveTime: "",
   });
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setOfficeMail(firebaseUser.email);
+        // Get Firebase ID Token
+        const token = await firebaseUser.getIdToken();
+
+        // Fetch employee data after setting officeMail
+        if (firebaseUser.email) {
+          try {
+            const response = await axios.get(
+              `http://localhost:3030/employee/employee/data/${firebaseUser.email}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            // Assuming the API response has an 'id' field
+            setEmployeeData({
+              ...response.data,
+              id: response.data.id || 0,
+            });
+          } catch (error) {
+            console.error('Error fetching employee data:', error);
+          }
+        }
+      } else {
+        navigate('/employeelogin'); // Redirect to login if not authenticated
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, navigate]);
+
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    if (officeMail) {
+      setFormData((prev) => ({ ...prev, officeMail }));
+    }
+  }, [officeMail]);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,7 +94,13 @@ const LeaveRequestForm = () => {
       return;
     }
 
-    axios.post("http://localhost:3030/leave/leaves", formData)
+    // Include the firstName in the form data
+    const requestData = {
+      ...formData,
+      firstName: employeeData.firstName, // Add firstName here
+    };
+
+    axios.post("http://localhost:3030/leave/leaves", requestData)
       .then((res) => {
         console.log("Success:", res.data);
         alert("Leave Request Submitted Successfully!");
@@ -70,23 +128,18 @@ const LeaveRequestForm = () => {
       </Link>
 
       <div className="bg-[#C6D2D5] p-8 rounded-2xl shadow-xl w-full max-w-3xl">
-        <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Leave Request Form</h1>
+        <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-2">Leave Request Form</h1>
 
+        {/* Employee Name */}
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
           {/* Left Column */}
           <div className="flex flex-col gap-4">
-            {/* Employee Name */}
-            <label className="font-medium text-[#122D3B]">
-              Employee Name
-              <input
-                type="text"
-                name="employeeName"
-                value={formData.employeeName}
-                onChange={handleChange}
-                placeholder="Enter your name"
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-                required
-              />
+            <label className="font-medium mb-5 text-[#122D3B]">
+              Name : {employeeData.firstName} {employeeData.lastName}
+            </label>
+
+            <label className="font-medium mb-5 text-[#122D3B]">
+              My Office Mail : {officeMail}
             </label>
 
             {/* Leave Type */}
@@ -107,8 +160,8 @@ const LeaveRequestForm = () => {
               </select>
             </label>
 
-           {/* End Date */}
-           <label className="font-medium text-[#122D3B]">
+            {/* End Date */}
+            <label className="font-medium text-[#122D3B]">
               End Date
               <input
                 type="date"
@@ -123,7 +176,7 @@ const LeaveRequestForm = () => {
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col gap-4"> 
+          <div className="flex flex-col gap-4">
             {/* Start Date */}
             <label className="font-medium text-[#122D3B]">
               Start Date
@@ -139,18 +192,6 @@ const LeaveRequestForm = () => {
             </label>
 
             {/* Leave Time */}
-            
-            {/* <label className="font-medium text-[#122D3B]">
-              Leave Time
-              <input
-                type="time"
-                name="leaveTime"
-                value={formData.leaveTime}
-                onChange={handleChange}
-                className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
-              />
-            </label> */}
-
             {formData.leaveType === "Half Day" && (
               <div className="col-span-2">
                 <label className="font-medium text-[#122D3B]">

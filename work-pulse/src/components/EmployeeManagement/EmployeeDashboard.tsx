@@ -17,6 +17,7 @@ const EmployeeDashboard = () => {
     lastName: '',
     designation: '',
     department: '',
+    
   });
 
   const auth = getAuth();
@@ -113,6 +114,7 @@ const EmployeeDashboard = () => {
           <p>Logged in as: {officeMail}</p>
         </div>
       )}
+      
 
     </motion.div>
   );
