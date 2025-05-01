@@ -1,20 +1,26 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+
+import { Link,useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaEdit, FaSave, FaPlus, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const EmployeeDetails = () => {
-  const [employee, setEmployee] = useState({
-    firstName: "Emp1",
-    lastName: "Emppp",
-    joinDate: "2023-05-10",
-    birthday: "1995-08-15",
-    officeMail: "emp1@workpulse.com",
-    personalMail: "emp1emppp@gmail.com",
-    officePhone: "+1234567890",
-    personalPhone: "+0987654321",
-    address: "12/C, Gothatuwa Rd, Thalawakale",
+  const navigate = useNavigate();
+  const [officeMail, setOfficeMail] = useState<string | null>(null);
+  const [employeeData, setEmployeeData] = useState({
+      id: 0, 
+      firstName:'',
+      lastName:'',
+      officeMail:'',
+      personalMail:'',
+      officePhone:'',
+      personalPhone:'',
+      joinDate:'',
+      birthday:'',
+      address:'',
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -28,9 +34,50 @@ const EmployeeDetails = () => {
     { text: "Submit weekly timesheet", completed: false },
   ]);
 
-  // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmployee({ ...employee, [e.target.name]: e.target.value });
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setOfficeMail(firebaseUser.email);
+        // Get Firebase ID Token
+        const token = await firebaseUser.getIdToken();
+
+        // Fetch employee data after setting officeMail
+        if (firebaseUser.email) {
+          try {
+            const response = await axios.get(
+              `http://localhost:3030/employee/employee/data/${firebaseUser.email}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,  
+                },
+              }
+            );
+            // Assuming the API response has an 'id' field
+            setEmployeeData({
+              ...response.data,
+              id: response.data.id ,  
+            });
+          } catch (error) {
+            console.error('Error fetching employee data:', error);
+          }
+        }
+      } else {
+        navigate('/employeelogin'); // Redirect to login if not authenticated
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, navigate]);
+
+
+  //Handle input changes
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     setEmployeeData({ ...employeeData, [e.target.name]: e.target.value });
+   };
+
+  
   };
 
   // Add a new note
@@ -78,32 +125,34 @@ const EmployeeDetails = () => {
             <div className="grid grid-cols-2 gap-6">
               <div className="flex flex-col gap-4">
                 <label className="font-medium text-[#122D3B]">First Name:</label>
-                <input type="text" name="firstName" value={employee.firstName} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                <input type="text" name="firstName" value={employeeData.firstName} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
 
-                <label className="font-medium text-[#122D3B]">Last Name:</label>
-                <input type="text" name="lastName" value={employee.lastName} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                <label className="font-medium text-[#122D3B]">Office Email:</label>
+                <input type="email" name="officeMail" value={employeeData.officeMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
 
                 <label className="font-medium text-[#122D3B]">Birthday:</label>
-                <input type="date" name="birthday" value={employee.birthday} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
-
-                <label className="font-medium text-[#122D3B]">Personal Email:</label>
-                <input type="text" name="personalMail" value={employee.personalMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                <input type="date" name="birthday" value={employeeData.birthday} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
                 
+                <label className="font-medium text-[#122D3B]">Office Phone:</label>
+                <input type="tel" name="officePhone" value={employeeData.officePhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+
               </div>
 
               <div className="flex flex-col gap-4">
-                <label className="font-medium text-[#122D3B]">Office Email:</label>
-                <input type="email" name="officeMail" value={employee.officeMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
 
-                <label className="font-medium text-[#122D3B]">Office Phone:</label>
-                <input type="tel" name="officePhone" value={employee.officePhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
-                
-                <label className="font-medium text-[#122D3B]">Personal Phone:</label>
-                <input type="tel" name="personalPhone" value={employee.personalPhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
-                
+                <label className="font-medium text-[#122D3B]">Last Name:</label>
+                <input type="text" name="lastName" value={employeeData.lastName} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+              
+                <label className="font-medium text-[#122D3B]">Personal Email:</label>
+                <input type="text" name="personalMail" value={employeeData.personalMail} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+
                 <label className="font-medium text-[#122D3B]">Join Date:</label>
-                <input type="date" name="joinDate" value={employee.joinDate} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
-             
+                <input type="date" name="joinDate" value={employeeData.joinDate} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                                             
+                <label className="font-medium text-[#122D3B]">Personal Phone:</label>
+                <input type="tel" name="personalPhone" value={employeeData.personalPhone} onChange={handleChange} disabled={!isEditing} className="p-3 rounded-lg w-full" />
+                
+                
               </div>
               {/* Address Field */}
                 <div className="col-span-2">
@@ -111,19 +160,34 @@ const EmployeeDetails = () => {
                   <input
                     type="text"
                     name="address"
-                    value={employee.address}
+                    value={employeeData.address}
                     onChange={handleChange}
                     disabled={!isEditing}
                     className="p-3 rounded-lg w-full"
                   />
                 </div>
-
+                {officeMail && (
+              <div className="text-text mb-1 opacity-50">
+                <p>Logged in as: {officeMail}</p>
+              </div>
+                )}
             </div>
+           
 
             <div className="flex justify-center mt-6">
-              <button onClick={() => setIsEditing(!isEditing)} className="flex items-center gap-2 bg-[#122D3B] text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition">
-                {isEditing ? <><FaSave size={18} /> Save</> : <><FaEdit size={18} /> Edit</>}
-              </button>
+            <button
+                  onClick={() => {
+                    if (isEditing) {
+                      handleSave(); // Save the changes
+                    } else {
+                      setIsEditing(true); // Enable editing mode
+                    }
+                  }}
+                  className="flex items-center gap-2 bg-[#122D3B] text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
+                >
+                  {isEditing ? <><FaSave size={18} /> Save</> : <><FaEdit size={18} /> Edit</>}
+                </button>
+
             </div>
           </div>
 
