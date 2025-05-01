@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaPaperclip, FaPaperPlane } from "react-icons/fa";
+import { getAuth } from "firebase/auth";
+import axios from "axios";
 
+// Define types for chat message and attachment
 interface ChatMessage {
   id: number;
   text: string;
@@ -11,20 +14,57 @@ interface ChatMessage {
 
 const ChatWindow = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { id: 1, text: "Hi there, could you send me my latest bill please?", sender: "manager", timestamp: "18:42 p.m." }
+    { id: 1, text: "Hi there, could you send me my latest bill please?", sender: "manager", timestamp: "18:42 p.m." },
   ]);
   const [message, setMessage] = useState<string>("");
   const [attachment, setAttachment] = useState<File | null>(null);
+  const [officeMail, setOfficeMail] = useState<string | null>(null);  // Store officeMail
+  const [firstName, setFirstName] = useState<string | null>(null); // Store firstName
+  const [lastName, setLastName] = useState<string | null>(null); // Store lastName
+
+  useEffect(() => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+      const fetchEmployeeData = async () => {
+        try {
+          // Set officeMail from Firebase user email
+          setOfficeMail(user.email);
+
+          // Fetch the Firebase token
+          const token = await user.getIdToken();
+
+          // Make a request to your backend to fetch employee data by officeMail (firebase user email)
+          const response = await axios.get(`http://localhost:3030/employee/employee/data/${user.email}`, {
+            headers: {
+              Authorization: `Bearer ${token}`, // Send the token in the Authorization header
+            },
+          });
+
+          // Assuming the backend response contains firstName and lastName
+          setFirstName(response.data.firstName);
+          setLastName(response.data.lastName);
+        } catch (error) {
+          console.error("Error fetching employee data:", error);
+        }
+      };
+
+      fetchEmployeeData();
+    }
+  }, []);
 
   const sendMessage = () => {
     if (!message.trim() && !attachment) return;
+
     const newMessage: ChatMessage = {
       id: Date.now(),
       text: message,
       sender: "employee",
       attachment: attachment ? { name: attachment.name, size: "24 KB" } : null,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
+
     setChatMessages([...chatMessages, newMessage]);
     setMessage("");
     setAttachment(null);
@@ -44,8 +84,13 @@ const ChatWindow = () => {
 
   return (
     <div className="bg-white w-full rounded-lg shadow-lg flex flex-col h-[90%] max-w-md mx-auto shadow-lg fixed">
-      <div className="p-4 text-center font-semibold text-text flex items-center bg-background rounded-lg justify-center">
-        <span>Chat</span>
+      <div className="p-4 text-center font-semibold text-text flex items-center bg-background bg-opacity-40 rounded-lg justify-between">
+        {firstName && lastName && (
+          <span className="text-lg text-text">Chat as {`${firstName} ${lastName}`}</span>  
+        )}
+        {officeMail && (
+          <span className="text-sm text-gray-500">{officeMail}</span>  
+        )}
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {chatMessages.map((msg) => (

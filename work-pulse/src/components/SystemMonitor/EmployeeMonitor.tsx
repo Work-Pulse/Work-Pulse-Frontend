@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, Users } from "lucide-react";
 import bg from '../../assets/images/bg.png';
 import { motion } from 'framer-motion';
 import axios from "axios";
@@ -67,14 +67,21 @@ export default function EmployeeMonitoring() {
         </div>
 
         {/* Search Input */}
-        <div className="relative w-[50%] shadow-lg mb-5">
-        <Search className="absolute left-2 top-4 text-text" size={25} />
-          <input
-            className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none"
-            placeholder="Search Employee, Designation, Department..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="flex items-center justify-between mb-8">
+          <div className="relative w-[50%] shadow-lg mb-5">
+            <Search className="absolute left-2 top-4 text-text" size={25} />
+            <input
+              className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none"
+              placeholder="Search Employee, Designation, Department..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <Link to="/manager-chat">
+            <button className="bg-accent font-bold px-6 py-4 rounded-lg text-background flex items-center gap-2 shadow-lg hover:bg-background hover:text-text">
+              <Users size={20} /> Employee Chat
+            </button>
+          </Link>
         </div>
 
         {/* Table Header */}

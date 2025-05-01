@@ -200,7 +200,7 @@ const EmployeeShift = () => {
           {/* Shift Timer */}
           <div className="bg-white p-4 shadow rounded-lg mt-20 ml-40 mr-50">
             <div className="flex flex-col items-center justify-center bg-cover bg-center text-[#122D3B] font-bold">
-              <h2 className="text-2xl font-bold">{employeeData.firstName} {employeeData.lastName} {employeeData.lastName}</h2>
+              <h2 className="text-2xl font-bold">{employeeData.firstName} {employeeData.lastName}</h2>
               <h2 className="text-lg">{officeMail}</h2>
             </div>
 
