@@ -405,14 +405,7 @@ const TaskManager = () => {
         <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
         <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
       </div>
-      {!task.submitted && (
-  <button
-    onClick={submitTasks}
-    className="bg-text text-white px-4 py-1 rounded hover:bg-green-600 transition duration-300 mr-2"
-  >
-    Submit
-  </button>
-)}
+     
       <button
         onClick={() => {
           const taskIdToDelete = task._id || task.id?.toString();
@@ -438,7 +431,14 @@ const TaskManager = () => {
           </ul>
 
         ) : (<p className="text-gray-500">No tasks available</p>)}
-
+       {showSubmit && selectedUser && userTasks[selectedUser.id]?.length > 0 && (
+          <button
+            onClick={submitTasks}
+            className="mt-4 bg-text text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300"
+          >
+            Submit
+          </button>
+        )}
         
       </div>
     </motion.div>

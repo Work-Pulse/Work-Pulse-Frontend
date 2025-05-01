@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; 
 import { FaUser } from "react-icons/fa";
 import { motion } from "framer-motion";
+import axios from "axios";
 import bg from "../../assets/images/bg.png";
 import PasswordInput from "./PasswordInput";
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ManagerLogin = () => {
   const [username, setUsername] = useState("");
@@ -13,28 +16,39 @@ const ManagerLogin = () => {
   
   const navigate = useNavigate(); 
 
-  const handleLogin = () => {
-    let isValid = true;
+  const [isLoading, setIsLoading] = useState(false);
 
-    if (!username.trim()) {
-      setUsernameError("Username cannot be empty.");
-      isValid = false;
-    } else {
-      setUsernameError("");
-    }
 
-    if (!password.trim()) {
-      setPasswordError("Password cannot be empty.");
-      isValid = false;
-    } else {
-      setPasswordError("");
-    }
-
-    if (isValid) {
-      
-      navigate("/managerdashboard");
+  const handleLogin = async () => {
+    setIsLoading(true);
+    setUsernameError("");
+    setPasswordError("");
+  
+    try {
+      const response = await axios.post("http://localhost:3030/api/validate-login", {
+        username,
+        password,
+      });
+  
+      if (response.status === 200) {
+        navigate("/managerdashboard");
+      }
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data;
+        const message = data.message || data.error || "Validation failed";
+  
+        // Show toast instead of inline error
+        toast.error(message);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
+  
 
   return (
     <motion.div 
@@ -56,29 +70,32 @@ const ManagerLogin = () => {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
               className={`w-full pl-10 pr-3 py-2 border rounded-lg outline-none focus:ring-1 ${
                 usernameError ? "border-red-500 ring-red-500" : "border-gray-300 focus:ring-[#eab308] focus:border-[#eab308]"
               } text-[#122D3B]`}
             />
-            {usernameError && (
-              <p className="text-reject text-base mt-1 font-semibold">{usernameError}</p>
-            )}
+      
           </div>
 
          {/* Password Input */}
           <PasswordInput password={password} setPassword={setPassword} />
-          {passwordError && (
-            <p className="text-reject text-base font-semibold">{passwordError}</p>
-          )}
+         
         </div>
 
         {/* Login Button */}
         <button
           onClick={handleLogin}
-          className="text-white text-lg font-semibold p-3 bg-text rounded-lg hover:bg-white hover:text-[#122D3B] transition duration-300 w-full"
-        >
-          Login
+          disabled={isLoading}
+          className={`text-white text-lg font-semibold p-3 rounded-lg w-full transition duration-300 ${
+            isLoading
+             ? "bg-gray-400 cursor-not-allowed"
+             : "bg-text hover:bg-white hover:text-[#122D3B]"
+         }`}
+         >
+           {isLoading ? "Logging in..." : "Login"}
         </button>
+
 
         {/* Back to Home Button */}
         <div className="text-center">
@@ -90,6 +107,7 @@ const ManagerLogin = () => {
           </Link>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </motion.div>
   );
 };

@@ -19,6 +19,10 @@ const ManagerDashboard = () => {
         </button>
       </Link>
 
+      {/* <h1 className="absolute top-4 left-1/2 transform -translate-x-1/2 text-3xl md:text-4xl pt-5 font-extrabold text-text drop-shadow-lg">
+        Welcome to WorkPulse!
+      </h1> */}
+
       {/* Dashboard Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 rounded-2xl w-full max-w-4xl">
         
