@@ -65,23 +65,36 @@ const LeaveHistory = () => {
   }, [leaveData]);
   
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setFormData({ ...formData, [e.target.name]: e.target.value });
-  // };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  
-  // const handleEdit = (leave: LeaveRequest) => {
-  //   setEditingLeave(leave);
-  // };
+  const handleUpdate = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
 
-  // const handleSave = () => {
-  //   if (!editingLeave) return;
+    if (!user || !user.email) return;
 
-  //   setLeaveRequests((prev) =>
-  //     prev.map((leave) => (leave.id === editingLeave.id ? editingLeave : leave))
-  //   );
-  //   setEditingLeave(null);
-  // };
+    const token = await user.getIdToken();
+
+    try {
+      // Update employee details
+      await axios.put(
+        `http://localhost:3030/leave/leave/update/${user.email}`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Refetch updated data
+      await fetchLeaveData(user.email, token);
+      alert("Employee details updated successfully");
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Failed to update employee details");
+    }
+  };
 
   // const handleDelete = (id: number) => {
   //   setLeaveRequests((prev) => prev.filter((leave) => leave.id !== id));
@@ -106,7 +119,7 @@ const LeaveHistory = () => {
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Leave History</h1>
 
         {/* Approved Leaves Table */}
-        <h2 className="text-2xl font-semibold text-[#122D3B] mb-3">Leaves History</h2> {officeMail}
+        <h2 className="text-2xl font-semibold text-[#122D3B] mb-3">All Leaves </h2> {officeMail}
         <div className="overflow-x-auto mb-6">
           <table className="w-full bg-white border border-gray-300 rounded-lg">
             <thead>
