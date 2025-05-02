@@ -1,6 +1,6 @@
 // ManagerChat.tsx
 import { useState, useEffect } from "react";
-import { FaTrash } from "react-icons/fa";
+import { FaPaperPlane, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import bg from '../../../assets/images/bg.png';
 import { motion } from 'framer-motion';
@@ -105,7 +105,7 @@ export default function ManagerChat() {
     
     <div className="flex h-screen mt-10">
       {/* Sidebar */}
-      <div className="w-1/4 p-4 overflow-y-auto">
+      <div className="w-1/4 p-4 overflow-y-auto font-bold">
         {employees.map((emp) => {
           const full = `${emp.firstName} ${emp.lastName}`;
           return (
@@ -113,7 +113,7 @@ export default function ManagerChat() {
               key={emp.officeMail}
               onClick={() => setSelected(emp.officeMail)}
               className={`p-2 rounded mb-2 cursor-pointer ${
-                selected === emp.officeMail ? "bg-blue-200" : "hover:bg-gray-200"
+                selected === emp.officeMail ? "bg-white" : "hover:bg-gray"
               }`}
             >
               {full}
@@ -126,7 +126,7 @@ export default function ManagerChat() {
       <div className="flex-1 flex flex-col">
         {selected ? (
           <>
-            <div className="p-4 bg-blue-600 text-white">
+            <div className="p-4 bg-white rounded-lg text-text font-bold">
               Chat with {employees.find((e) => e.officeMail === selected)?.firstName}
             </div>
 
@@ -170,9 +170,9 @@ export default function ManagerChat() {
               />
               <button
                 onClick={sendMessage}
-                className="ml-2 px-4 py-2 bg-blue-600 text-white rounded"
+                className="ml-2 flex items-center px-12 py-2 bg-text text-white rounded"
               >
-                Send
+                <FaPaperPlane />
               </button>
             </div>
           </>
