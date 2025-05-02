@@ -93,7 +93,7 @@ export default function ManagerChat() {
       className="flex flex-col h-screen bg-cover bg-center p-6"
       style={{ backgroundImage: `url(${bg})` }}
     >
-    <div className="w-full">
+      <div className="w-full">
         <div className="fixed">
           <Link to="/monitor">
             <button className="absolute text-accent hover:text-reject p-3 rounded-full flex items-center">
