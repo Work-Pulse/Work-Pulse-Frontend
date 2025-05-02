@@ -2,8 +2,10 @@
 import { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 import axios from "axios";
-import bg from '../../assets/images/bg.png';
+import bg from '../../../assets/images/bg.png';
 import { motion } from 'framer-motion';
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Employee {
   firstName: string;
@@ -84,9 +86,26 @@ export default function ManagerChat() {
   };
 
   return (  
-    <div className="flex h-screen">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="flex flex-col h-screen bg-cover bg-center p-6"
+      style={{ backgroundImage: `url(${bg})` }}
+    >
+    <div className="w-full">
+        <div className="fixed">
+          <Link to="/monitor">
+            <button className="absolute text-accent hover:text-reject p-3 rounded-full flex items-center">
+              <ArrowLeft size={24} className="mr-2" /> Back
+            </button>
+          </Link>
+        </div>
+      </div>
+    
+    <div className="flex h-screen mt-10">
       {/* Sidebar */}
-      <div className="w-1/4 bg-gray-50 p-4 overflow-y-auto">
+      <div className="w-1/4 p-4 overflow-y-auto">
         {employees.map((emp) => {
           const full = `${emp.firstName} ${emp.lastName}`;
           return (
@@ -164,5 +183,6 @@ export default function ManagerChat() {
         )}
       </div>
     </div>
+    </motion.div>
   );
 }
