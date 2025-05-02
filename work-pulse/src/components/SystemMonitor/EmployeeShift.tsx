@@ -39,7 +39,7 @@ const EmployeeShift = () => {
     if (!ipc) return
 
     const appUsageListener = (_event: any, data: Record<string, number>) => {
-      console.log("📩 Received usage update:", data)
+      console.log("Received usage update:", data)
       setUsageMap(data)
     }
 

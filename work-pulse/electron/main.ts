@@ -88,8 +88,6 @@ function startTracking(reset = true) {
   }, 1000)
 }
 
-
-
 ipcMain.on('start-tracking', () => {
   console.log("IPC Received: start-tracking")
   startTracking(true)  
