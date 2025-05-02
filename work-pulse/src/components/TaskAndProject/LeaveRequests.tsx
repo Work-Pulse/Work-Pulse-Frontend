@@ -36,7 +36,7 @@ const LeaveRequests = () => {
     fetchLeaves();
   }, []);
 
-  // Add these functions inside your LeaveRequests component
+  //approve and decline
 const handleApprove = async (id: string) => {
   try {
     await axios.patch(`http://localhost:3030/leave/leaves/${id}/approve`); 

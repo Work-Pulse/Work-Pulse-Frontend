@@ -98,9 +98,28 @@ const LeaveHistory = () => {
     }
   };
 
-  // const handleDelete = (id: number) => {
-  //   setLeaveRequests((prev) => prev.filter((leave) => leave.id !== id));
-  // };
+  const handleDelete = async (id: string) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    if (!user || !user.email) return;
+  
+    const token = await user.getIdToken();
+  
+    try {
+      await axios.delete(`http://localhost:3030/leave/leave/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      // Remove deleted leave from state
+      setLeaveData((prev) => prev.filter((leave) => leave._id !== id));
+      alert("Leave entry deleted successfully");
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Failed to delete leave entry");
+    }
+  };
+  
 
   return (
     <motion.div
@@ -134,23 +153,30 @@ const LeaveHistory = () => {
               </tr>
             </thead>
             <tbody>
-                {leaveData.length > 0 ? (
-                  leaveData.map((leave, index) => (
-                    <tr key={index} className="border-t border-gray-300">
-                      <td className="p-3">{leave.leaveType}</td>
-                      <td className="p-3">{new Date(leave.startDate).toLocaleDateString()}</td>
-                      <td className="p-3">{new Date(leave.endDate).toLocaleDateString()}</td>
-                      <td className="p-3">{leave.leaveTime}</td>
-                      <td className="p-3">{leave.status}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="p-3" colSpan={4}>No leave history available</td>
+              {leaveData.length > 0 ? (
+                leaveData.map((leave, index) => (
+                  <tr key={index} className="border-t border-gray-300">
+                    <td className="p-3">{leave.leaveType}</td>
+                    <td className="p-3">{new Date(leave.startDate).toLocaleDateString()}</td>
+                    <td className="p-3">{new Date(leave.endDate).toLocaleDateString()}</td>
+                    <td className="p-3">{leave.leaveTime}</td>
+                    <td className="p-3">{leave.status}</td>
+                    <td className="p-3">
+                      <button
+                        onClick={() => handleDelete(leave._id)} // or leave.id if you're using that
+                        className="bg-[#b91c1c] text-white px-3 py-1 rounded hover:bg-red-700 transition duration-300"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                )}
-              </tbody>
-
+                ))
+              ) : (
+                <tr>
+                  <td className="p-3" colSpan={6}>No leave history available</td>
+                </tr>
+              )}
+            </tbody>
           </table>
           
         </div>
