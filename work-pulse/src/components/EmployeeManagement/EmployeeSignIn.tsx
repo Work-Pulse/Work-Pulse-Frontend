@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { registerUser } from "../../services/firebaseAuth";
+import Swal from 'sweetalert2'
 
 // Helper: Password strength levels
 const getPasswordStrength = (password: string): { level: string; color: string } => {
@@ -108,7 +109,12 @@ const EmployeeSignIn = () => {
         },
       });
   
-      toast.success("Employee registered successfully!");
+      Swal.fire({
+                  title: 'Registered Successfully!',
+                  icon: 'success',
+                  confirmButtonText: 'OK',
+                  confirmButtonColor: '#4CAF50'  // any valid CSS color
+                })
       navigate("/employeelogin");
     } catch (err: any) {
       console.error("Registration error:", err);

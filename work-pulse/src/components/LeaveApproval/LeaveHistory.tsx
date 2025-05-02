@@ -5,6 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import bg from "../../assets/images/bg.png";
 import axios from "axios";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Swal from 'sweetalert2'
 
 const LeaveHistory = () => {
   const [officeMail, setOfficeMail] = useState<string | null>(null);
@@ -84,10 +85,15 @@ const LeaveHistory = () => {
       // Refetch updated data
       await fetchLeaveData(user.email, token);
       setEditingLeave(null); // Close the edit form
-      alert("Leave updated successfully");
+      Swal.fire({
+        title: 'Leave Updated Successfully!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#4CAF50'  // any valid CSS color
+      })
     } catch (error) {
       console.error("Update failed:", error);
-      alert("Failed to update leave");
+      
     }
   };
 
@@ -106,10 +112,15 @@ const LeaveHistory = () => {
 
       // Remove deleted leave from state
       setLeaveData((prev) => prev.filter((leave) => leave._id !== id));
-      alert("Leave entry deleted successfully");
+      Swal.fire({
+        title: 'Leave Deleted Successfully!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#4CAF50'  // any valid CSS color
+      })
     } catch (error) {
       console.error("Delete failed:", error);
-      alert("Failed to delete leave entry");
+      
     }
   };
 

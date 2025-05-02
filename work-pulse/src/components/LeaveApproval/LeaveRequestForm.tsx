@@ -5,6 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import bg from "../../assets/images/bg.png";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 const LeaveRequestForm = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const LeaveRequestForm = () => {
               ...response.data,
               id: response.data.id || 0,
             });
+            
           } catch (error) {
             console.error('Error fetching employee data:', error);
           }
@@ -103,7 +105,12 @@ const LeaveRequestForm = () => {
     axios.post("http://localhost:3030/leave/leaves", requestData)
       .then((res) => {
         console.log("Success:", res.data);
-        alert("Leave Request Submitted Successfully!");
+        Swal.fire({
+          title: 'Leave Added Successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#4CAF50'  // any valid CSS color
+        })
         navigate("/leavedashboard");
       })
       .catch((err) => {
