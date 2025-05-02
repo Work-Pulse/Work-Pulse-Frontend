@@ -4,7 +4,7 @@ import { FaEnvelope } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import bg from '../../assets/images/bg.png';
 import PasswordInput from './PasswordInput';
-import { loginUser } from '../../services/firebaseAuth';
+import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -19,11 +19,15 @@ const EmployeeLogin = () => {
     setIsLoading(true);
   
     try {
-      await loginUser(officeMail, password);
+      await axios.post("http://localhost:3030/employee/employee/login", {
+        officeMail,
+        password
+      });
+  
       toast.success("Login successful!");
       navigate("/employeedashboard");
     } catch (err: any) {
-      toast.error(err?.message || "Login failed");
+      toast.error(err?.response?.data?.error || "Login failed");
     } finally {
       setIsLoading(false);
     }
@@ -41,6 +45,7 @@ const EmployeeLogin = () => {
         <h2 className="text-center text-[#122D3B] text-2xl font-bold">Employee Login</h2>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          {/* Office Email Input */}
           <div className="relative w-full">
             <FaEnvelope className="absolute left-3 top-3 text-[#122D3B]" size={20} />
             <input
@@ -53,12 +58,14 @@ const EmployeeLogin = () => {
             />
           </div>
 
+          {/* Password Input */}
           <PasswordInput 
             placeholder="Password"
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
           />
 
+          {/* Login Button */}
           <button
             type="submit"
             disabled={isLoading}
