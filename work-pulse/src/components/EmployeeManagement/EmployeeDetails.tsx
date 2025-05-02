@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 const EmployeeDetails = () => {
   const [officeMail, setOfficeMail] = useState<string | null>(null);
@@ -84,6 +85,12 @@ const EmployeeDetails = () => {
 
       // Refetch updated data
       await fetchEmployeeData(user.email, token);
+      Swal.fire({
+            title: 'Updated Successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#4CAF50'  // any valid CSS color
+          })
     } catch (error) {
       console.error("Update failed:", error);
     }
