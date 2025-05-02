@@ -144,20 +144,15 @@ const LeaveRequestForm = () => {
 
             {/* Leave Type */}
             <label className="font-medium text-[#122D3B]">
-              Leave Type
-              <select
+              Leave Reason
+              <input
                 name="leaveType"
                 value={formData.leaveType}
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full"
                 required
-              >
-                <option value="">Select Leave Type</option>
-                <option value="Annual">Annual Leave</option>
-                <option value="Sick">Sick Leave</option>
-                <option value="Casual">Casual Leave</option>
-                <option value="Half Day">Half Day</option>
-              </select>
+              />
+                
             </label>
 
             {/* End Date */}
