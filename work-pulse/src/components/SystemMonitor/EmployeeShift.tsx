@@ -8,6 +8,7 @@ import ChatWindow from "./SubComponents/ChatWindow"
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import axios from "axios"
 import { ArrowLeft } from "lucide-react"
+import Swal from 'sweetalert2'
 
 dayjs.extend(duration)
 
@@ -93,7 +94,14 @@ const EmployeeShift = () => {
     setShiftStarted(false)
     setShiftPaused(true)
     ;(window as any).ipcRenderer.send("stop-tracking")
-    alert(`Shift ended. Total time: ${formatTime(elapsedTime)}`)
+    
+    Swal.fire({
+      title: 'Shift Ended Successfully!',
+      text: `Total time: ${formatTime(elapsedTime)}`,
+      icon: 'success',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#4CAF50'  // any valid CSS color
+    })
   }
 
   const navigate = useNavigate();
@@ -180,11 +188,8 @@ const EmployeeShift = () => {
           },
         }
       );
-  
-      alert(`Shift ended. Total time: ${totalTime}\n Shift data saved successfully!`);
     } catch (err) {
       console.error("Failed to save shift data:", err);
-      alert("Failed to save shift data.");
     }
   };
 

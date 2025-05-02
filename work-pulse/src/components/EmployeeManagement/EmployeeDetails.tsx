@@ -84,10 +84,8 @@ const EmployeeDetails = () => {
 
       // Refetch updated data
       await fetchEmployeeData(user.email, token);
-      alert("Employee details updated successfully");
     } catch (error) {
       console.error("Update failed:", error);
-      alert("Failed to update employee details");
     }
   };
 
