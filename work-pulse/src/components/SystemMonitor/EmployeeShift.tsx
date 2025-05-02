@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import ChatWindow from "./SubComponents/ChatWindow"
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import axios from "axios"
+import { ArrowLeft } from "lucide-react"
 
 dayjs.extend(duration)
 
@@ -195,6 +196,15 @@ const EmployeeShift = () => {
       className="flex flex-col justify-center min-h-screen bg-cover bg-center p-6 bg-fixed"
       style={{ backgroundImage: `url(${bg})` }}
     >
+      <div className="w-full">
+        <div className="fixed">
+          <Link to="/monitor">
+            <button className="absolute text-accent hover:text-reject p-3 rounded-full flex items-center">
+              <ArrowLeft size={24} className="mr-2" /> Back
+            </button>
+          </Link>
+        </div>
+      </div>
       <div className="flex">
         <div className="w-2/3 p-6">
           {/* Shift Timer */}
