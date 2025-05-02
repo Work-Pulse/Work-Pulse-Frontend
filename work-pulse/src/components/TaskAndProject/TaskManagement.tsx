@@ -81,7 +81,7 @@ const TaskManager = () => {
         })
       );
   
-      alert("Tasks submitted successfully!");
+      // alert("Tasks submitted successfully!");
   
       // Update userTasks state with the new _id values and submitted status
       setUserTasks((prev) => ({
@@ -201,12 +201,12 @@ const TaskManager = () => {
 
   const addTask = () => {
     if (!selectedUser) {
-      alert("Please select a user first.");
+      // alert("Please select a user first.");
       return;
     }
 
     if (!taskName.trim() || (durationHours === "" && durationMinutes === "") || !deadline) {
-      alert("Please fill all required task fields.");
+      // alert("Please fill all required task fields.");
       return;
     }
 
@@ -248,7 +248,7 @@ const TaskManager = () => {
   
     if (!selectedUser) {
       console.error("No user selected. Cannot delete task.");
-      alert("No user selected. Cannot delete task.");
+      // alert("No user selected. Cannot delete task.");
       return;
     }
   
@@ -280,7 +280,7 @@ const TaskManager = () => {
       });
     } catch (err: any) {
       console.error("Error deleting task:", err);  // Log the error in detail
-      alert("Error deleting task: " + err.message);
+      // alert("Error deleting task: " + err.message);
     }
   };
     
@@ -326,7 +326,7 @@ const TaskManager = () => {
       console.log("Payload being sent:", changedFields);
   
       if (Object.keys(changedFields).length === 0) {
-        alert("No changes to update.");
+        // alert("No changes to update.");
         return;
       }
   
@@ -341,7 +341,7 @@ const TaskManager = () => {
         updateTaskInState({ ...updated, userId: editingTask.userId }); // 👈 add userId manually
         setEditingTask(null);
       } else {
-        alert("Failed to update task");
+        // alert("Failed to update task");
       }
     }
   };
@@ -358,28 +358,22 @@ const [updatedTaskData, setUpdatedTaskData] = useState<Partial<TaskType>>({
 
 const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
   setUserTasks((prev) => {
-    console.log("Previous userTasks:", prev);
-
     const existingTasks = prev[updatedTask.userId] || [];
 
     const updatedTasks = existingTasks.map((t) =>
-      t._id === updatedTask._id ? updatedTask : t
+      t._id === updatedTask._id ? { ...t, ...updatedTask } : t
     );
 
     const taskExists = existingTasks.some((t) => t._id === updatedTask._id);
-
     const newTasks = taskExists ? updatedTasks : [...existingTasks, updatedTask];
 
-    const newState = {
+    return {
       ...prev,
       [updatedTask.userId]: newTasks,
     };
-
-    console.log("New userTasks state:", newState);
-
-    return newState;
   });
 };
+
 
 
 
@@ -439,7 +433,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
     >
       <div className="grid grid-cols-2 gap-6 w-full max-w-5xl p-6 bg-gray-100 rounded-lg shadow-xl">
         {/* User Information Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-gray-300">
+        <div className="bg-white p-6 rounded-lg shadow-lg ">
           <h3 className="text-xl font-bold text-[#122D3B] mb-3">User Information</h3>
           <input type="text" placeholder="User ID" value={userId} onChange={(e) => setUserId(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
           <input type="text" placeholder="Username" value={userName} onChange={(e) => setUserName(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
@@ -468,7 +462,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
         </div>
 
         {/* Add Task Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-gray-300">
+        <div className="bg-white p-6 rounded-lg shadow-lg ">
           <h3 className="text-xl font-bold text-[#122D3B] mb-3">Add New Task</h3>
           <input type="text" placeholder="Task Name" value={taskName} onChange={(e) => setTaskName(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
           <textarea placeholder="Task Description (optional)" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full p-2 border rounded mb-3 h-20 resize-none shadow-sm" />
@@ -516,75 +510,70 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
       </div>
 
       {/* Task List Section */}
-      <div className="w-full max-w-5xl p-6 bg-white rounded-lg shadow-lg border-2 border-gray-300 mt-6 overflow-auto">
-        <h3 className="text-xl font-bold text-text mb-3">Task List</h3>
-        {selectedUser && userTasks[selectedUser.id]?.length > 0 ? (
-          <ul className="space-y-3">
-            {userTasks[selectedUser.id].map((task) => {
-              const taskStatus = task.submitted ? "Pending" : "Started"; // Task status logic
+<div className="w-full max-w-5xl p-6 bg-white rounded-lg shadow-lg  mt-6 overflow-auto">
+  <h3 className="text-xl font-bold text-text mb-3">Task List</h3>
 
-              return (
-                <li
-                  key={(task._id ?? task.id ?? crypto.randomUUID()).toString()}
-                  className="p-3 bg-gray-100 border rounded-lg flex justify-between items-center"
-                >
-                  <div>
-                    <p className="font-bold flex items-center gap-2">
-                      {task.name} {getPriorityStars(task.priority)}
-                      <span className="text-sm font-semibold text-background bg-text px-2 py-1 rounded flex items-center gap-1">
-                        <FaClock className="mr-1" />
-                        {taskStatus}
-                      </span>
-                    </p>
-                    <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
-                    <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
-                    <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
-                  </div>
+  {selectedUser && userTasks[selectedUser.id]?.length > 0 ? (
+    <>
+      <ul className="space-y-3">
+        {userTasks[selectedUser.id].map((task) => {
+          const taskStatus = task.submitted ? "Pending" : "Started"; // Task status logic
 
-                  <button
-                    onClick={() => {
-                      const taskIdToDelete = task._id || task.id?.toString();
+          return (
+            <li
+              key={(task._id ?? task.id ?? crypto.randomUUID()).toString()}
+              className="p-3 bg-gray-100 border rounded-lg flex justify-between items-center"
+            >
+              <div>
+                <p className="font-bold flex items-center gap-2">
+                  {task.name} {getPriorityStars(task.priority)}
+                  <span className="text-sm font-semibold text-background bg-text px-2 py-1 rounded flex items-center gap-1">
+                    <FaClock className="mr-1" />
+                    {taskStatus}
+                  </span>
+                </p>
+                <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
+                <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
+                <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
+              </div>
 
-                      if (!taskIdToDelete) {
-                        alert("Task ID not found. Cannot delete.");
-                        return;
-                      }
+              <button
+                onClick={() => {
+                  const taskIdToDelete = task._id || task.id?.toString();
+                  if (!taskIdToDelete) {
+                    // alert("Task ID not found. Cannot delete.");
+                    return;
+                  }
+                  // const isSubmitted = !!task._id;
+                  // if (window.confirm("Are you sure you want to delete this task?")) {
+                  //   deleteTask(taskIdToDelete, isSubmitted);
+                  // }
+                }}
+                className="text-red-500"
+                disabled={taskStatus === "Started"}
+              >
+                <FaTrash />
+              </button>
+            </li>
+          );
+        })}
+      </ul>
 
-                      const isSubmitted = !!task._id;
+      {/* Submit Button - correctly placed here */}
+      {showSubmit && (
+        <button
+          onClick={submitTasks}
+          className="mt-4 bg-text text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300"
+        >
+          Submit
+        </button>
+      )}
+    </>
+  ) : (
+    <p className="text-gray-500">No tasks available</p>
+  )}
+</div>
 
-                      if (window.confirm("Are you sure you want to delete this task?")) {
-                        deleteTask(taskIdToDelete, isSubmitted);
-                      }
-                    }}
-                    className="text-red-500"
-                    disabled={taskStatus === "Started"} 
-                  >
-                    <FaTrash />
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No tasks available</p>
-        )}
-
-<<<<<<< Updated upstream
-        {showSubmit && selectedUser && userTasks[selectedUser.id]?.length > 0 && (
-          <button
-            onClick={submitTasks}
-            className="mt-4 bg-text text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300"
-          >
-            Submit
-          </button>
-        )}
-=======
-        ) : (<p className="text-gray-500">No tasks available</p>)}
-        
-
-        
->>>>>>> Stashed changes
-      </div>
     </motion.div>
   )}
 
@@ -597,7 +586,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="max-w-5xl w-full p-6 bg-white rounded-lg shadow-lg border-2 border-gray-300"
+            className="max-w-5xl w-full p-6 bg-white rounded-lg shadow-lg"
           >
             <h2 className="text-2xl font-bold text-text mb-6">Task Assignment Summary</h2>
           
@@ -653,6 +642,10 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
                 <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
                 <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
+                <p className="text-sm font-semibold text-background bg-text px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
+                    <FaClock />
+                    {task.submitted ? "Pending" : "Started"}
+                  </p>
               </div>
 
               <div className="flex space-x-2">
@@ -675,15 +668,14 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
 
                     const taskIdToDelete = task._id || task.id?.toString();
                     if (!taskIdToDelete) {
-                      alert("Task ID not found. Cannot delete.");
+                      // alert("Task ID not found. Cannot delete.");
                       return;
                     }
 
-                    const isSubmitted = !!task._id;
-
-                    if (window.confirm("Are you sure you want to delete this task?")) {
-                      deleteTask(taskIdToDelete, isSubmitted);
-                    }
+                    // const isSubmitted = !!task._id;
+                    // if (window.confirm("Are you sure you want to delete this task?")) {
+                    //   deleteTask(taskIdToDelete, isSubmitted);
+                    // }
                   }}
                   className={`text-red-500 hover:text-red-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
                   title="Delete Task"
@@ -699,7 +691,14 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
 
       {editingTask && (
         <form onSubmit={handleSubmit} className="mt-6 p-4 bg-[#d6d3d1] shadow-lg border rounded-lg">
-          <h3 className="text-xl font-bold mb-4 text-text">Edit Task</h3>
+          <h3 className="text-xl font-bold mb-4 text-text">
+              Edit Task - {" "}
+              <span className="text-text font-semibold">
+                {users.find((u) => u.id === selectedUser.id)?.name}
+              </span>
+            </h3>
+
+
 
           {/* Name */}
           <div className="mb-3">
@@ -737,39 +736,53 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
           <div className="mb-3">
             <label className="block font-semibold mb-1">Duration</label>
             <div className="flex space-x-2">
-              <input
-                type="number"
-                min="0"
-                placeholder="Hours"
-                value={parseInt((updatedTaskData.duration || '').split('h')[0]) || ''}
-                onChange={(e) => {
-                  const hours = e.target.value;
-                  const minutes = (updatedTaskData.duration || '').includes('min')
-                    ? (updatedTaskData.duration || '').split('h')[1]?.replace('min', '').trim()
-                    : '0';
-                  setUpdatedTaskData({
-                    ...updatedTaskData,
-                    duration: `${hours || '0'}h ${minutes || '0'}min`,
-                  });
-                }}
-                className="w-1/2 p-2 border rounded"
-              />
-              <input
-                type="number"
-                min="0"
-                max="59"
-                placeholder="Minutes"
-                value={parseInt(((updatedTaskData.duration || '').split(' ')[1]?.replace('min', '') || '0'))}
-                onChange={(e) => {
-                  const minutes = e.target.value;
-                  const hours = (updatedTaskData.duration || '').split('h')[0] || '0';
-                  setUpdatedTaskData({
-                    ...updatedTaskData,
-                    duration: `${hours.trim()}h ${minutes || '0'}min`,
-                  });
-                }}
-                className="w-1/2 p-2 border rounded"
-              />
+            <input
+  type="number"
+  min="0"
+  placeholder="Hours"
+  value={
+    updatedTaskData.duration
+      ? parseInt((updatedTaskData.duration || '').split('h')[0]) || ''
+      : ''
+  }
+  onChange={(e) => {
+    const hours = e.target.value;
+    const minutes = (updatedTaskData.duration || '').includes('min')
+      ? (updatedTaskData.duration || '').split('h')[1]?.replace('min', '').trim()
+      : '0';
+    setUpdatedTaskData({
+      ...updatedTaskData,
+      duration: `${hours || '0'}h ${minutes || '0'}min`,
+    });
+  }}
+  className="w-1/2 p-2 border rounded"
+/>
+
+        <input
+          type="number"
+          min="0"
+          max="59"
+          placeholder="Minutes"
+          value={
+            updatedTaskData.duration && updatedTaskData.duration.includes('min')
+              ? parseInt(
+                  (updatedTaskData.duration || '')
+                    .split(' ')[1]
+                    ?.replace('min', '') || ''
+                ) || ''
+              : ''
+          }
+          onChange={(e) => {
+            const minutes = e.target.value;
+            const hours = (updatedTaskData.duration || '').split('h')[0] || '0';
+            setUpdatedTaskData({
+              ...updatedTaskData,
+              duration: `${hours.trim()}h ${minutes || '0'}min`,
+            });
+          }}
+          className="w-1/2 p-2 border rounded"
+        />
+
             </div>
           </div>
 
@@ -843,6 +856,10 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
                 <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
                 <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
+                <p className="text-sm font-semibold text-background bg-text px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
+                    <FaClock />
+                    {task.submitted ? "Pending" : "Started"}
+                  </p>
               </div>
 
               <div className="flex space-x-2">
@@ -865,15 +882,15 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
 
                     const taskIdToDelete = task._id || task.id?.toString();
                     if (!taskIdToDelete) {
-                      alert("Task ID not found. Cannot delete.");
+                      // alert("Task ID not found. Cannot delete.");
                       return;
                     }
 
-                    const isSubmitted = !!task._id;
+                    // const isSubmitted = !!task._id;
 
-                    if (window.confirm("Are you sure you want to delete this task?")) {
-                      deleteTask(taskIdToDelete, isSubmitted);
-                    }
+                    // if (window.confirm("Are you sure you want to delete this task?")) {
+                    //   deleteTask(taskIdToDelete, isSubmitted);
+                    // }
                   }}
                   className={`text-red-500 hover:text-red-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
                   title="Delete Task"
