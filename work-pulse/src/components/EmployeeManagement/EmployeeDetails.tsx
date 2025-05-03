@@ -141,20 +141,66 @@ const EmployeeDetails = () => {
     }
   };
   
+  const [tasks, setTasks] = useState<any[]>([]);
 
-  const [tasks, setTasks] = useState([
-    { text: "Complete project report", completed: false },
-    { text: "Attend team meeting", completed: false },
-    { text: "Follow up with client", completed: false },
-    { text: "Submit weekly timesheet", completed: false },
-  ]);
-
-  const handleToggleTask = (index: number) => {
-    const updatedTasks = tasks.map((task, i) =>
-      i === index ? { ...task, completed: !task.completed } : task
-    );
-    setTasks(updatedTasks);
+  const fetchTasks = async (userId: string, token: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3030/api/get-tasks/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setTasks(response.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (employeeData && employeeData.employeeId) {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+          const token = await user.getIdToken();
+          await fetchTasks(employeeData.employeeId, token);
+        }
+      }
+    };
+    fetchData();
+  }, [employeeData]);
+
+  const handleToggleTaskStatus = async (taskId: string, currentStatus: boolean) => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) return;
+  
+      const token = await user.getIdToken();
+  
+      await axios.patch(
+        `http://localhost:3030/api/update-task-status/${taskId}`,
+        { completed: !currentStatus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+  
+      // Update task list after status change
+      const updatedTasks = tasks.map(task =>
+        task._id === taskId ? { ...task, completed: !currentStatus } : task
+      );
+      setTasks(updatedTasks);
+    } catch (error) {
+      console.error("Failed to update task status", error);
+    }
+  };
+  
+  
+  
 
   return (
     <motion.div
@@ -265,20 +311,33 @@ const EmployeeDetails = () => {
         <div className="w-1/3 bg-gray bg-opacity-20 p-6 rounded-2xl shadow-lg">
           <h3 className="text-[#122D3B] text-2xl font-semibold mb-4">Task List</h3>
           <ul className="space-y-2">
-            {tasks.map((task, index) => (
-              <li key={index} className="flex items-center gap-3 bg-gray-100 p-3 rounded-lg">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => handleToggleTask(index)}
-                  className="w-5 h-5"
-                />
-                <span className={task.completed ? "line-through text-gray-500" : ""}>
-                  {task.text}
-                </span>
-              </li>
-            ))}
-          </ul>
+              {tasks.length > 0 ? (
+                tasks.map((task) => (
+                  <li key={task._id} className="bg-white p-3 rounded-lg shadow-md flex items-start justify-between">
+                    <div>
+                      <p className="text-lg font-bold">{task.name}</p>
+                      <p className="text-medium text-gray-600">Priority: {task.priority}</p>
+                      <p className="text-medium text-gray-600">Deadline: {task.deadline}</p>
+                      <p className="text-medium text-gray-500 italic">{task.description}</p>
+                      <p className="text-medium text-gray-500 italic">{task.duration}</p>
+                      <p className={`text-medium font-bold ${task.completed ? "text-green-600" : "text-red-500"}`}>
+                        Status: {task.completed ? "Done" : "Pending"}
+                      </p>
+                    </div>
+                    <div className="ml-4 mt-2">
+                      <input
+                        type="checkbox"
+                        checked={task.completed}
+                        onChange={() => handleToggleTaskStatus(task._id, task.completed)}
+                        className="w-5 h-5"
+                      />
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p className="text-gray-500 italic">No tasks found.</p>
+              )}
+            </ul>
         </div>
       </div>
     </motion.div>
