@@ -124,7 +124,7 @@ const EmployeeDetails = () => {
       });
   
       Swal.fire({
-        title: 'Resigned Successfully!',
+        title: 'Deleted Successfully!',
         text: 'Your data has been deleted.',
         icon: 'success',
       }).then(() => {
