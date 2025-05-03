@@ -62,6 +62,8 @@ const App = () => {
         <Route path="leaverequestform" Component={LeaveRequestForm}/>
         <Route path="leavehistory" Component={LeaveHistory}/>
         <Route path="leavereport" Component={LeaveReport}/>
+        <Route path="leavedashboard" Component={LeaveDashboard}/>
+
         </Route>
       </Routes>
     </MemoryRouter>
