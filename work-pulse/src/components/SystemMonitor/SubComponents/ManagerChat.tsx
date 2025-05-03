@@ -123,7 +123,7 @@ export default function ManagerChat() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-white/50">
         {selected ? (
           <>
             <div className="p-4 bg-white/40 rounded-lg text-text font-bold">
@@ -131,34 +131,39 @@ export default function ManagerChat() {
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((msg) => {
-                const isManager = msg.senderType === "manager";
-                return (
-                  <div
-                    key={msg._id}
-                    className={`flex ${
-                      isManager ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    <div className="relative max-w-xs p-3 rounded-lg bg-text/40 text-white">
-                      <p className="">{msg.text}</p>
-                      <span className="block text-xs text-gray-500 text-right">
-                        {new Date(msg.timestamp).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                      {isManager && (
-                        <FaTrash
-                          onClick={() => deleteMsg(msg._id)}
-                          className="absolute top-1 right-1 text-red-500 cursor-pointer"
-                        />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+  {messages.map((msg) => {
+    const isManager = msg.senderType === "manager";
+    return (
+      <div
+        key={msg._id}
+        className={`flex ${isManager ? "justify-end" : "justify-start"}`}
+      >
+        <div
+          className={`relative max-w-xs p-3 rounded-lg text-white ${
+            isManager
+              ? "bg-text" // Manager message bubble
+              : "bg-gray" // Employee message bubble
+          }`}
+        >
+          <p>{msg.text}</p>
+          <span className="block text-xs text-gray-200 text-right mt-1">
+            {new Date(msg.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+          {isManager && (
+            <FaTrash
+              onClick={() => deleteMsg(msg._id)}
+              className="absolute top-1 right-1 text-red-300 hover:text-red-500 cursor-pointer"
+            />
+          )}
+        </div>
+      </div>
+    );
+  })}
+</div>
+
 
             <div className="p-4 flex bg-white/40 rounded-lg">
               <input
