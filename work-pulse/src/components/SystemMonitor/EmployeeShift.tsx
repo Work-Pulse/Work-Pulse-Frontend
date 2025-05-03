@@ -100,8 +100,10 @@ const EmployeeShift = () => {
       text: `Total time: ${formatTime(elapsedTime)}`,
       icon: 'success',
       confirmButtonText: 'OK',
-      confirmButtonColor: '#4CAF50'  // any valid CSS color
-    })
+      confirmButtonColor: '#4CAF50'
+    }).then(() => {
+      navigate('/employeedashboard');  // Redirect after user clicks "OK"
+    });
   }
 
   const navigate = useNavigate();
