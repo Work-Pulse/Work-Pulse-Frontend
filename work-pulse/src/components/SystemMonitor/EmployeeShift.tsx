@@ -241,17 +241,28 @@ const EmployeeShift = () => {
                   <button onClick={pauseShift} className="bg-[#E0E0E0] text-black px-4 py-2 rounded mr-2">
                     Pause Shift
                   </button>
-                  <Link to="/employeedashboard">
                   <button
-                    onClick={() => {
-                    endShift();   // Stop the timer + update UI
-                    submit();     // Send data to backend
-                    }}
-                    className="bg-[#FF0000] text-white px-4 py-2 rounded mr-2"
+                    onClick={async () => {
+                    const result = await Swal.fire({
+                    title: "Are you sure?",
+                    text: `Your total time so far is ${formatTime(elapsedTime)}.`,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, end shift",
+                    cancelButtonText: "No, keep going",
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    });
+
+                    if (result.isConfirmed) {
+                    endShift();  // stop UI timer + popup
+                    await submit();  // send data
+                    }
+                  }}
+                    className="bg-reject text-white px-4 py-2 rounded mr-2"
                   >
                     End Shift
-                  </button>
-                  </Link>
+                </button>
                 </>
               )}
             </div>
