@@ -87,12 +87,22 @@ const LeaveRequestForm = () => {
     const endDate = new Date(formData.endDate);
 
     if (startDate < today || endDate < today) {
-      alert("Start Date and End Date must be today or a future date.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Start Date and End Date must be today or a future date.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f1c40f'  // a warning‐style color, but you can customize this
+      });
       return;
     }
 
     if (endDate < startDate) {
-      alert("End Date cannot be earlier than Start Date.");
+      Swal.fire({
+        title: 'End Date cannot be earlier than Start Date.',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f1c40f'  // any valid CSS color
+      })
       return;
     }
 
