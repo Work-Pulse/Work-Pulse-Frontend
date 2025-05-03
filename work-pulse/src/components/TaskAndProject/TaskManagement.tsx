@@ -8,12 +8,14 @@ import {
   FaEdit,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
-import bg from "../../assets/images/bg.png";
 import Swal from "sweetalert2";
+import bg from "../../assets/images/bg.png";
 
 interface TaskType {
+  id: string;               // local-only ID
+  _id?: string;             // MongoDB ID
   userId: string;
-  _id?: string;
+  userName?: string;
   name: string;
   priority: "High" | "Medium" | "Low";
   duration: string;
@@ -27,132 +29,146 @@ interface UserTasks {
 }
 
 export default function TaskManager() {
+  // -- State --
   const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
-  const [selectedUser, setSelectedUser] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
+  const [selectedUser, setSelectedUser] = useState<{ id: string; name: string } | null>(null);
+  const [newTasks, setNewTasks] = useState<TaskType[]>([]);
   const [userTasks, setUserTasks] = useState<UserTasks>({});
   const [activeView, setActiveView] = useState<"form" | "summary">("form");
 
-  // Task form state
+  // Form inputs
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"High" | "Medium" | "Low">(
-    "Medium"
-  );
+  const [priority, setPriority] = useState<"High" | "Medium" | "Low">("Medium");
   const [durationHours, setDurationHours] = useState("");
   const [durationMinutes, setDurationMinutes] = useState("");
   const [deadline, setDeadline] = useState("");
-  // New user form
-  const [userName, setUserName] = useState("");
-  const [userId, setUserId] = useState("");
-  // Show the "Submit" button if there are new (incomplete) tasks
-  const [showSubmit, setShowSubmit] = useState(false);
 
-  // Fetch all users (for dropdown)
+  // New-user inputs
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserId, setNewUserId] = useState("");
+
+  // Editing state for summary
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    priority: "Medium" as "High" | "Medium" | "Low",
+    durationHours: "",
+    durationMinutes: "",
+    description: "",
+    deadline: "",
+  });
+
+  // -- Helpers --
+  const getPriorityStars = (p: TaskType["priority"]) =>
+    p === "High" ? "★★★" : p === "Medium" ? "★★" : "★";
+
+  const statusBadge = (completed: boolean) =>
+    completed ? (
+      <span className="inline-flex items-center gap-1 px-2 py-1 text-sm font-semibold rounded bg-green-100 text-green-800">
+        <FaPlay /> Completed
+      </span>
+    ) : (
+      <span className="inline-flex items-center gap-1 px-2 py-1 text-sm font-semibold rounded bg-yellow-100 text-yellow-800">
+        <FaClock /> Pending
+      </span>
+    );
+
+  // -- API calls --
   const fetchUsers = async () => {
     try {
       const res = await fetch("http://localhost:3030/employee/employees");
       if (!res.ok) throw new Error(`Status ${res.status}`);
-      const employees = await res.json();
-      setUsers(
-        employees.map((emp: any) => ({
-          id: emp.employeeId.toString(),
-          name: emp.name,
-        }))
-      );
-    } catch (err) {
-      console.error("Fetch users failed:", err);
+      const emps = await res.json();
+      setUsers(emps.map((e: any) => ({ id: e.employeeId.toString(), name: e.name })));
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  // Fetch tasks for one user
-  const fetchTasks = async (userId: string) => {
-    try {
-      const res = await fetch(`http://localhost:3030/api/get-tasks/${userId}`);
-      const data: TaskType[] = await res.json();
-      setUserTasks((prev) => ({
-        ...prev,
-        [userId]: data,
-      }));
-      // if any are not completed, show the Submit button
-      setShowSubmit(data.some((t) => !t.completed));
-    } catch (err) {
-      console.error("Failed to fetch tasks:", err);
-    }
-  };
-
-  // Fetch all tasks (for summary)
   const getAllTasks = async () => {
     try {
       const res = await fetch("http://localhost:3030/api/get-all-tasks");
-      const allTasks: TaskType[] = await res.json();
+      const all: TaskType[] = await res.json();
       const grouped: UserTasks = {};
-      allTasks.forEach((task) => {
-        if (!grouped[task.userId]) grouped[task.userId] = [];
-        grouped[task.userId].push(task);
+      all.forEach((t) => {
+        grouped[t.userId] = grouped[t.userId] || [];
+        grouped[t.userId].push(t);
       });
       setUserTasks(grouped);
-    } catch (err) {
-      console.error("Error fetching all tasks:", err);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  // Add a new user
-  const addUser = async () => {
-    if (!userId.trim() || !userName.trim()) return;
+  const fetchTasks = async (uid: string) => {
+    try {
+      const res = await fetch(`http://localhost:3030/api/get-tasks/${uid}`);
+      const data: TaskType[] = await res.json();
+      setUserTasks({ [uid]: data });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // -- Lifecycle --
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // -- Handlers --
+  const handleAddUser = async () => {
+    if (!newUserId.trim() || !newUserName.trim()) {
+      Swal.fire({ icon: "error", title: "Enter both ID & Name" });
+      return;
+    }
     try {
       const res = await fetch("http://localhost:3030/api/add-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: userId.trim(), name: userName.trim() }),
+        body: JSON.stringify({ id: newUserId.trim(), name: newUserName.trim() }),
       });
       if (res.ok) {
-        setUserId("");
-        setUserName("");
+        setNewUserId("");
+        setNewUserName("");
         await fetchUsers();
       }
-    } catch (err) {
-      console.error("Failed to add user:", err);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  // Add a new task locally
-  const addTask = () => {
+  const handleAddTask = () => {
     if (!selectedUser) {
-      Swal.fire({
-        icon: "warning",
-        title: "No User Selected",
-        text: "Please select a user first.",
-        confirmButtonColor: "#f59e0b",
-      });
+      Swal.fire({ icon: "warning", title: "Select a user first" });
       return;
     }
-    if (!taskName.trim() || (!durationHours && !durationMinutes) || !deadline) {
-      Swal.fire({
-        icon: "error",
-        title: "Incomplete Fields",
-        text: "Please fill all required task fields.",
-        confirmButtonColor: "#ef4444",
-      });
+    if (!taskName.trim()) {
+      Swal.fire({ icon: "error", title: "Task name required" });
       return;
     }
-    const newTask: TaskType = {
+    if (!durationHours && !durationMinutes) {
+      Swal.fire({ icon: "error", title: "Enter duration" });
+      return;
+    }
+    if (!deadline) {
+      Swal.fire({ icon: "error", title: "Select deadline" });
+      return;
+    }
+
+    const t: TaskType = {
+      id: crypto.randomUUID(),
       userId: selectedUser.id,
+      userName: selectedUser.name,
       name: taskName.trim(),
       priority,
-      duration: `${Number(durationHours) || 0}h ${Number(durationMinutes) ||
-        0}m`,
+      duration: `${Number(durationHours) || 0}h ${Number(durationMinutes) || 0}m`,
       description: description.trim() || "No description",
       deadline,
       completed: false,
     };
-    setUserTasks((prev) => ({
-      ...prev,
-      [selectedUser.id]: [...(prev[selectedUser.id] || []), newTask],
-    }));
-    setShowSubmit(true);
+    setNewTasks((p) => [...p, t]);
     setTaskName("");
     setDescription("");
     setPriority("Medium");
@@ -161,120 +177,169 @@ export default function TaskManager() {
     setDeadline("");
   };
 
-  // Submit all new (incomplete) tasks to backend
-  const submitTasks = async () => {
-    if (!selectedUser) return;
-    const tasksToSubmit = (userTasks[selectedUser.id] || []).filter(
-      (t) => !t.completed
-    );
+  const deleteLocal = (id: string) => {
+    Swal.fire({
+      title: "Delete this new task?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((r) => {
+      if (r.isConfirmed) {
+        setNewTasks((p) => p.filter((t) => t.id !== id));
+        Swal.fire({ icon: "success", title: "Deleted" });
+      }
+    });
+  };
+
+  const submitLocal = async (task: TaskType) => {
     try {
-      const updated = await Promise.all(
-        tasksToSubmit.map(async (task) => {
-          const res = await fetch("http://localhost:3030/api/add-task", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(task),
-          });
-          if (!res.ok) throw new Error(task.name);
-          const data = await res.json();
-          return { ...task, _id: data.task._id, completed: true };
-        })
-      );
-      // merge back into state
-      setUserTasks((prev) => ({
-        ...prev,
-        [selectedUser.id]: [
-          // keep old completed ones
-          ...(prev[selectedUser.id] || []).filter((t) => t.completed),
-          // plus newly submitted
-          ...updated,
-        ],
+      const res = await fetch("http://localhost:3030/api/add-task", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: task.userId,
+          userName: task.userName,
+          name: task.name,
+          priority: task.priority,
+          duration: task.duration,
+          description: task.description,
+          deadline: task.deadline,
+        }),
+      });
+      if (!res.ok) throw new Error("Submit failed");
+      const { task: saved } = await res.json();
+      setUserTasks((p) => ({
+        ...p,
+        [task.userId]: [...(p[task.userId] || []), saved],
       }));
-      setShowSubmit(false);
-      Swal.fire({
-        icon: "success",
-        title: "Tasks submitted!",
-        confirmButtonColor: "#3085d6",
-      });
-    } catch (err) {
-      console.error("Submit failed:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Submit failed",
-        text: String(err),
-        confirmButtonColor: "#ef4444",
-      });
+      setNewTasks((p) => p.filter((t) => t.id !== task.id));
+      Swal.fire({ icon: "success", title: "Task submitted" });
+    } catch (e: any) {
+      Swal.fire({ icon: "error", title: e.message });
     }
   };
 
-  // Delete a task (both local & backend if already completed)
-  const deleteTask = async (taskId: string, completed: boolean) => {
-    if (!selectedUser) return;
-    try {
-      if (completed) {
-        const res = await fetch(
-          `http://localhost:3030/api/delete-task/${taskId}`,
-          { method: "DELETE" }
-        );
+  const deletePersisted = async (taskId: string, userId: string) => {
+    Swal.fire({
+      title: "Delete from database?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then(async (r) => {
+      if (!r.isConfirmed) return;
+      try {
+        const res = await fetch(`http://localhost:3030/api/delete-task/${taskId}`, {
+          method: "DELETE",
+        });
         if (!res.ok) throw new Error(await res.text());
+        Swal.fire({ icon: "success", title: "Deleted" });
+        setUserTasks((p) => ({
+          ...p,
+          [userId]: (p[userId] || []).filter((t) => t._id !== taskId),
+        }));
+      } catch (e: any) {
+        Swal.fire({ icon: "error", title: e.message });
       }
-      setUserTasks((prev) => ({
-        ...prev,
-        [selectedUser.id]: (prev[selectedUser.id] || []).filter(
-          (t) => t._id !== taskId
+    });
+  };
+
+  const handleEditClick = (task: TaskType) => {
+    setEditingTaskId(task._id!);
+    setEditingUserId(task.userId);
+    const [h, m] = task.duration.split("h").map((s) => s.replace("m", "").trim());
+    setEditForm({
+      name: task.name,
+      priority: task.priority,
+      durationHours: h,
+      durationMinutes: m,
+      description: task.description,
+      deadline: task.deadline,
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingTaskId(null);
+    setEditingUserId(null);
+  };
+
+  const saveEdit = async () => {
+    if (!editingTaskId || !editingUserId) return;
+    if (!editForm.name.trim()) {
+      Swal.fire({ icon: "error", title: "Name required" });
+      return;
+    }
+    if (!editForm.deadline) {
+      Swal.fire({ icon: "error", title: "Deadline required" });
+      return;
+    }
+    const payload = {
+      name: editForm.name.trim(),
+      priority: editForm.priority,
+      duration: `${Number(editForm.durationHours) || 0}h ${
+        Number(editForm.durationMinutes) || 0
+      }m`,
+      description: editForm.description.trim(),
+      deadline: editForm.deadline,
+    };
+    try {
+      const res = await fetch(`http://localhost:3030/api/update/${editingTaskId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Update failed");
+      const updatedTask = await res.json();
+      Swal.fire({ icon: "success", title: "Updated" });
+      setUserTasks((p) => ({
+        ...p,
+        [editingUserId]: (p[editingUserId] || []).map((t) =>
+          t._id === editingTaskId ? { ...t, ...updatedTask } : t
         ),
       }));
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Delete Failed",
-        text: err.message,
-        confirmButtonColor: "#ef4444",
-      });
+      cancelEdit();
+    } catch (e: any) {
+      Swal.fire({ icon: "error", title: e.message });
     }
   };
 
-  // Helper for priority stars
-  const getPriorityStars = (pri: TaskType["priority"]) =>
-    pri === "High" ? "★★★" : pri === "Medium" ? "★★" : "★";
-
-  // On mount, load users
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  // When selecting from summary dropdown
-  const selectUser = (id: string, name: string) => {
-    setSelectedUser({ id, name });
-    fetchTasks(id);
+  const selectUserForSummary = (uid: string, name: string) => {
+    if (!uid) {
+      setSelectedUser(null);
+      getAllTasks();
+    } else {
+      setSelectedUser({ id: uid, name });
+      fetchTasks(uid);
+    }
   };
+
+  // Determine groups for summary
+  const groups: UserTasks = selectedUser
+    ? { [selectedUser.id]: userTasks[selectedUser.id] || [] }
+    : userTasks;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="flex flex-col items-center justify-center min-h-screen bg-cover p-6 overflow-auto"
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center min-h-screen p-6 bg-cover bg-center overflow-auto"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <Link to="/managerdashboard" className="absolute top-2 left-6">
-        <button className="flex items-center gap-2 text-white bg-red-500 p-3 rounded-lg">
+      <Link to="/managerdashboard" className="self-start mb-4">
+        <button className="flex items-center gap-2 px-3 py-2 bg-red-500 text-white rounded">
           <FaArrowLeft /> Back
         </button>
       </Link>
 
-      <h1 className="text-4xl font-extrabold mb-6 text-white">
-        Task Manager
-      </h1>
+      <h1 className="text-4xl font-bold mb-6 text-white">Task Manager</h1>
 
       <div className="flex gap-4 mb-6">
         <button
           onClick={() => setActiveView("form")}
-          className={`px-8 py-2 font-bold rounded-l-lg ${
-            activeView === "form"
-              ? "bg-white text-text"
-              : "bg-gray-600 text-white"
+          className={`px-6 py-2 font-semibold rounded-l ${
+            activeView === "form" ? "bg-white text-black" : "bg-gray-600 text-white"
           }`}
         >
           Add Tasks
@@ -284,10 +349,8 @@ export default function TaskManager() {
             setActiveView("summary");
             getAllTasks();
           }}
-          className={`px-6 py-2 font-bold rounded-r-lg ${
-            activeView === "summary"
-              ? "bg-white text-text"
-              : "bg-gray-600 text-white"
+          className={`px-6 py-2 font-semibold rounded-r ${
+            activeView === "summary" ? "bg-white text-black" : "bg-gray-600 text-white"
           }`}
         >
           Task Summary
@@ -301,36 +364,34 @@ export default function TaskManager() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="w-full max-w-5xl bg-white rounded-lg shadow-xl p-6 grid grid-cols-2 gap-6"
+            className="w-full max-w-5xl bg-white rounded shadow p-6 grid grid-cols-2 gap-6"
           >
-            {/* User & Add */}
+            {/* User Info */}
             <div>
-              <h3 className="text-xl font-bold mb-3">User Information</h3>
+              <h2 className="font-bold mb-2">User Information</h2>
               <input
                 type="text"
                 placeholder="User ID"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                className="w-full p-2 border rounded mb-3"
+                value={newUserId}
+                onChange={(e) => setNewUserId(e.target.value)}
+                className="w-full mb-2 p-2 border rounded"
               />
               <input
                 type="text"
                 placeholder="Username"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                className="w-full p-2 border rounded mb-3"
+                value={newUserName}
+                onChange={(e) => setNewUserName(e.target.value)}
+                className="w-full mb-2 p-2 border rounded"
               />
               <button
-                onClick={addUser}
-                className="w-full p-3 bg-text text-white rounded-lg mb-6"
+                onClick={handleAddUser}
+                className="w-full mb-4 py-2 bg-blue-600 text-white rounded"
               >
                 Add User
               </button>
               {users.length > 0 && (
-                <div>
-                  <label className="block mb-1 font-semibold">
-                    Select User
-                  </label>
+                <>
+                  <label className="block mb-1 font-semibold">Select User</label>
                   <select
                     value={selectedUser?.id || ""}
                     onChange={(e) => {
@@ -339,40 +400,37 @@ export default function TaskManager() {
                     }}
                     className="w-full p-2 border rounded"
                   >
-                    <option value="">Select a user</option>
+                    <option value="">-- Select --</option>
                     {users.map((u) => (
                       <option key={u.id} value={u.id}>
                         {u.name}
                       </option>
                     ))}
                   </select>
-                </div>
+                </>
               )}
             </div>
 
-            {/* Task Form */}
+            {/* New Task Form */}
             <div>
-              <h3 className="text-xl font-bold mb-3">Add New Task</h3>
+              <h2 className="font-bold mb-2">Add New Task</h2>
               <input
                 type="text"
                 placeholder="Task Name"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
-                className="w-full p-2 border rounded mb-3"
+                className="w-full mb-2 p-2 border rounded"
               />
               <textarea
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-2 border rounded mb-3 h-20"
+                className="w-full mb-2 p-2 border rounded h-20"
               />
-              <div className="flex gap-3 mb-3">
-               
+              <div className="flex gap-2 mb-2">
                 <select
                   value={priority}
-                  onChange={(e) =>
-                    setPriority(e.target.value as TaskType["priority"])
-                  }
+                  onChange={(e) => setPriority(e.target.value as any)}
                   className="p-2 border rounded"
                 >
                   <option value="High">High ★★★</option>
@@ -381,17 +439,17 @@ export default function TaskManager() {
                 </select>
                 <input
                   type="number"
-                  placeholder="Hours"
+                  placeholder="Hrs"
                   value={durationHours}
                   onChange={(e) => setDurationHours(e.target.value)}
-                  className="p-2 border rounded w-1/4"
+                  className="w-1/4 p-2 border rounded"
                 />
                 <input
                   type="number"
-                  placeholder="Minutes"
+                  placeholder="Mins"
                   value={durationMinutes}
                   onChange={(e) => setDurationMinutes(e.target.value)}
-                  className="p-2 border rounded w-1/4"
+                  className="w-1/4 p-2 border rounded"
                 />
               </div>
               <label className="block mb-1 font-semibold">Deadline</label>
@@ -399,80 +457,58 @@ export default function TaskManager() {
                 type="date"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="w-full p-2 border rounded mb-3"
+                className="w-full mb-4 p-2 border rounded"
               />
               <button
-                onClick={addTask}
-                className="w-full p-3 bg-text text-white rounded-lg"
+                onClick={handleAddTask}
+                className="w-full py-2 bg-green-600 text-white rounded"
               >
                 Add Task
               </button>
             </div>
 
-            {/* Task List */}
+            {/* Pending Tasks */}
             <div className="col-span-2 mt-6">
-              <h3 className="text-xl font-bold mb-3">Task List</h3>
-              {selectedUser && userTasks[selectedUser.id]?.length ? (
-                <>
-                  <ul className="space-y-3">
-                    {userTasks[selectedUser.id].map((task) => (
-                      <li
-                        key={task._id ?? task.name}
-                        className={`p-3 border rounded-lg flex justify-between items-center ${
-                          task.completed
-                            ? "opacity-50 line-through"
-                            : "bg-gray-100"
-                        }`}
-                      >
-                        <div>
-                          <p className="font-bold flex items-center gap-2">
-                            {task.name} {getPriorityStars(task.priority)}
-                            {task.completed ? ( 
-                              <span className="flex items-center gap-1 text-green-600">
-                                <FaPlay /> Completed
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-1 text-orange-500">
-                                <FaClock /> Pending
-                              </span>
-                            )}
-                          </p>
-                          <p>Priority: {task.priority}</p>
-                          <p>Duration: {task.duration}</p>
-                          <p>Deadline: {task.deadline}</p>
-                        </div>
-                        <button
-                          onClick={() =>
-                            Swal.fire({
-                              title: "Are you sure?",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonColor: "#d33",
-                              cancelButtonColor: "#3085d6",
-                              confirmButtonText: "Yes, delete!",
-                            }).then((res) => {
-                              if (res.isConfirmed)
-                                deleteTask(task._id!, task.completed);
-                            })
-                          }
-                          className="text-red-500"
+              <h2 className="font-bold mb-2">Pending Tasks</h2>
+              {selectedUser ? (
+                newTasks.filter((t) => t.userId === selectedUser.id).length > 0 ? (
+                  <ul className="space-y-4">
+                    {newTasks
+                      .filter((t) => t.userId === selectedUser.id)
+                      .map((t) => (
+                        <li
+                          key={t.id}
+                          className="relative p-4 border rounded flex flex-col"
                         >
-                          <FaTrash />
-                        </button>
-                      </li>
-                    ))}
+                          <div className="flex items-start">
+                            <div className="flex-1">
+                              <p className="font-bold">
+                                {t.name} {getPriorityStars(t.priority)}
+                              </p>
+                              <p>Duration: {t.duration}</p>
+                              <p>Deadline: {t.deadline}</p>
+                            </div>
+                            <button
+                              onClick={() => deleteLocal(t.id)}
+                              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-red-500"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                          <button
+                            onClick={() => submitLocal(t)}
+                            className="mt-2 w-1/2 py-1 bg-blue-600 text-white rounded"
+                          >
+                            Submit
+                          </button>
+                        </li>
+                      ))}
                   </ul>
-                  {showSubmit && (
-                    <button
-                      onClick={submitTasks}
-                      className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg"
-                    >
-                      Submit New Tasks
-                    </button>
-                  )}
-                </>
+                ) : (
+                  <p>No new tasks.</p>
+                )
               ) : (
-                <p className="text-gray-500">No tasks available</p>
+                <p>Please select a user.</p>
               )}
             </div>
           </motion.div>
@@ -484,20 +520,19 @@ export default function TaskManager() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="w-full max-w-5xl bg-white rounded-lg p-6 shadow-lg"
+            className="w-full max-w-5xl bg-white rounded shadow p-6"
           >
-            <h2 className="text-2xl font-bold mb-6">Task Assignment Summary</h2>
+            <h2 className="font-bold mb-4">Task Assignment Summary</h2>
             <div className="mb-4">
-              <label className="block mb-2 font-semibold">Select User</label>
+              <label className="block mb-1 font-semibold">Filter by User</label>
               <select
                 value={selectedUser?.id || ""}
                 onChange={(e) => {
-                  const id = e.target.value;
-                  if (!id) {
-                    setSelectedUser(null);
-                  } else {
-                    const u = users.find((u) => u.id === id);
-                    if (u) selectUser(u.id, u.name);
+                  const v = e.target.value;
+                  if (!v) selectUserForSummary("", "");
+                  else {
+                    const u = users.find((u) => u.id === v)!;
+                    selectUserForSummary(u.id, u.name);
                   }
                 }}
                 className="p-2 border rounded w-64"
@@ -511,75 +546,135 @@ export default function TaskManager() {
               </select>
             </div>
 
-            <div>
-              {selectedUser ? (
-                <>
-                  <h3 className="text-lg font-semibold mb-2">
-                    {selectedUser.name}'s Tasks
-                  </h3>
-                  <ul className="space-y-2">
-                    {(userTasks[selectedUser.id] || []).map((task) => (
-                      <li
-                        key={task._id}
-                        className="bg-gray-100 p-3 rounded-lg border flex justify-between items-center"
-                      >
-                        <div>
-                          <p className="font-bold flex items-center gap-2">
-                            {task.name} {getPriorityStars(task.priority)}
-                            {task.completed ? (
-                              <span className="flex items-center gap-1 text-green-600">
-                                <FaPlay /> Completed
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-1 text-orange-500">
-                                <FaClock /> Pending
-                              </span>
-                            )}
-                          </p>
-                          <p>Priority: {task.priority}</p>
-                          <p>Duration: {task.duration}</p>
-                          <p>Deadline: {task.deadline}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                Object.entries(userTasks).map(([uid, tasks]) => (
-                  <div key={uid} className="mb-6">
-                    <h3 className="text-lg font-semibold mb-2">
-                      {users.find((u) => u.id === uid)?.name}'s Tasks
-                    </h3>
-                    <ul className="space-y-2">
+            {Object.entries(groups).map(([uid, tasks]) => {
+              const owner = users.find((u) => u.id === uid)?.name || "Unknown";
+              return (
+                <div key={uid} className="mb-6">
+                  <h3 className="text-2xl font-bold mb-2">{owner}'s Tasks</h3>
+                  {tasks.length > 0 ? (
+                    <ul className="space-y-4">
                       {tasks.map((task) => (
                         <li
                           key={task._id}
-                          className="bg-gray-100 p-3 rounded-lg border flex justify-between items-center"
+                          className="relative p-4 border rounded bg-gray-50"
                         >
-                          <div>
-                            <p className="font-bold flex items-center gap-2">
-                              {task.name} {getPriorityStars(task.priority)}
-                              {task.completed ? (
-                                <span className="flex items-center gap-1 text-green-600">
-                                  <FaPlay /> Completed
-                                </span>
-                              ) : (
-                                <span className="flex items-center gap-1 text-orange-500">
-                                  <FaClock /> Pending
-                                </span>
-                              )}
-                            </p>
-                            <p>Priority: {task.priority}</p>
-                            <p>Duration: {task.duration}</p>
-                            <p>Deadline: {task.deadline}</p>
-                          </div>
+                          {editingTaskId === task._id ? (
+                            <>
+                              <h4 className="font-semibold mb-2">
+                                Edit form of {owner}'s
+                              </h4>
+                              <input
+                                type="text"
+                                value={editForm.name}
+                                onChange={(e) =>
+                                  setEditForm((f) => ({ ...f, name: e.target.value }))
+                                }
+                                className="w-full mb-2 p-2 border rounded"
+                              />
+                              <select
+                                value={editForm.priority}
+                                onChange={(e) =>
+                                  setEditForm((f) => ({
+                                    ...f,
+                                    priority: e.target.value as any,
+                                  }))
+                                }
+                                className="w-full mb-2 p-2 border rounded"
+                              >
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                              </select>
+                              <div className="flex gap-2 mb-2">
+                                <input
+                                  type="number"
+                                  placeholder="Hrs"
+                                  value={editForm.durationHours}
+                                  onChange={(e) =>
+                                    setEditForm((f) => ({
+                                      ...f,
+                                      durationHours: e.target.value,
+                                    }))
+                                  }
+                                  className="w-1/2 p-2 border rounded"
+                                />
+                                <input
+                                  type="number"
+                                  placeholder="Mins"
+                                  value={editForm.durationMinutes}
+                                  onChange={(e) =>
+                                    setEditForm((f) => ({
+                                      ...f,
+                                      durationMinutes: e.target.value,
+                                    }))
+                                  }
+                                  className="w-1/2 p-2 border rounded"
+                                />
+                              </div>
+                              <input
+                                type="date"
+                                value={editForm.deadline}
+                                onChange={(e) =>
+                                  setEditForm((f) => ({ ...f, deadline: e.target.value }))
+                                }
+                                className="w-full mb-2 p-2 border rounded"
+                              />
+                              <textarea
+                                value={editForm.description}
+                                onChange={(e) =>
+                                  setEditForm((f) => ({
+                                    ...f,
+                                    description: e.target.value,
+                                  }))
+                                }
+                                className="w-full mb-2 p-2 border rounded h-20"
+                              />
+                              <div className="flex gap-2 mt-2">
+                                <button
+                                  onClick={saveEdit}
+                                  className="px-4 py-2 bg-green-600 text-white rounded"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={cancelEdit}
+                                  className="px-4 py-2 bg-gray-400 text-white rounded"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="flex items-start">
+                              <div className="flex-1">
+                                <p className="font-bold flex items-center gap-2">
+                                  {task.name} {getPriorityStars(task.priority)}{" "}
+                                  {statusBadge(task.completed)}
+                                </p>
+                                <p>Duration: {task.duration}</p>
+                                <p>Deadline: {task.deadline}</p>
+                              </div>
+                              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-2">
+                                <button onClick={() => handleEditClick(task)}>
+                                  <FaEdit className="text-blue-500" />
+                                </button>
+                                <button
+                                  onClick={() => deletePersisted(task._id!, uid)}
+                                >
+                                  <FaTrash className="text-red-500" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </li>
                       ))}
                     </ul>
-                  </div>
-                ))
-              )}
-            </div>
+                  ) : (
+                    <p className="text-gray-500">{owner} has no tasks.</p>
+                  )}
+                </div>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
