@@ -118,7 +118,7 @@ export default function LeaveHistory() {
           <table className="w-full bg-white border border-gray rounded-lg">
             <thead>
               <tr className="bg-text text-background">
-                <th className="p-3 text-left pl-20">Type</th>
+                <th className="p-3 text-left pl-20">Reason</th>
                 <th className="p-3 text-left">Start</th>
                 <th className="p-3 text-left">End</th>
                 <th className="p-3 text-left">Time</th>
