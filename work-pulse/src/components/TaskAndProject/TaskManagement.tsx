@@ -14,7 +14,7 @@ interface TaskType {
   duration: string;
   description: string;
   deadline: string;
-  submitted?: boolean;
+  completed: boolean;
 
 }
 
@@ -52,7 +52,7 @@ const TaskManager = () => {
       const updatedTasks = await Promise.all(
         tasksToSubmit.map(async (task) => {
           // Skip already submitted tasks
-          if (task.submitted) return task;
+          if (task.completed) return task;
   
           const response = await fetch("http://localhost:3030/api/add-task", {
             method: "POST",
@@ -65,6 +65,7 @@ const TaskManager = () => {
               duration: task.duration,
               description: task.description,
               deadline: task.deadline,
+              completed: task.completed,
             }),
           });
   
@@ -73,7 +74,7 @@ const TaskManager = () => {
             return {
               ...task,
               _id: data.task._id, // store _id for deletion
-              submitted: true,
+              completed: true,
             };
           } else {
             console.error(`Failed to submit task "${task.name}"`);
@@ -138,9 +139,9 @@ const TaskManager = () => {
     const grouped: UserTasks = {};
     for (const task of allTasks) {
       if (!grouped[task.userId]) grouped[task.userId] = [];
-      grouped[task.userId].push({ ...task, submitted: true });
+      grouped[task.userId].push({ ...task, completed: true });
     }
-
+    // grouped[task.userId].push({ ...task, completed: true });
     setUserTasks(grouped);
   } catch (error) {
     console.error("Error fetching all tasks:", error);
@@ -179,7 +180,7 @@ const TaskManager = () => {
 
   const selectUser = (id: string, name: string) => {
     setSelectedUser({ id, name });
-    fetchTasks(id); // Load their submitted tasks
+    fetchTasks(id); 
   };
   
 
@@ -233,6 +234,7 @@ const TaskManager = () => {
       duration: `${Number(durationHours) || 0}h ${Number(durationMinutes) || 0}m`,
       description: description.trim() || "No description",
       deadline,
+      completed:false,
       userId: undefined
     };
 
@@ -259,7 +261,7 @@ const TaskManager = () => {
   };
 
   const deleteTask = async (taskId: string, isSubmitted: boolean) => {
-    console.log("Delete function called with taskId:", taskId);  // Log taskId to see what's being passed
+    console.log("Delete function called with taskId:", taskId);  
     console.log("Is Submitted:", isSubmitted);
   
     if (!selectedUser) {
@@ -268,16 +270,16 @@ const TaskManager = () => {
         icon: 'warning',
         title: 'No User Selected',
         text: 'Cannot delete task without selecting a user.',
-        confirmButtonColor: '#f59e0b', // amber/yellow
+        confirmButtonColor: '#f59e0b', 
       });
       return;
     }
   
-    console.log("Selected User:", selectedUser);  // Log selectedUser to make sure it's valid
+    console.log("Selected User:", selectedUser);  
   
     try {
       if (isSubmitted) {
-        console.log("Deleting from backend...");  // Log this to see if we enter this block
+        console.log("Deleting from backend...");  
         const res = await fetch(`http://localhost:3030/api/delete-task/${taskId}`, {
           method: "DELETE",
         });
@@ -471,7 +473,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
     >
       <div className="grid grid-cols-2 gap-6 w-full max-w-5xl p-6 bg-gray-100 rounded-lg shadow-xl">
         {/* User Information Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg ">
+        <div className="bg-white p-6  rounded-lg shadow-lg ">
           <h3 className="text-xl font-bold text-[#122D3B] mb-3">User Information</h3>
           <input type="text" placeholder="User ID" value={userId} onChange={(e) => setUserId(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
           <input type="text" placeholder="Username" value={userName} onChange={(e) => setUserName(e.target.value)} className="w-full p-2 border rounded mb-3 shadow-sm" />
@@ -555,8 +557,8 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
     <>
       <ul className="space-y-3">
         {userTasks[selectedUser.id].map((task) => {
-          const taskStatus = task.submitted ? "Pending" : "Started"; // Task status logic
-          const isStarted = taskStatus === "Started";
+          const taskStatus = task.completed ; 
+         
           
           return (
             <li
@@ -567,17 +569,8 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 <p className="font-bold flex items-center gap-2">
                   {task.name} {getPriorityStars(task.priority)}
                   <span
-                    className={`text-sm font-semibold px-2 py-1 rounded flex items-center gap-1 ${
-                      isStarted
-                        ? "text-background bg-[#15803d]"
-                        : "text-background bg-[#f97316]" 
-                    }`}
-                  >
-                    {isStarted ? (
-                      <FaPlay className="mr-1" /> 
-                    ) : (
-                      <FaClock className="mr-1" /> 
-                    )}
+                    className="text-sm font-semibold px-2 py-1 rounded flex items-center gap-1" >
+                    
                     {taskStatus}
                   </span>
                 </p>
@@ -614,7 +607,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                   });
                 }}
                 className="text-red-500"
-                disabled={taskStatus === "Started"}
+                
               >
                 <FaTrash />
               </button>
@@ -691,8 +684,8 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
       </h3>
       <ul className="space-y-2">
         {userTasks[selectedUser.id].map((task) => {
-          const taskStatus = task.submitted ? "Pending" : "Started";
-          const isEditable = taskStatus !== "Started";
+          const taskStatus = task.completed ;
+          
 
           return (
             <li
@@ -706,21 +699,18 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
                 <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
                 <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
-                <p className="text-sm font-semibold text-background bg-[#f97316] px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
-                    <FaClock />
-                    {task.submitted ? "Pending" : "Started"}
+                <p className="text-sm font-semibold  px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
+                    
+                    {taskStatus }
                   </p>
               </div>
 
               <div className="flex space-x-2">
                 {/* Edit Button */}
                 <button
-                  onClick={() => {
-                    if (isEditable) setEditingTask(task);
-                  }}
-                  className={`text-blue-500 hover:text-blue-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`text-blue-500 hover:text-blue-700 `}
                   title="Edit Task"
-                  disabled={!isEditable}
+                  
                 >
                   <FaEdit />
                 </button>
@@ -728,7 +718,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 {/* Delete Button */}
                 <button
                   onClick={() => {
-                    if (!isEditable) return;
+                    
 
                     const taskIdToDelete = task._id || task.id?.toString();
                     if (!taskIdToDelete) {
@@ -757,9 +747,9 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                       }
                     });
                   }}
-                  className={`text-red-500 hover:text-red-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`text-red-500 hover:text-red-700 `}
                   title="Delete Task"
-                  disabled={!isEditable}
+                  
                 >
                   <FaTrash />
                 </button>
@@ -921,8 +911,8 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
       </h3>
       <ul className="space-y-2">
         {tasks.map((task) => {
-          const taskStatus = task.submitted ? "Pending" : "Started";
-          const isEditable = taskStatus !== "Started";
+          const taskStatus = task.completed ;
+          
 
           return (
             <li
@@ -936,21 +926,19 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
                 <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
                 <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
-                <p className="text-sm font-semibold text-background bg-[#f97316] px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
-                    <FaClock />
-                    {task.submitted ? "Pending" : "Started"}
+                <p className="text-sm font-semibold ] px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
+                    
+                    {taskStatus }
                   </p>
               </div>
 
               <div className="flex space-x-2">
                 {/* Edit Button */}
                 <button
-                  onClick={() => {
-                    if (isEditable) handleEditTask(task);
-                  }}
-                  className={`text-blue-500 hover:text-blue-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
+                
+                  className={`text-blue-500 hover:text-blue-700 `}
                   title="Edit Task"
-                  disabled={!isEditable}
+                  
                 >
                   <FaEdit />
                 </button>
@@ -958,7 +946,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 {/* Delete Button */}
                 <button
                   onClick={() => {
-                    if (!isEditable) return;
+                    
 
                     const taskIdToDelete = task._id || task.id?.toString();
                     if (!taskIdToDelete) {
@@ -988,9 +976,9 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                         });
 
                   }}
-                  className={`text-red-500 hover:text-red-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`text-red-500 hover:text-red-700`}
                   title="Delete Task"
-                  disabled={!isEditable}
+                 
                 >
                   <FaTrash />
                 </button>
