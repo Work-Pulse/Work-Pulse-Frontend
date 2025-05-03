@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaArrowLeft, FaEdit, FaTrash, FaClock } from "react-icons/fa";
+import { FaArrowLeft, FaEdit, FaTrash, FaClock, FaPlay } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import bg from "../../assets/images/bg.png";
+import Swal from 'sweetalert2';
 
 interface TaskType {
   userId: any;
@@ -81,7 +82,12 @@ const TaskManager = () => {
         })
       );
   
-      // alert("Tasks submitted successfully!");
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Tasks submitted successfully!',
+        confirmButtonColor: '#3085d6',
+      });
   
       // Update userTasks state with the new _id values and submitted status
       setUserTasks((prev) => ({
@@ -201,12 +207,22 @@ const TaskManager = () => {
 
   const addTask = () => {
     if (!selectedUser) {
-      // alert("Please select a user first.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'No User Selected',
+        text: 'Please select a user first.',
+        confirmButtonColor: '#f59e0b', // amber
+      });
       return;
     }
 
     if (!taskName.trim() || (durationHours === "" && durationMinutes === "") || !deadline) {
-      // alert("Please fill all required task fields.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Incomplete Fields',
+        text: 'Please fill all required task fields.',
+        confirmButtonColor: '#ef4444', // red
+      });
       return;
     }
 
@@ -248,7 +264,12 @@ const TaskManager = () => {
   
     if (!selectedUser) {
       console.error("No user selected. Cannot delete task.");
-      // alert("No user selected. Cannot delete task.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'No User Selected',
+        text: 'Cannot delete task without selecting a user.',
+        confirmButtonColor: '#f59e0b', // amber/yellow
+      });
       return;
     }
   
@@ -280,7 +301,12 @@ const TaskManager = () => {
       });
     } catch (err: any) {
       console.error("Error deleting task:", err);  // Log the error in detail
-      // alert("Error deleting task: " + err.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Delete Failed',
+        text: `Error deleting task: ${err.message}`,
+        confirmButtonColor: '#ef4444', // red
+      });
     }
   };
     
@@ -326,7 +352,12 @@ const TaskManager = () => {
       console.log("Payload being sent:", changedFields);
   
       if (Object.keys(changedFields).length === 0) {
-        // alert("No changes to update.");
+        Swal.fire({
+          icon: 'info',
+          title: 'No Changes Detected',
+          text: 'There are no changes to update.',
+          confirmButtonColor: '#3b82f6', // blue
+        });
         return;
       }
   
@@ -340,8 +371,19 @@ const TaskManager = () => {
         const updated = await res.json();
         updateTaskInState({ ...updated, userId: editingTask.userId }); // 👈 add userId manually
         setEditingTask(null);
+        Swal.fire({
+          title: 'Task Updated!',
+          text: 'Your task has been successfully updated.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+        });
       } else {
-        // alert("Failed to update task");
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: 'Failed to update task.',
+          confirmButtonColor: '#ef4444', // red
+        });
       }
     }
   };
@@ -373,10 +415,6 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
     };
   });
 };
-
-
-
-
 
 
   // Function to get priority stars
@@ -518,7 +556,8 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
       <ul className="space-y-3">
         {userTasks[selectedUser.id].map((task) => {
           const taskStatus = task.submitted ? "Pending" : "Started"; // Task status logic
-
+          const isStarted = taskStatus === "Started";
+          
           return (
             <li
               key={(task._id ?? task.id ?? crypto.randomUUID()).toString()}
@@ -527,8 +566,18 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
               <div>
                 <p className="font-bold flex items-center gap-2">
                   {task.name} {getPriorityStars(task.priority)}
-                  <span className="text-sm font-semibold text-background bg-text px-2 py-1 rounded flex items-center gap-1">
-                    <FaClock className="mr-1" />
+                  <span
+                    className={`text-sm font-semibold px-2 py-1 rounded flex items-center gap-1 ${
+                      isStarted
+                        ? "text-background bg-[#15803d]"
+                        : "text-background bg-[#f97316]" 
+                    }`}
+                  >
+                    {isStarted ? (
+                      <FaPlay className="mr-1" /> 
+                    ) : (
+                      <FaClock className="mr-1" /> 
+                    )}
                     {taskStatus}
                   </span>
                 </p>
@@ -541,13 +590,28 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 onClick={() => {
                   const taskIdToDelete = task._id || task.id?.toString();
                   if (!taskIdToDelete) {
-                    // alert("Task ID not found. Cannot delete.");
+                    Swal.fire({
+                      icon: 'warning',
+                      title: 'Task Not Found',
+                      text: 'Task ID not found. Cannot delete.',
+                      confirmButtonColor: '#f59e0b', // amber
+                    });
                     return;
                   }
-                  // const isSubmitted = !!task._id;
-                  // if (window.confirm("Are you sure you want to delete this task?")) {
-                  //   deleteTask(taskIdToDelete, isSubmitted);
-                  // }
+                  Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you really want to delete this task?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      const isSubmitted = !!task._id;
+                      deleteTask(taskIdToDelete, isSubmitted);
+                    }
+                  });
                 }}
                 className="text-red-500"
                 disabled={taskStatus === "Started"}
@@ -642,7 +706,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
                 <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
                 <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
-                <p className="text-sm font-semibold text-background bg-text px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
+                <p className="text-sm font-semibold text-background bg-[#f97316] px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
                     <FaClock />
                     {task.submitted ? "Pending" : "Started"}
                   </p>
@@ -668,14 +732,30 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
 
                     const taskIdToDelete = task._id || task.id?.toString();
                     if (!taskIdToDelete) {
-                      // alert("Task ID not found. Cannot delete.");
+                      Swal.fire({
+                        icon: 'warning',
+                        title: 'Task Not Found',
+                        text: 'Task ID not found. Cannot delete.',
+                        confirmButtonColor: '#f59e0b', // Amber
+                      });
                       return;
                     }
 
-                    // const isSubmitted = !!task._id;
-                    // if (window.confirm("Are you sure you want to delete this task?")) {
-                    //   deleteTask(taskIdToDelete, isSubmitted);
-                    // }
+                    const isSubmitted = !!task._id;
+
+                    Swal.fire({
+                      title: 'Are you sure?',
+                      text: 'Do you really want to delete this task?',
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#d33',
+                      cancelButtonColor: '#3085d6',
+                      confirmButtonText: 'Yes, delete it!',
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        deleteTask(taskIdToDelete, isSubmitted);
+                      }
+                    });
                   }}
                   className={`text-red-500 hover:text-red-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
                   title="Delete Task"
@@ -737,26 +817,26 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
             <label className="block font-semibold mb-1">Duration</label>
             <div className="flex space-x-2">
             <input
-  type="number"
-  min="0"
-  placeholder="Hours"
-  value={
-    updatedTaskData.duration
-      ? parseInt((updatedTaskData.duration || '').split('h')[0]) || ''
-      : ''
-  }
-  onChange={(e) => {
-    const hours = e.target.value;
-    const minutes = (updatedTaskData.duration || '').includes('min')
-      ? (updatedTaskData.duration || '').split('h')[1]?.replace('min', '').trim()
-      : '0';
-    setUpdatedTaskData({
-      ...updatedTaskData,
-      duration: `${hours || '0'}h ${minutes || '0'}min`,
-    });
-  }}
-  className="w-1/2 p-2 border rounded"
-/>
+              type="number"
+              min="0"
+              placeholder="Hours"
+              value={
+                updatedTaskData.duration
+                  ? parseInt((updatedTaskData.duration || '').split('h')[0]) || ''
+                  : ''
+              }
+              onChange={(e) => {
+                const hours = e.target.value;
+                const minutes = (updatedTaskData.duration || '').includes('min')
+                  ? (updatedTaskData.duration || '').split('h')[1]?.replace('min', '').trim()
+                  : '0';
+                setUpdatedTaskData({
+                  ...updatedTaskData,
+                  duration: `${hours || '0'}h ${minutes || '0'}min`,
+                });
+              }}
+              className="w-1/2 p-2 border rounded"
+            />
 
         <input
           type="number"
@@ -856,7 +936,7 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
                 <p className="text-gray-600 font-semibold">Priority: {task.priority}</p>
                 <p className="text-gray-600 font-semibold">Duration: {task.duration}</p>
                 <p className="text-gray-600 font-semibold">Deadline: {task.deadline}</p>
-                <p className="text-sm font-semibold text-background bg-text px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
+                <p className="text-sm font-semibold text-background bg-[#f97316] px-2 py-1 mt-1 rounded inline-flex items-center gap-1 w-fit">
                     <FaClock />
                     {task.submitted ? "Pending" : "Started"}
                   </p>
@@ -882,15 +962,31 @@ const updateTaskInState = (updatedTask: TaskType & { userId: string }) => {
 
                     const taskIdToDelete = task._id || task.id?.toString();
                     if (!taskIdToDelete) {
-                      // alert("Task ID not found. Cannot delete.");
+                      Swal.fire({
+                        icon: 'warning',
+                        title: 'Task Not Found',
+                        text: 'Task ID not found. Cannot delete.',
+                        confirmButtonColor: '#f59e0b', // amber
+                      });
                       return;
                     }
 
-                    // const isSubmitted = !!task._id;
+                    const isSubmitted = !!task._id;
 
-                    // if (window.confirm("Are you sure you want to delete this task?")) {
-                    //   deleteTask(taskIdToDelete, isSubmitted);
-                    // }
+                        Swal.fire({
+                          title: 'Are you sure?',
+                          text: 'Do you really want to delete this task?',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#d33',
+                          cancelButtonColor: '#3085d6',
+                          confirmButtonText: 'Yes, delete it!',
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            deleteTask(taskIdToDelete, isSubmitted);
+                          }
+                        });
+
                   }}
                   className={`text-red-500 hover:text-red-700 ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}
                   title="Delete Task"
