@@ -327,19 +327,19 @@ export default function TaskManager() {
       className="flex flex-col items-center min-h-screen p-6 bg-cover bg-center overflow-auto"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <Link to="/managerdashboard" className="self-start mb-4">
-        <button className="flex items-center gap-2 px-3 py-2 bg-red-500 text-white rounded">
-          <FaArrowLeft /> Back
+      <Link to='/managerdashboard' className="absolute top-2 left-6">
+        <button className="flex items-center gap-2 text-text text-xl font-extrabold p-3 bg-red-500 rounded-lg hover:text-reject transition duration-300">
+          <FaArrowLeft size={20} /> Back
         </button>
       </Link>
 
-      <h1 className="text-4xl font-bold mb-6 text-white">Task Manager</h1>
+      <h1 className="text-4xl font-bold mb-6 text-text">Task Manager</h1>
 
       <div className="flex gap-4 mb-6">
         <button
           onClick={() => setActiveView("form")}
           className={`px-6 py-2 font-semibold rounded-l ${
-            activeView === "form" ? "bg-white text-black" : "bg-gray-600 text-white"
+            activeView === "form" ? "bg-text text-white" : "bg-white text-text"
           }`}
         >
           Add Tasks
@@ -350,7 +350,7 @@ export default function TaskManager() {
             getAllTasks();
           }}
           className={`px-6 py-2 font-semibold rounded-r ${
-            activeView === "summary" ? "bg-white text-black" : "bg-gray-600 text-white"
+            activeView === "summary" ? "bg-text text-white" : "bg-white text-text"
           }`}
         >
           Task Summary
@@ -385,7 +385,7 @@ export default function TaskManager() {
               />
               <button
                 onClick={handleAddUser}
-                className="w-full mb-4 py-2 bg-blue-600 text-white rounded"
+                className="w-full mb-4 py-2 bg-text text-white rounded"
               >
                 Add User
               </button>
@@ -461,7 +461,7 @@ export default function TaskManager() {
               />
               <button
                 onClick={handleAddTask}
-                className="w-full py-2 bg-green-600 text-white rounded"
+                className="w-full py-2 bg-text text-white rounded"
               >
                 Add Task
               </button>
@@ -497,7 +497,7 @@ export default function TaskManager() {
                           </div>
                           <button
                             onClick={() => submitLocal(t)}
-                            className="mt-2 w-1/2 py-1 bg-blue-600 text-white rounded"
+                            className="mt-2 w-1/2 py-1 bg-text text-white rounded"
                           >
                             Submit
                           </button>
@@ -632,13 +632,13 @@ export default function TaskManager() {
                               <div className="flex gap-2 mt-2">
                                 <button
                                   onClick={saveEdit}
-                                  className="px-4 py-2 bg-green-600 text-white rounded"
+                                  className="px-4 py-2 bg-text text-white rounded"
                                 >
                                   Save
                                 </button>
                                 <button
                                   onClick={cancelEdit}
-                                  className="px-4 py-2 bg-gray-400 text-white rounded"
+                                  className="px-4 py-2 bg-reject text-white rounded"
                                 >
                                   Cancel
                                 </button>
