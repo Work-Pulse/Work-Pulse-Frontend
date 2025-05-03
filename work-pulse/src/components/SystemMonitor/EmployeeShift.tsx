@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
 import bg from "../../assets/images/bg.png"
@@ -7,7 +7,6 @@ import { motion } from "framer-motion"
 import ChatWindow from "./SubComponents/ChatWindow"
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import axios from "axios"
-import { ArrowLeft } from "lucide-react"
 import Swal from 'sweetalert2'
 
 dayjs.extend(duration)
@@ -203,19 +202,11 @@ const EmployeeShift = () => {
       className="flex flex-col justify-center min-h-screen bg-cover bg-center p-6 bg-fixed"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <div className="w-full">
-        <div className="fixed">
-          <Link to="/employeedashboard">
-            <button className="absolute text-accent hover:text-reject p-3 rounded-full flex items-center">
-              <ArrowLeft size={24} className="mr-2" /> Back
-            </button>
-          </Link>
-        </div>
-      </div>
+      
       <div className="flex">
-        <div className="w-2/3 p-6">
+        <div className="w-3/5">
           {/* Shift Timer */}
-          <div className="bg-white p-4 shadow rounded-lg mt-20 ml-40 mr-50">
+          <div className="bg-white/40 p-4 shadow rounded-lg mt-20 ml-40 mr-50">
             <div className="flex flex-col items-center justify-center bg-cover bg-center text-[#122D3B] font-bold">
               <h2 className="text-2xl font-bold">{employeeData.firstName} {employeeData.lastName}</h2>
               <h2 className="text-lg">{officeMail}</h2>
@@ -271,7 +262,7 @@ const EmployeeShift = () => {
           </div>
 
           {/* Application Usage Section */}
-          <div className="bg-white p-4 shadow rounded-lg mt-4 ml-40 mr-50">
+          <div className="bg-white/40 p-4 shadow rounded-lg mt-4 ml-40 mr-50">
             <h2 className="flex flex-col items-center justify-center bg-cover bg-center p-2 text-[#122D3B] font-bold">Application Usage</h2>
             <div className="w-full mt-2">
               <div className="flex bg-gray-200 font-semibold">

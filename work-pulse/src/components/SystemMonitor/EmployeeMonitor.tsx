@@ -71,7 +71,7 @@ export default function EmployeeMonitoring() {
           <div className="relative w-[50%] shadow-lg mb-5">
             <Search className="absolute left-2 top-4 text-text" size={25} />
             <input
-              className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none"
+              className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none bg-white/40 focus:bg-white"
               placeholder="Search Employee, Designation, Department..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -85,7 +85,7 @@ export default function EmployeeMonitoring() {
         </div>
 
         {/* Table Header */}
-        <div className="bg-white p-4 rounded-lg font-bold grid grid-cols-5 text-xl shadow-lg">
+        <div className="bg-white/40 p-4 rounded-lg font-bold grid grid-cols-5 text-xl shadow-lg">
           <span className="text-center text-gray pr-5">Employee ID</span>
           <span className="text-center text-text pr-10">Employee Name</span>
           <span className="text-center text-gray">Designation</span>
@@ -98,7 +98,7 @@ export default function EmployeeMonitoring() {
           filteredEmployees.map((employee, index) => (
             <div
               key={index}
-              className="mt-4 p-5 grid grid-cols-5 font-medium items-center rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-200 text-lg"
+              className="mt-4 p-5 grid grid-cols-5 font-medium items-center rounded-lg bg-white/40 shadow-md hover:shadow-lg transition-shadow duration-200 text-lg"
             >
               <div className="text-center text-gray pr-5">{employee.employeeId}</div>
               <div className="text-center pr-">{employee.firstName} {employee.lastName}</div>

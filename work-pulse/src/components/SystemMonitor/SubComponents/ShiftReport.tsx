@@ -105,26 +105,26 @@ export default function ShiftReport() {
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Search by date or application name"
-          className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none"
+          className="w-full p-4 pl-10 rounded-lg shadow-sm focus:ring-3 focus:ring-text focus:outline-none bg-white/40 focus:bg-white"
         />
       </div>
 
       {/* Table Header */}
       <div className="max-w-6xl w-full mt-6">
-        <div className="grid bg-background grid-cols-5 p-4 text-text text-xl font-bold text-center items-center rounded-lg shadow-lg">
+        <div className="grid bg-background/40 grid-cols-5 p-4 text-text text-xl font-bold text-center items-center rounded-lg shadow-lg">
           <span >Start Time</span>
           <span >End Time</span>
           <span>Total Shift</span>
           <span className="col-span-2">Application Usage</span>
         </div>
         {filteredShiftData.map((shift, index) => (
-          <div key={index} className="grid grid-cols-5 p-4 bg-background text-center items-center rounded-lg shadow-md mt-4">
+          <div key={index} className="grid grid-cols-5 p-4 bg-background/40 text-center items-center rounded-lg shadow-md mt-4">
             <span className="font-medium">{shift.startTime}</span>
             <span className="font-medium">{shift.endTime}</span>
             <span className="font-medium">{shift.totalTime}</span>
             <div className="col-span-2">
               {shift.applicationUsage.map((app: ApplicationUsage, appIndex: number) => (
-                <div key={appIndex}>
+                <div key={appIndex} className="">
                   {app.appName} ({formatTime(app.usageInSeconds)})
                 </div>
               ))}

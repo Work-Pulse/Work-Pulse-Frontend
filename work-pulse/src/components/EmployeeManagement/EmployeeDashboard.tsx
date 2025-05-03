@@ -5,6 +5,7 @@ import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useState, useEffect } from 'react';
 import bg from '../../assets/images/bg.png';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 import { FaClipboardCheck } from 'react-icons/fa6';
 
@@ -93,10 +94,28 @@ const EmployeeDashboard = () => {
           My Profile
         </Link>
 
-        <Link to='/shift' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
-          <FaUserClock size={80} />
-          Shift
-        </Link>
+        <button
+  onClick={async () => {
+    const result = await Swal.fire({
+      title: "Warning!",
+      text: "When you start the  shift you can't move backward. If you close this applicatioon your progress will not be saved!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Continue",
+      cancelButtonText: "Stay",
+      confirmButtonColor: "#ff0000",
+      cancelButtonColor: "#122128"
+    });
+
+    if (result.isConfirmed) {
+      navigate('/shift');
+    }
+  }}
+  className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl"
+>
+  <FaUserClock size={80} />
+  Shift
+</button>
 
         <Link to='/leavedashboard' className="w-64 h-48 text-[#122D3B] text-2xl font-semibold rounded-2xl transition duration-300 flex flex-col items-center justify-center gap-4 hover:bg-[#122D3B] hover:text-white shadow-xl">
           <FaClipboardCheck size={80} />

@@ -115,7 +115,7 @@ export default function ChatWindow() {
   };
 
   return (
-    <div className="bg-white w-full rounded-lg shadow-lg flex flex-col h-[90%] max-w-md mx-auto fixed">
+    <div className="bg-white/50 w-full rounded-lg shadow-lg flex flex-col h-[90%] max-w-md mx-auto fixed">
       {/* Header */}
       <div className="p-4 flex justify-between items-center bg-gray-100 rounded-t-lg">
         <div>
@@ -172,7 +172,7 @@ export default function ChatWindow() {
       </div>
 
       {/* Input */}
-      <div className="p-4 flex items-center bg-background rounded-b-lg">
+      <div className="p-4 flex items-center bg-background/50 rounded-b-lg">
         <input
           type="text"
           value={message}

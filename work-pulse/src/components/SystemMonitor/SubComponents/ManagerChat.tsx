@@ -96,7 +96,7 @@ export default function ManagerChat() {
     <div className="w-full">
         <div className="fixed">
           <Link to="/monitor">
-            <button className="absolute text-accent hover:text-reject p-3 rounded-full flex items-center">
+            <button className="absolute text-accent hover:text-reject font-bold rounded-full flex items-center">
               <ArrowLeft size={24} className="mr-2" /> Back
             </button>
           </Link>
@@ -105,7 +105,7 @@ export default function ManagerChat() {
     
     <div className="flex h-screen mt-10">
       {/* Sidebar */}
-      <div className="w-1/4 p-4 overflow-y-auto font-bold">
+      <div className="w-1/4 bg-white/40 rounded-lg p-4 overflow-y-auto font-bold mr-5">
         {employees.map((emp) => {
           const full = `${emp.firstName} ${emp.lastName}`;
           return (
@@ -113,7 +113,7 @@ export default function ManagerChat() {
               key={emp.officeMail}
               onClick={() => setSelected(emp.officeMail)}
               className={`p-2 rounded mb-2 cursor-pointer ${
-                selected === emp.officeMail ? "bg-white" : "hover:bg-gray"
+                selected === emp.officeMail ? "bg-text text-white" : "hover:bg-white hover:text-text"
               }`}
             >
               {full}
@@ -126,8 +126,8 @@ export default function ManagerChat() {
       <div className="flex-1 flex flex-col">
         {selected ? (
           <>
-            <div className="p-4 bg-white rounded-lg text-text font-bold">
-              Chat with {employees.find((e) => e.officeMail === selected)?.firstName}
+            <div className="p-4 bg-white/40 rounded-lg text-text font-bold">
+              Chat with {employees.find((e) => e.officeMail === selected)?.firstName} {employees.find((e) => e.officeMail === selected)?.lastName}
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -140,8 +140,8 @@ export default function ManagerChat() {
                       isManager ? "justify-end" : "justify-start"
                     }`}
                   >
-                    <div className="relative max-w-xs p-3 rounded-lg bg-gray-200">
-                      <p>{msg.text}</p>
+                    <div className="relative max-w-xs p-3 rounded-lg bg-text/40 text-white">
+                      <p className="">{msg.text}</p>
                       <span className="block text-xs text-gray-500 text-right">
                         {new Date(msg.timestamp).toLocaleTimeString([], {
                           hour: "2-digit",
@@ -160,7 +160,7 @@ export default function ManagerChat() {
               })}
             </div>
 
-            <div className="p-4 flex">
+            <div className="p-4 flex bg-white/40 rounded-lg">
               <input
                 className="flex-1 p-2 border rounded"
                 value={input}
