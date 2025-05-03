@@ -50,7 +50,7 @@ const App = () => {
 
         <Route path="shift" Component={EmployeeShift}/>
         <Route path="monitor" Component={EmployeeMonitor}/>
-        <Route path="shift-report" Component={ShiftReport}/>
+        <Route path="shift-report/:employeeId" Component={ShiftReport}/>
         <Route path="manager-chat" Component={ManagerChat}/>
 
         <Route path="reports" Component={Reports}/>
