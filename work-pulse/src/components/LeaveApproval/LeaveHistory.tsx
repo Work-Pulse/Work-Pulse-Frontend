@@ -51,7 +51,7 @@ const LeaveHistory = () => {
   };
 
   const handleEditClick = (leave: any) => {
-    setEditingLeave(leave);
+    setEditingLeave(leave.officeMail);
     setFormData({
       leaveType: leave.leaveType || "",
       startDate: leave.startDate.split('T')[0] || "", 
@@ -143,7 +143,7 @@ const LeaveHistory = () => {
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Leave History</h1>
 
         {/* Approved Leaves Table */}
-        <h2 className="text-2xl font-semibold text-[#122D3B] mb-3">All Leaves {officeMail}</h2>
+        <h2 className="text-2xl font-semibold text-[#122D3B] mb-3">All Leaves from {officeMail}</h2>
         <div className="overflow-x-auto mb-6">
           <table className="w-full bg-white border border-gray-300 rounded-lg">
             <thead>

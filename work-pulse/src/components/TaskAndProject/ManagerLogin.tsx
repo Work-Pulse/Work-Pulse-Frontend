@@ -38,11 +38,11 @@ const ManagerLogin = () => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }} 
-      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
-      style={{ backgroundImage: `url(${bg})` }}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }} 
+    className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
+    style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="grid grid-cols-1 gap-8 p-8 rounded-2xl shadow-2xl w-96">
         <h2 className="text-center text-text text-2xl font-bold">Manager Login</h2>
@@ -94,4 +94,4 @@ const ManagerLogin = () => {
   );
 };
 
-export default ManagerLogin;
+export default ManagerLogin;

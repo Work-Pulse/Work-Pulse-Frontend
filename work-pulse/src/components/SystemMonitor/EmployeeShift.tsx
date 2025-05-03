@@ -203,7 +203,7 @@ const EmployeeShift = () => {
     >
       <div className="w-full">
         <div className="fixed">
-          <Link to="/monitor">
+          <Link to="/employeedashboard">
             <button className="absolute text-accent hover:text-reject p-3 rounded-full flex items-center">
               <ArrowLeft size={24} className="mr-2" /> Back
             </button>

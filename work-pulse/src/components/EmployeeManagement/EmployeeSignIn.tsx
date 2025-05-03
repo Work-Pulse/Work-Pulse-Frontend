@@ -52,10 +52,11 @@ const EmployeeSignIn = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    if ((name === "officePhone" || name === "personalPhone") && !/^\d*$/.test(value)) {
+    // Validate phone fields
+    if ((name === "officePhone" || name === "personalPhone") && !/^\+?\d*$/.test(value)) {
       setPhoneErrors((prev) => ({
         ...prev,
-        [name]: "Phone number must contain digits only.",
+        [name]: "Phone number must contain digits only and may start with +.",
       }));
     } else {
       setPhoneErrors((prev) => ({
@@ -63,6 +64,7 @@ const EmployeeSignIn = () => {
         [name]: "",
       }));
     }
+    
 
     setFormData({ ...formData, [name]: value });
   };
@@ -116,9 +118,8 @@ const EmployeeSignIn = () => {
                   confirmButtonColor: '#4CAF50'  // any valid CSS color
                 })
       navigate("/employeelogin");
-    } catch (err: any) {
-      console.error("Registration error:", err);
-      toast.error("Registration failed.");
+    } catch (err) {
+      console.error("Error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -136,39 +137,50 @@ const EmployeeSignIn = () => {
         <h1 className="text-center text-[#122D3B] text-3xl font-bold mb-6">Employee Sign Up</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Row 1 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
             <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
           </div>
 
+          {/* Row 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="Designation" name="designation" value={formData.designation} onChange={handleChange} />
             <Input label="Department" name="department" value={formData.department} onChange={handleChange} />
           </div>
 
+          {/* Row 3 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="Office Email" type="email" name="officeMail" value={formData.officeMail} onChange={handleChange} />
             <Input label="Personal Email" type="email" name="personalMail" value={formData.personalMail} onChange={handleChange} />
           </div>
 
+          {/* Row 4 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Input label="Office Phone" name="officePhone" value={formData.officePhone} onChange={handleChange} />
-              {phoneErrors.officePhone && <p className="text-red-600 text-sm mt-1">{phoneErrors.officePhone}</p>}
+              {phoneErrors.officePhone && (
+                <p className="text-red-600 text-sm mt-1">{phoneErrors.officePhone}</p>
+              )}
             </div>
             <div>
               <Input label="Personal Phone" name="personalPhone" value={formData.personalPhone} onChange={handleChange} />
-              {phoneErrors.personalPhone && <p className="text-red-600 text-sm mt-1">{phoneErrors.personalPhone}</p>}
+              {phoneErrors.personalPhone && (
+                <p className="text-red-600 text-sm mt-1">{phoneErrors.personalPhone}</p>
+              )}
             </div>
           </div>
 
+          {/* Row 5 */}
           <Input label="Address" name="address" value={formData.address} onChange={handleChange} full />
 
+          {/* Row 6 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="Birthday" type="date" name="birthday" value={formData.birthday} onChange={handleChange} />
             <Input label="Join Date" type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} />
           </div>
 
+          {/* Row 7 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="font-medium text-[#122D3B] mb-1 block">Password</label>
@@ -193,18 +205,23 @@ const EmployeeSignIn = () => {
               <PasswordInput
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, confirmPassword: e.target.value })
+                }
               />
               {passwordError && <p className="text-red-600 text-sm mt-1">{passwordError}</p>}
             </div>
           </div>
 
+          {/* Submit */}
           <div>
             <button
               type="submit"
               disabled={isLoading}
               className={`text-white text-lg font-semibold p-3 rounded-lg transition duration-300 w-full ${
-                isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-[#122D3B] hover:bg-white hover:text-[#122D3B]"
+                isLoading
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-[#122D3B] hover:bg-white hover:text-[#122D3B]"
               }`}
             >
               {isLoading ? "Registering..." : "Sign Up"}
@@ -227,7 +244,7 @@ const EmployeeSignIn = () => {
 
 export default EmployeeSignIn;
 
-// Reusable Components
+// Reusable Input Components
 const PasswordInput = ({
   placeholder,
   value,

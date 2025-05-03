@@ -14,7 +14,7 @@ interface LeaveRequest {
   endDate: string;
   leaveTime: string;
   status: string;
-  reason?: string;
+  
 }
 
 const LeaveRequests = () => {
@@ -100,9 +100,7 @@ const handleReject = async (id: string) => {
                   <p><strong>Start Date:</strong> {request.startDate}</p>
                   <p><strong>End Date:</strong> {request.endDate}</p>
                   <p><strong>Leave Time:</strong> {request.leaveTime}</p>
-                  {request.reason && (
-                    <p className="col-span-2"><strong>Reason:</strong> {request.reason}</p>
-                  )}
+                 
                
                <div className="mt-4 text-xl flex justify-between items-center">
                   {request.status === 'Approved' ? (

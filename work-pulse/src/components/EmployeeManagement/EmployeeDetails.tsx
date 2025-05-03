@@ -96,6 +96,52 @@ const EmployeeDetails = () => {
     }
   };
 
+
+//handleDelete
+  const handleDelete = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    if (!user || !user.email) return;
+  
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, resign!',
+    });
+  
+    if (!result.isConfirmed) return;
+  
+    const token = await user.getIdToken();
+  
+    try {
+      await axios.delete(`http://localhost:3030/employee/employee/delete/${user.email}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      Swal.fire({
+        title: 'Resigned Successfully!',
+        text: 'Your data has been deleted.',
+        icon: 'success',
+      }).then(() => {
+        // Redirect to login or homepage
+        window.location.href = "/employeedashboard"; // adjust route as needed
+      });
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong while resigning.',
+        icon: 'error',
+      });
+    }
+  };
+  
+
   const [tasks, setTasks] = useState([
     { text: "Complete project report", completed: false },
     { text: "Attend team meeting", completed: false },
@@ -206,9 +252,12 @@ const EmployeeDetails = () => {
               >
                 <FaEdit size={20} /> Update Personal Details
               </button>
-              <button className="flex items-center gap-2 bg-reject text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition">
-                <FaTrash size={20} /> I will resign from this Company
-              </button>
+              <button
+                    onClick={handleDelete}
+                    className="flex items-center gap-2 bg-reject text-white px-8 py-2 rounded-lg hover:bg-[#0e1f2c] transition"
+                  >
+                    <FaTrash size={20} /> I will resign from this Company
+                  </button>
             </div>
           </div>
         </div>
