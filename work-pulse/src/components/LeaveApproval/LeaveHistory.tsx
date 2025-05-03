@@ -103,7 +103,7 @@ export default function LeaveHistory() {
     >
       {/* Back Button */}
       <Link to="/leavedashboard" className="absolute top-6 left-6">
-        <button className="flex items-center gap-2 bg-reject text-white p-3 rounded-lg hover:opacity-80 transition">
+        <button className="flex items-center gap-2 text-reject p-3 rounded-lg hover:text-text transition font-bold">
           <FaArrowLeft /> Back
         </button>
       </Link>
@@ -117,8 +117,8 @@ export default function LeaveHistory() {
         <div className="overflow-x-auto mb-6">
           <table className="w-full bg-white border border-gray rounded-lg">
             <thead>
-              <tr className="bg-accept text-text">
-                <th className="p-3 text-left">Type</th>
+              <tr className="bg-text text-background">
+                <th className="p-3 text-left pl-20">Type</th>
                 <th className="p-3 text-left">Start</th>
                 <th className="p-3 text-left">End</th>
                 <th className="p-3 text-left">Time</th>
@@ -130,7 +130,7 @@ export default function LeaveHistory() {
               {leaveData.length ? (
                 leaveData.map((leave) => (
                   <tr key={leave._id} className="border-t border-gray">
-                    <td className="p-3 text-text">{leave.leaveType}</td>
+                    <td className="p-3 text-text pl-20">{leave.leaveType}</td>
                     <td className="p-3 text-text">
                       {new Date(leave.startDate).toLocaleDateString()}
                     </td>
