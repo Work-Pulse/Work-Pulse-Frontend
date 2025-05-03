@@ -67,21 +67,21 @@ const Reports: React.FC = () => {
       style={{ backgroundImage: `url(${bg})` }}
     >
       {/* Back Button */}
-      <Link to="/managerdashboard" className="self-start mb-6">
-        <button className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition">
+      <Link to='/managerdashboard' className="absolute top-2 left-6">
+        <button className="flex items-center gap-2 text-text text-xl font-extrabold p-3 bg-red-500 rounded-lg hover:text-reject transition duration-300">
           <FaArrowLeft size={20} /> Back
         </button>
       </Link>
 
       {/* Header */}
-      <h1 className="text-4xl font-extrabold mb-2 text-white -mt-4">
+      <h1 className="text-4xl font-extrabold mb-2 text-text -mt-4">
         Task Completion Report
       </h1>
 
       {/* Filters */}
       <div className="flex gap-6 mb-6">
         <div>
-          <label className="block mb-1 font-semibold text-white">By Date</label>
+          <label className="block mb-1 font-semibold text-text">By Date</label>
           <select
             value={dateFilter}
             onChange={e => setDateFilter(e.target.value as any)}
@@ -94,7 +94,7 @@ const Reports: React.FC = () => {
           </select>
         </div>
         <div>
-          <label className="block mb-1 font-semibold text-white">By Priority</label>
+          <label className="block mb-1 font-semibold text-text">By Priority</label>
           <select
             value={priorityFilter}
             onChange={e => setPriorityFilter(e.target.value as any)}
